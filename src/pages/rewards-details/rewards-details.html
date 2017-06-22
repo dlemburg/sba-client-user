@@ -1,0 +1,35 @@
+<ion-header>
+  <ion-navbar>
+    <button ion-button menuToggle>
+      <ion-icon name="menu"></ion-icon>
+    </button>
+    <ion-title>{{ reward.name }}</ion-title>
+  </ion-navbar>
+</ion-header>
+
+<ion-content padding>
+   <div class=" reward-card-container">
+      <ion-card class=" reward-card" no-padding no-margin text-center>
+        <!--<img src="{{reward.img}}"/>-->
+        <img src="img/family.png" />
+        <div class="reward-card-title">{{reward.name}}</div>
+        <div class="reward-card-expiry">
+           <span>{{ reward.startDate | date }} </span> --- <span> {{ reward.expiryDate | date }}</span>
+        </div>
+      </ion-card>
+      <ion-item margin-top text-wrap>{{ reward.description }}</ion-item>
+  </div>
+  <!--
+  <ion-item text-center text-wrap class="exclusions-container" no-lines>
+    </ion-item> -->
+
+  <ion-item class="exclusions-container" no-lines>
+    <div class="exclusions"><span class="bold">Exclusions: </span> {{ reward.exclusions }}</div>
+  </ion-item>
+
+</ion-content>
+<ion-footer *ngIf="reward.processingType === REWARDS_PROCESSING_TYPE.MANUAL || reward.rewardType === REWARDS_TYPE.REWARDS_INDIVIDUAL">
+  <ion-toolbar>
+        <button class="scan-barcode-btn" (click)="navBarcodeReward()" ion-button block detail-push>Scan Barcode  <ion-icon class="arrow-right" ios="ios-arrow-forward" md="ios-arrow-forward"></ion-icon></button>
+  </ion-toolbar>
+</ion-footer>

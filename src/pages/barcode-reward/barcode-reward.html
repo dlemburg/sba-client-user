@@ -1,0 +1,28 @@
+<ion-header>
+  <ion-navbar>
+    <button ion-button menuToggle>
+      <ion-icon name="menu"></ion-icon>
+    </button>
+    <ion-title>Scan and Earn Rewards</ion-title>
+  </ion-navbar>
+</ion-header>
+<ion-content padding>
+  <div class="backup-code">
+    <div no-lines>Use code: 1234 5678 9876</div>
+  </div>
+  <div class=" barcode-content-container">
+    <div class=" barcode-container">
+      <div class="blue barcode">Barcode</div>
+      <div class="top-r ">mark</div>
+      <div class="top-l ">mark</div>
+      <div class="bottom-r ">mark</div>
+      <div class="bottom-l ">mark</div>
+    </div>
+  </div>
+</ion-content>
+
+<ion-footer>
+  <ion-toolbar>
+        <button (click)="submit()" class="scan-barcode-btn" ion-button block detail-push>Pay</button>
+  </ion-toolbar>
+</ion-footer>

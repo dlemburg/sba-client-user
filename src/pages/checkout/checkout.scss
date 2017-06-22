@@ -1,0 +1,24 @@
+page-checkout {
+    .transaction-details {
+        margin-top: 50px;
+    }
+
+    .exclusions {
+
+    }
+
+    textarea {
+        height: 12vh;
+    }
+    
+    .insufficient-funds-container {
+        color: white !important;
+        background-color: map-get($colors, primary);
+    }
+
+    .extras-container {
+        
+    }
+}
+
+

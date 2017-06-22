@@ -1,0 +1,77 @@
+page-order-complete {
+    .added-to-cart-container {
+        background-color: map-get($colors, primary);
+        color: white;
+    }
+
+    .added-to-cart-title {
+        font-size: 44px;
+        text-align: center !important;
+        margin: auto;
+    }
+
+    .subtitle {
+        position: relative;
+        top: 30px;
+        font-weight: bold;
+    }
+
+    .white-background-btn {
+        background-color: white;
+        border: 1px solid white;
+        color: map-get($colors, primary);
+    }
+
+    ion-card {
+        position: relative;
+        text-align: center !important;
+        border-left: 5px solid primary;
+        max-height: 140px !important;
+        border-radius: 8px !important;
+        max-width: 60%;
+    }
+
+    .card-title {
+        position: absolute;
+        top: 36%;
+        font-size: 2.5em;
+        width: 100%;
+        font-weight: bold;
+        color: #fff;
+    }
+
+
+    /* using flexbox to give vertical spacing 1:1:1 */
+
+    scroll-content {
+        display: flex;
+        flex-direction: column;
+        //-webkit-align-items: center;
+        //align-items: center !important;
+        //margin: auto !important;
+    }
+
+    ion-grid {
+        padding: 0;
+        height: 100%;
+    }
+
+    .flex-3 {
+        flex: 3;
+    }
+
+    .flex-2 {
+        flex: 2;
+    }
+    .flex-1 {
+        flex: 1;
+    }
+
+    .background-added-to-cart {
+       // background: $background-img !important;
+        background-size: cover !important;
+    }
+
+
+
+}

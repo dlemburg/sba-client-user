@@ -1,0 +1,54 @@
+<ion-header>
+  <ion-navbar>
+    <button ion-button menuToggle>
+      <ion-icon name="menu">Back to Checkout</ion-icon>
+    </button>
+  </ion-navbar>
+</ion-header>
+
+
+<ion-content no-padding>
+    <ion-card class="hover ion-card-top" no-padding no-margin>
+      <!-- <img src="{{productImg}}"/> -->
+      <img src="img/family.png" />
+
+      <div class="logo">Logo</div>
+      <div class="product-name">{{ productDetails.name }}</div>
+      <div class="product-description">
+        <div>{{productDetails.description}}</div>
+        <div class="calories">{{ productDetails.caloriesLow }} - {{ productDetails.caloriesHigh }} calories</div>
+      </div>
+    </ion-card>
+    <div padding>
+       <ion-item *ngIf="productDetails.sizesAndPrices && productDetails.sizesAndPrices.length">
+          <ion-label>Size</ion-label>
+          <ion-select [(ngModel)]="purchaseItem.sizeAndOrPrice" >
+            <ion-option *ngFor="let x of productDetails.sizesAndPrices;" [value]="x">{{ x.name }}</ion-option>
+          </ion-select>
+        </ion-item>
+        <ion-item>
+          <ion-label>Add-ons</ion-label>
+          <ion-select [(ngModel)]="purchaseItem.addons" multiple="true">
+            <ion-option *ngFor="let x of productDetails.addonsToClient; let i = index;" [value]="x">{{ x.name }}</ion-option>
+          </ion-select>
+        </ion-item>
+        <ion-item>
+          <ion-label>Flavors</ion-label>
+          <ion-select [(ngModel)]="purchaseItem.flavors" multiple="true">
+            <ion-option *ngFor="let x of productDetails.flavorsToClient; let i = index;" [value]="x">{{ x.name }}</ion-option>
+          </ion-select>
+        </ion-item>
+        <ion-item margin-vertical>
+          <ion-label>Quantity</ion-label>
+          <ion-select [(ngModel)]="purchaseItem.quantity">
+            <ion-option *ngFor="let x of quantities; let i = index;" [value]="x">{{x}}</ion-option>
+          </ion-select>
+        </ion-item>
+    </div>
+</ion-content>
+  <ion-footer *ngIf="storeService.isOrderInProgress">
+    <ion-toolbar>
+          <button (click)="submit()" class="footer-btn" color="primary" ion-button block>Edit</button>
+    </ion-toolbar>
+  </ion-footer>
+

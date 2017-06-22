@@ -1,17 +1,44 @@
 <ion-header>
   <ion-navbar>
-    <ion-title>
-      Contact
-    </ion-title>
+    <button ion-button menuToggle>
+      <ion-icon name="menu"></ion-icon>
+    </button>
+    <ion-title>Contact</ion-title>
   </ion-navbar>
 </ion-header>
 
-<ion-content>
-  <ion-list>
-    <ion-list-header>Follow us on Twitter</ion-list-header>
+<ion-content padding>
+  <!-- logo -->
+  <ion-list no-lines>
     <ion-item>
-      <ion-icon name="ionic" item-left></ion-icon>
-      @ionicframework
+      <div text-center>Logo</div>
     </ion-item>
   </ion-list>
+  <button ion-item detail-none (click)="getContactInfo()">Contact Info <ion-icon item-right ios="ios-arrow-down" md="ios-arrow-down"></ion-icon></button>
+  <div class="width-80 align-center">
+    <ion-item class="align-center" *ngIf="showContactInfo">
+      <div>{{contactInfo.address}}</div>
+      <div>{{contactInfo.city}} {{contactInfo.state}}, {{contactInfo.zipcode}}</div>
+      <div>{{contactInfo.phoneNumber}}</div>
+      <div>Email: {{contactInfo.email}} </div>
+    </ion-item>
+  </div>
+
+   <!-- send message -->
+  <div class="message-container">
+    <form [formGroup]="myForm" (ngSubmit)="submit(myForm.value, myForm.valid)">
+      <ion-item>
+        <ion-label class="text-area-label" stacked text-center>Send us a message!</ion-label>
+        <ion-textarea formControlName="message"></ion-textarea>
+      </ion-item>
+      <div text-center margin-top>
+        <button type="submit" color="primary" [disabled]="!myForm.valid" ion-button block margin-top>Submit</button>
+      </div>
+    </form>
+  </div>
+
+
+ <!-- social media -->
+
 </ion-content>
+

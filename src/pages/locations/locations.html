@@ -1,0 +1,51 @@
+<ion-header>
+  <ion-navbar>
+    <button ion-button menuToggle>
+      <ion-icon name="menu"></ion-icon>
+    </button>
+    <ion-title>Locations</ion-title>
+  </ion-navbar>
+</ion-header>
+
+<ion-content padding>
+  <ion-toolbar color="dl-white">
+    <ion-title text-center>Select a Location</ion-title>
+  </ion-toolbar>
+  <div padding>
+  <ion-segment [(ngModel)]="category">
+    <ion-segment-button value="map">
+      Map
+    </ion-segment-button>
+    <ion-segment-button value="list">
+      List
+    </ion-segment-button>
+  </ion-segment>
+</div>
+
+<div [ngSwitch]="category">
+  <ion-list *ngSwitchCase="'map'">
+    <ion-item>
+    </ion-item>
+  </ion-list>
+
+  <ion-list *ngSwitchCase="'list'">
+    <div *ngIf="!locations.length">
+      <ion-card>
+        <ion-card-content text-center>No locations to display.</ion-card-content>
+      </ion-card>
+    </div>
+    <ion-item (click)="updateActive(i)" *ngFor="let x of locations; let i = index" [ngClass]="{'item-highlight': isActive === i}">
+      <div>
+        <div class="address">{{ x.address }}</div>
+        <div class="address">{{ x.city }}, {{ x.state }} {{ x.zipcode }}</div>
+        <div class="miles-away">4.18 mi</div>
+        <button *ngIf="x.isOpen" (click)="proceedToOrder(x)" ion-button outline block detail-push>Proceed to Order</button>
+        <div *ngIf="!x.isOpen" text-center class="closed">{{ closedMessage }}</div>
+        <div *ngIf="x.isOpen" text-center class="open">Open</div>
+        <button class="hours-btn" (click)="viewHours(x)" ion-button>Hours</button>
+      </div>
+    </ion-item>
+  </ion-list>
+</div>
+
+</ion-content>

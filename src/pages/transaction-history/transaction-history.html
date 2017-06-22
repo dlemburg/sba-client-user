@@ -1,0 +1,26 @@
+<ion-header>
+  <ion-navbar>
+    <button ion-button menuToggle>
+      <ion-icon name="menu"></ion-icon>
+    </button>
+    <ion-title>Transaction History</ion-title>
+  </ion-navbar>
+</ion-header>
+
+<ion-content padding>
+  <!-- example of list with multiple columns- 3 fields -->
+  <ion-list>
+    <ion-item *ngIf="!transactions.length">No transactions to display.</ion-item>
+    <ion-item *ngFor="let x of transactions">
+      <ion-row no-padding>
+        <ion-col  class="" col-4 text-left>{{ x.purchaseDate | date }}</ion-col>
+        <ion-col  class="overflow" col-4 text-center>
+          <ion-row *ngFor="let y of x.productsArray; let j = index;">
+            <ion-col>{{ y }}</ion-col>
+          </ion-row>
+        </ion-col>
+        <ion-col  class="" col-4 text-right>{{ x.total | currency:symbolDisplay:true }}</ion-col>
+      </ion-row>
+    </ion-item>
+  </ion-list>
+</ion-content>

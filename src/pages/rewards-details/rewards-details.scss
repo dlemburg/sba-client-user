@@ -1,0 +1,32 @@
+page-rewards-details {
+      .reward-card-container {
+        width: 80% !important;
+        margin: auto;
+    }
+
+    .reward-card {
+        border-radius: 0px !important;
+        position: relative;
+        width: 100%;
+        margin-top: 40px;
+    }
+
+    .reward-card-title {
+        position: absolute;
+        top: 30%;
+        font-size: 1.5em;
+        width: 100%;
+        font-weight: bold;
+        color: #fff;
+    }
+
+    .reward-card-expiry {
+        font-size: 0.8em;
+        position: absolute;
+        top: 90%;
+        width: 100%;
+        color: #fff;
+    }
+
+
+}

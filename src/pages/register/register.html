@@ -1,0 +1,64 @@
+<ion-header>
+  <ion-navbar>
+    <!--
+    <button (click)="navLogin()" ion-button>
+      <ion-icon name="arrow-back"></ion-icon>
+    </button>
+    -->
+  </ion-navbar>
+</ion-header>
+<ion-content padding>
+   <ion-list no-lines>
+    <ion-item>
+      <div text-center>Logo</div>
+    </ion-item>
+  </ion-list>
+
+  <form [formGroup]="myForm" (ngSubmit)="submit(myForm.value, myForm.valid)">
+    <ion-list>
+      <ion-item>
+        <ion-label floating>First Name</ion-label>
+        <ion-input type="text" formControlName="firstName"></ion-input>
+      </ion-item>
+      <control-messages [isSubmitted]="isSubmitted" [controlInstance]="myForm.controls.firstName"></control-messages>
+
+      <ion-item>
+        <ion-label floating>Last Name</ion-label>
+        <ion-input type="text" formControlName="lastName"></ion-input>
+      </ion-item>
+      <control-messages [isSubmitted]="isSubmitted" [controlInstance]="myForm.controls.lastName"></control-messages>
+
+      <ion-item>
+        <ion-label floating>Email</ion-label>
+        <ion-input type="text" formControlName="email"></ion-input>
+      </ion-item>
+      <control-messages [isSubmitted]="isSubmitted" [controlInstance]="myForm.controls.email"></control-messages>
+
+      <ion-item>
+        <ion-label floating>Zip Code</ion-label>
+        <ion-input type="tel" formControlName="zipcode"></ion-input>
+      </ion-item>
+      <control-messages [isSubmitted]="isSubmitted" [controlInstance]="myForm.controls.zipCode"></control-messages>
+      
+      <ion-item>
+        <ion-label>Birthday</ion-label>
+        <ion-datetime displayFormat="MMM DD, YYYY" pickerFormat="MMM DD, YYYY" formControlName="birthday"></ion-datetime>
+      </ion-item> 
+      <ion-item>
+        <ion-label floating>Password</ion-label>
+        <ion-input type="password" formControlName="password"></ion-input>
+      </ion-item>
+      <control-messages [isSubmitted]="isSubmitted" [controlInstance]="myForm.controls.password"></control-messages>
+
+      <ion-item>
+        <ion-label floating>Confirm password</ion-label>
+        <ion-input type="password" formControlName="password2"></ion-input>
+      </ion-item>
+      <control-messages [isSubmitted]="isSubmitted" [controlInstance]="myForm.controls.password2"></control-messages>
+    </ion-list>
+
+    <div margin-top text-center ><button [disabled]="!myForm.valid" ion-button>Register</button></div>
+  </form>
+
+</ion-content>
+

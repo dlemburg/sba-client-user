@@ -1,17 +1,23 @@
-<ion-header>
-  <ion-navbar>
-    <ion-title>Home</ion-title>
+<ion-header color="dl-white">
+  <ion-navbar color="dl-white">
+    <button ion-button menuToggle>
+      <ion-icon name="menu"></ion-icon>
+    </button>
+    <ion-title></ion-title>
   </ion-navbar>
 </ion-header>
 
-<ion-content padding>
-  <h2>Welcome to Ionic!</h2>
-  <p>
-    This starter project comes with simple tabs-based layout for apps
-    that are going to primarily use a Tabbed UI.
-  </p>
-  <p>
-    Take a look at the <code>src/pages/</code> directory to add or change tabs,
-    update any existing page or create new pages.
-  </p>
+<ion-content class="card-background-page">
+  <!-- sub header -->
+  <!--
+  <ion-toolbar color="primary" *ngIf="ownerAlert">
+    <ion-title text-center>{{ ownerAlert.headline }}</ion-title>
+  </ion-toolbar>
+  -->
+  <ion-card class="hover" *ngFor="let x of cards" (click)="nav(x)">
+    <img src="{{x.img}}"/>
+    <div class="card-title">{{ x.title }}</div>
+    <div class="card-subtitle">{{ x.subtitle }}</div>
+    <div *ngIf="x.id === 1" class="card-points">Current Points: &nbsp; <span class="card-points-number">{{ points }}</span></div>
+  </ion-card>
 </ion-content>

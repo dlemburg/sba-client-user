@@ -1,0 +1,7 @@
+page-hours {
+    .closed {
+        color: map-get($colors , danger);
+       // border: 1px solid map-get($colors , danger );
+        padding: 2px;
+    }
+}

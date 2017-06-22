@@ -1,0 +1,34 @@
+<!--  [ngStyle]="{'background': backgroundImg }" -->
+<ion-content class="background-img">
+ <!-- <img src="img/family.png" class="img-cover" /> -->
+  <div class="logo-container" text-center>
+    <div class="logo">Logo</div>
+  </div>
+  <form [formGroup]="myForm" (ngSubmit)="submit(myForm.value, myForm.valid)">
+    <ion-list>
+
+      <!-- email -->
+      <ion-item text-center>
+        <ion-label floating>Email</ion-label>
+        <ion-input type="text" formControlName="email"></ion-input>
+      </ion-item>
+      <control-messages [isSubmitted]="isSubmitted" [controlInstance]="myForm.controls.email"></control-messages>
+
+      <!-- password -->
+      <ion-item text-center>
+        <ion-label floating>Password</ion-label>
+        <ion-input type="password" formControlName="password"></ion-input>
+      </ion-item>
+      <control-messages [isSubmitted]="isSubmitted" [controlInstance]="myForm.controls.password"></control-messages> 
+    </ion-list>
+    
+    <div class="login-bottom-container" text-center>
+      <div>
+        <span (click)="navRegister()">Not a member? &nbsp; &nbsp;</span> 
+        <span class="divider">|</span>  &nbsp; &nbsp;  
+        <span (click)="navForgotPassword()">Forgot password?</span>
+      </div>
+    </div>
+    <div text-center ><button class="login-btn" [disabled]="!myForm.valid" ion-button outline>Login</button></div>
+  </form>
+</ion-content>

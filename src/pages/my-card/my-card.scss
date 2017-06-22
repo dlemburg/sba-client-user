@@ -1,0 +1,21 @@
+page-my-card {
+    .my-card-img-container {
+        margin: auto;
+        text-align: center;
+        width: 80%;
+    }
+    .my-card-img-container > img {
+        border-radius: 5px;
+    }
+
+    .balance-container {
+        width: 80%;
+        margin: auto;
+    }
+
+    .pay-now-btn {
+        width: 80%;
+        height: 60px;
+        border-radius: 5px;
+    }
+}

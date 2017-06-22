@@ -1,0 +1,45 @@
+<ion-header>
+  <ion-navbar>
+    <button ion-button menuToggle>
+      <ion-icon name="menu"></ion-icon>
+    </button>
+    <ion-title>Account Details</ion-title>
+  </ion-navbar>
+</ion-header>
+
+<ion-content padding>
+  <ion-list no-lines>
+    <ion-item>
+      <div text-center>Logo</div>
+    </ion-item>
+  </ion-list>
+  <form [formGroup]="myForm" (ngSubmit)="submit(myForm.value, myForm.valid)">
+    <ion-list>
+      <ion-item>
+        <ion-label floating>First Name</ion-label>
+        <ion-input type="text" formControlName="firstName"></ion-input>
+      </ion-item>
+      <control-messages [isSubmitted]="isSubmitted" [controlInstance]="myForm.controls.firstName"></control-messages>      
+      <ion-item>
+        <ion-label floating>Last Name</ion-label>
+        <ion-input type="text" formControlName="lastName"></ion-input>
+      </ion-item>
+      <control-messages [isSubmitted]="isSubmitted" [controlInstance]="myForm.controls.lastName"></control-messages>      
+      <ion-item>
+        <ion-label floating>Email</ion-label>
+        <ion-input type="text" formControlName="email"></ion-input>
+      </ion-item>
+      <control-messages [isSubmitted]="isSubmitted" [controlInstance]="myForm.controls.email"></control-messages>      
+      <ion-item>
+        <ion-label floating>Zip Code</ion-label>
+        <ion-input type="text" formControlName="zipcode"></ion-input>
+      </ion-item>
+      <control-messages [isSubmitted]="isSubmitted" [controlInstance]="myForm.controls.zipCode"></control-messages>      
+      <ion-item margin-top>
+        <ion-label> Push Notifications</ion-label>
+        <ion-toggle formControlName="hasPushNotifications"></ion-toggle>
+      </ion-item> 
+    </ion-list>
+    <div text-center margin-top><button color="primary" [disabled]="!myForm.valid" ion-button block margin-top>Submit</button></div>
+  </form>
+</ion-content>

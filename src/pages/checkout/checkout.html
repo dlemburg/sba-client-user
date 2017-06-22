@@ -1,0 +1,156 @@
+<ion-header>
+  <ion-navbar>
+    <button ion-button menuToggle>
+      <ion-icon name="menu"></ion-icon>
+    </button>
+    <ion-title>Checkout</ion-title>
+  </ion-navbar>
+</ion-header>
+
+
+<ion-content padding>
+  <ion-toolbar color="primary" *ngIf="balance < order.transactionDetails.total">
+    <ion-item class="insufficient-funds-container" text-wrap no-lines text-center>{{ INSUFFICIENT_FUNDS_ALERT }} <span class="bold"> {{ balance | currency:symbolDisplay:true  }}</span></ion-item>
+  </ion-toolbar>
+  <!-- order -->
+  <ion-item *ngIf="!order.purchaseItems.length">No items ready for purchase.</ion-item>
+  <ion-list *ngIf="order.purchaseItems.length">
+    <div *ngFor="let x of order.purchaseItems; let i = index;">
+      <ion-item-sliding #item>
+        <ion-item detail-push >
+            <div>
+              <div>
+                <span class="bold"> {{x.quantity}} </span>
+                <span *ngIf="x.sizeAndOrPrice.name" class="bold"> {{ x.sizeAndOrPrice.name }} </span>
+                <span class="bold product-name"> {{ x.selectedProduct.name | uppercase }}<span class="bold" *ngIf="x.quantity > 1">s</span></span>
+              </div>
+              <div class="extras-container">
+                <!-- flavors -->
+                <div *ngFor="let a of x.flavors; let i = index;">{{ a.name }}
+                  <span *ngIf="i !== x.flavors.length - 1">,</span>
+                </div>
+                <!-- addons -->
+                <div *ngFor="let a of x.addons; let i = index;"> {{ a.name }}
+                    <span *ngIf="i !== x.addons.length - 1">,</span> 
+                </div>
+
+                <!-- dairy -->
+                <div *ngFor="let a of x.dairy; let i = index;"> {{ a.name }}
+                    <span *ngIf="i !== x.dairy.length - 1">,</span> 
+                </div>
+
+                <!-- variety -->
+                <div *ngFor="let a of x.variety; let i = index;"> {{ a.name }}
+                    <span *ngIf="i !== x.variety.length - 1">,</span> 
+                </div>
+
+                <!-- sweetener -->
+                <div *ngFor="let a of x.sweetener; let i = index;"> {{ a.name }}
+                    <span *ngIf="i !== x.sweetener.length - 1">,</span> 
+                </div>
+              </div>
+              <div>
+                <span text-right>{{ x.displayPriceWithoutDiscounts | currency:symbolDisplay:true}}</span>
+              </div>
+              <div class="discounts" *ngIf="x.discounts"> - {{ x.discounts | currency:symbolDisplay:true }} </div>
+            </div>
+        </ion-item>
+        <ion-item-options side="right">
+         <!-- <button ion-button color="primary" (click)="editPurchaseItem(x, i)">Edit</button> -->
+          <button ion-button color="danger" (click)="deletePurchaseItem(x, i)">Delete</button>
+        </ion-item-options>
+      </ion-item-sliding>
+    </div>
+  </ion-list>
+
+  <!-- rewards -->
+  <ion-item (click)="showRewards = !showRewards" detail-push>
+    <div>See Rewards applied to this transaction</div>
+  </ion-item>
+  <div *ngIf="showRewards">
+    <ion-item *ngFor="let x of order.transactionDetails.rewards; let i = index;">
+      <div>
+        <span class="bold">{{x.name}}</span>
+      </div>
+      <!--
+      <div> {{ x.description }} </div>
+      -->
+      <div class="discounts" *ngIf="x.discountRule === REWARDS_DISCOUNT_RULE.PRODUCT">
+        <div *ngIf="x.discountType === REWARDS_DISCOUNT_TYPE.PERCENT || x.discountType === REWARDS_DISCOUNT_TYPE.NEW_PRICE">
+          <span> Discount amount per product: </span>{{ x.discountAmount | currency:symbolDisplay:true }}
+        </div>
+        <div *ngIf="x.discountType === REWARDS_DISCOUNT_TYPE.MONEY">
+          <span> Discount amount for item: </span>{{ x.discountAmount | currency:symbolDisplay:true }}
+        </div>
+      </div>
+      <!-- x.discount does not come from server- its a client prop given to track the discount of dtr -->
+      <div class="discounts" *ngIf="x.discounts && x.discountRule === REWARDS_DISCOUNT_RULE.DATE_TIME_RANGE">
+        <div *ngIf="x.discounts.type === REWARDS_DISCOUNT_TYPE.PERCENT"> 
+          <span>Discount amount on order: </span>{{ x.discounts.amount }}%
+        </div>
+        <div *ngIf="x.discounts.type === REWARDS_DISCOUNT_TYPE.MONEY">                     
+          <span>Discount amount on order: </span> {{ x.discounts.amount  | currency:symbolDisplay:true }}
+        </div>
+      </div>
+    </ion-item>
+  </div>
+
+  <ion-list margin-top class="transaction-details">
+    <!-- subtotal -->
+    <ion-item>
+      <span>Subtotal:</span> 
+      <div text-right>
+        <span *ngIf="order.transactionDetails.subtotal"> {{ order.transactionDetails.subtotal | currency:symbolDisplay:true }}</span>   
+        <span *ngIf="!order.transactionDetails.subtotal"> $0.00 </span>   
+    </div>
+    </ion-item>
+
+    <!-- tax -->
+    <ion-item>
+      <span>Estimated Tax:</span> 
+      <div text-right>
+        <span *ngIf="order.transactionDetails.taxes"> {{ order.transactionDetails.taxes | currency:symbolDisplay:true }} </span>
+        <span *ngIf="!order.transactionDetails.taxes"> $0.00 </span>   
+      </div>
+    </ion-item>
+
+    <!-- total -->
+    <ion-item>
+      <span>Total:</span> 
+      <div class="inline-total" text-right> 
+        <span class="total" *ngIf="order.transactionDetails.total">{{ order.transactionDetails.total | currency:symbolDisplay:true }}</span>
+        <span class="total" *ngIf="!order.transactionDetails.total"> $0.00 </span>   
+      </div>
+    </ion-item>
+  </ion-list>
+  <div class="align-center">
+      <h4 text-center margin-top>Select your estimated time of arrival</h4>
+      <span>(in minutes)</span>
+      <div class="bold" *ngIf="areAnyEtasDisabled()">Minutes until location close: {{ minutesUntilClose }}</div>
+  </div>
+  <ion-row margin>
+    <ion-col>
+      <button [ngClass]="{'selected': eta === x }"  
+              *ngFor="let x of etas; let i = index;" 
+              [disabled]="minutesUntilClose < x"
+              ion-button outline margin-left 
+              (click)="selectEta(x)">{{ x }}</button>
+    </ion-col>
+  </ion-row>
+  <!--
+  <div *ngIf="COMPANY_DETAILS.ALLOWS_COMMENTS_ON_ORDER_AHEAD">
+    <ion-item margin-top>
+      <ion-label class="text-area-label" stacked>Comments</ion-label>
+      <ion-textarea [(ngModel)]="comments"></ion-textarea>
+    </ion-item>
+  </div>
+  -->
+   <ion-toolbar margin-top>
+    <button [disabled]="balance < order.transactionDetails.total" (click)="submit()" class="footer-btn" color="secondary" ion-button block detail-push>Complete Transaction</button>
+  </ion-toolbar>
+</ion-content>
+ <ion-footer>
+  <ion-item class="exclusions-container-not-fixed">
+    <div class="exclusions">{{ exclusions }}</div>
+  </ion-item>
+</ion-footer>

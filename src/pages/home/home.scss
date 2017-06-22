@@ -1,3 +1,36 @@
 page-home {
+        ion-card {
+            position: relative;
+            text-align: center;
+        }
 
+        .card-title {
+            position: absolute;
+            top: 30%;
+            font-size: 36px;
+            width: 100%;
+            font-weight: bold;
+            color: #fff;
+        }
+
+        .card-subtitle {
+            font-size: 16px;
+            position: absolute;
+            top: 58%;
+            width: 100%;
+            color: #fff;
+        }
+
+        .card-points {
+            font-size: 16px;
+            position: absolute;
+            top: 85%;
+            width: 100%;
+            color: #fff;
+        }
+
+        .card-points-number {
+            font-size: 1.5em;
+            font-weight: bold;
+        }
 }
