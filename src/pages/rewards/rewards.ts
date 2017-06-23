@@ -1,14 +1,13 @@
 import { Component } from '@angular/core';
-import { RewardsDetailsPage } from '../rewards-details/rewards-details';
 import { API, ROUTES } from '../../global/api.service';
 import { Authentication } from '../../global/authentication.service';
 import { ImgService } from '../../global/img.service';
-import { HomePage } from "../home/home";
-import { NavController, NavParams, AlertController, ToastController, LoadingController, ModalController } from 'ionic-angular';
+import { IonicPage, NavController, NavParams, AlertController, ToastController, LoadingController, ModalController } from 'ionic-angular';
 import { AppDataService } from '../../global/app-data.service';
 import { IPopup } from '../../models/models';
 import { BaseViewController } from '../base-view-controller/base-view-controller';
 
+@IonicPage()
 @Component({
   selector: 'page-rewards',
   templateUrl: 'rewards.html'
@@ -72,6 +71,6 @@ export class RewardsPage extends BaseViewController {
 
   navRewardsDetails(reward): void {
   //  let rewardOid = reward.oid;
-    this.navCtrl.push(RewardsDetailsPage, {reward});
+    this.navCtrl.push('RewardsDetailsPage', {reward});
   }
 }

@@ -1,12 +1,8 @@
 import { Component } from '@angular/core';
-import { NavController, NavParams, ViewController, App } from 'ionic-angular';
+import { IonicPage, NavController, NavParams, ViewController, App } from 'ionic-angular';
 import { IPurchaseItem } from '../../models/models';
-import { ProductsListPage } from '../products-list/products-list';
-import { CheckoutPage } from '../checkout/checkout';
-import { CategoriesPage } from '../categories/categories';
-import { HomePage } from '../home/home';
 
-
+@IonicPage()
 @Component({
   selector: 'page-order-complete',
   templateUrl: 'order-complete.html'

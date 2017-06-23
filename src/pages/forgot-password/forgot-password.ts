@@ -4,12 +4,12 @@ import { AsyncValidation } from '../../global/async-validation.service';
 import { FormBuilder, FormGroup, Validators, FormControl } from '@angular/forms';
 import { Authentication } from '../../global/authentication.service';
 import { API, ROUTES } from '../../global/api.service';
-import { HomePage } from "../home/home";
-import { NavController, NavParams, AlertController, ToastController, LoadingController, ModalController } from 'ionic-angular';
+import { IonicPage, NavController, NavParams, AlertController, ToastController, LoadingController, ModalController } from 'ionic-angular';
 import { AppDataService } from '../../global/app-data.service';
 import { IPopup } from '../../models/models';
 import { BaseViewController } from '../base-view-controller/base-view-controller';
 
+@IonicPage()
 @Component({
   selector: 'page-forgot-password',
   templateUrl: 'forgot-password.html'
@@ -23,7 +23,6 @@ export class ForgotPasswordPage extends BaseViewController {
       email: [null, Validators.required]
     });
   }
-
 
   submit(myForm, isValid) {
     this.presentLoading();

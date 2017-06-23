@@ -4,12 +4,12 @@ import { FormBuilder, FormGroup, Validators, FormControl } from '@angular/forms'
 import { UtilityService } from '../../global/utility.service';
 import { API, ROUTES } from '../../global/api.service';
 import { Authentication } from '../../global/authentication.service';
-import { HomePage } from "../home/home";
-import { NavController, NavParams, ModalController, AlertController, ToastController, LoadingController } from 'ionic-angular';
+import { IonicPage, NavController, NavParams, ModalController, AlertController, ToastController, LoadingController } from 'ionic-angular';
 import { AppDataService } from '../../global/app-data.service';
 import { IPopup } from '../../models/models';
 import { BaseViewController } from '../base-view-controller/base-view-controller';
 
+@IonicPage()
 @Component({
   selector: 'page-edit-payment-details',
   templateUrl: 'edit-payment-details.html'
@@ -50,7 +50,7 @@ export class EditPaymentDetailsPage extends BaseViewController {
     this.isSubmitted = true;
     
     const onConfirmFn = () => {
-      this.navCtrl.setRoot(HomePage);
+      this.navCtrl.setRoot('HomePage');
     }
 
      /*** Package for submit ***/

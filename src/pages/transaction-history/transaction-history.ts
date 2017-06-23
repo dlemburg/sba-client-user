@@ -1,12 +1,12 @@
 import { Component } from '@angular/core';
 import { API, ROUTES } from '../../global/api.service';
 import { Authentication } from '../../global/authentication.service';
-import { HomePage } from "../home/home";
-import { NavController, NavParams, AlertController, ToastController, LoadingController, ModalController } from 'ionic-angular';
+import { IonicPage, NavController, NavParams, AlertController, ToastController, LoadingController, ModalController } from 'ionic-angular';
 import { AppDataService } from '../../global/app-data.service';
 import { IPopup } from '../../models/models';
 import { BaseViewController } from '../base-view-controller/base-view-controller';
 
+@IonicPage()
 @Component({
   selector: 'page-transaction-history',
   templateUrl: 'transaction-history.html'

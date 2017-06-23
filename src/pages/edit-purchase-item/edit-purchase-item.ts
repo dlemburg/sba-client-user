@@ -2,15 +2,14 @@ import { Component } from '@angular/core';
 import { IPurchaseItem, IErrChecks, IPopup, ProductDetailsToClient, AuthUserInfo } from '../../models/models';
 import { UtilityService } from '../../global/utility.service';
 import { StoreService } from '../../global/store.service';
-import { CheckoutPage } from '../checkout/checkout';
-import { HomePage } from "../home/home";
-import { NavController, NavParams, AlertController, ToastController, LoadingController, ModalController } from 'ionic-angular';
+import { IonicPage, NavController, NavParams, AlertController, ToastController, LoadingController, ModalController } from 'ionic-angular';
 import { AppDataService } from '../../global/app-data.service';
 import { BaseViewController } from '../base-view-controller/base-view-controller';
 import { API, ROUTES } from '../../global/api.service';
 import { Authentication } from '../../global/authentication.service';
 import { ImgService } from '../../global/img.service';
 
+@IonicPage()
 @Component({
   selector: 'page-edit-purchase-item',
   templateUrl: 'edit-purchase-item.html'
@@ -109,6 +108,6 @@ export class EditPurchaseItemPage extends BaseViewController {
   }
 
   navCheckout() {
-    this.navCtrl.push(CheckoutPage);
+    this.navCtrl.push('CheckoutPage');
   }  
 }

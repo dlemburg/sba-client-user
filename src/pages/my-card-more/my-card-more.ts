@@ -2,12 +2,12 @@ import { Component } from '@angular/core';
 import { API, ROUTES } from '../../global/api.service';
 import { Authentication } from '../../global/authentication.service';
 
-import { HomePage } from "../home/home";
-import { NavController, NavParams, AlertController, ToastController, ModalController, LoadingController } from 'ionic-angular';
+import { IonicPage, NavController, NavParams, AlertController, ToastController, ModalController, LoadingController } from 'ionic-angular';
 import { AppDataService } from '../../global/app-data.service';
 import { IPopup } from '../../models/models';
 import { BaseViewController } from '../base-view-controller/base-view-controller';
 
+@IonicPage()
 @Component({
   selector: 'page-my-card-more',
   templateUrl: 'my-card-more.html'
@@ -27,7 +27,7 @@ export class MyCardMorePage extends BaseViewController {
     // popup with code or stripe refund if under $10 ???
     
     const onConfirmFn = () => {
-      this.navCtrl.setRoot(HomePage);
+      this.navCtrl.setRoot('HomePage');
     }
 
      /*** Package for submit ***/

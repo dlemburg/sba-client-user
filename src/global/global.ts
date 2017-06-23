@@ -1,7 +1,7 @@
 // client ops constants
 export const env = { development: true };
 export const SERVER_URL_NODE = env.development ? 'http://localhost:2800' : '';
-export const SERVER_URL_CSHARP = env.development ? 'http://localhost:60158' : '';
+export const SERVER_URL_CSHARP = env.development ? 'http://localhost:2345' : '';
 export const TOKEN_NAME = "sba-user";
 
 

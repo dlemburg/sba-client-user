@@ -1,10 +1,8 @@
 import { Component } from '@angular/core';
-import { NavController, NavParams, ViewController, App } from 'ionic-angular';
+import { IonicPage, NavController, NavParams, ViewController, App } from 'ionic-angular';
 import { IPurchaseItem } from '../../models/models';
-import { ProductsListPage } from '../products-list/products-list';
-import { CheckoutPage } from '../checkout/checkout';
-import { CategoriesPage } from '../categories/categories';
 
+@IonicPage()
 @Component({
   selector: 'page-added-to-cart',
   templateUrl: 'added-to-cart.html'
@@ -33,7 +31,7 @@ export class AddedToCartPage {
 
   navCheckout() {
     this.viewCtrl.dismiss();
-    this.appCtrl.getRootNav().push(CheckoutPage);
+    this.appCtrl.getRootNav().push('CheckoutPage');
   }
 
   navCategories() {

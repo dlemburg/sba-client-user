@@ -24,9 +24,9 @@
     
     <div class="login-bottom-container" text-center>
       <div>
-        <span (click)="navRegister()">Not a member? &nbsp; &nbsp;</span> 
+        <span tappable (click)="navRegister()">Not a member? &nbsp; &nbsp;</span> 
         <span class="divider">|</span>  &nbsp; &nbsp;  
-        <span (click)="navForgotPassword()">Forgot password?</span>
+        <span tappable (click)="navForgotPassword()">Forgot password?</span>
       </div>
     </div>
     <div text-center ><button class="login-btn" [disabled]="!myForm.valid" ion-button outline>Login</button></div>

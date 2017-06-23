@@ -1,17 +1,12 @@
 import { Component } from '@angular/core';
-import { NavController, NavParams,  AlertController, ModalController, ToastController, LoadingController } from 'ionic-angular';
-import { AddCardPage } from '../add-card/add-card';
-import { EditCardPage } from '../edit-card/edit-card';
-import { AddCardValuePage } from '../add-card-value/add-card-value';
-import { TransactionHistoryPage } from '../transaction-history/transaction-history';
-import { BarcodePayPage } from '../barcode-pay/barcode-pay';
-import { MyCardMorePage } from '../my-card-more/my-card-more';
+import { IonicPage, NavController, NavParams,  AlertController, ModalController, ToastController, LoadingController } from 'ionic-angular';
 import { AppDataService } from '../../global/app-data.service';
 import { API, ROUTES } from '../../global/api.service';
 import { Authentication } from '../../global/authentication.service';
 import { ImgService } from '../../global/img.service';
 import { BaseViewController } from '../base-view-controller/base-view-controller';
 
+@IonicPage()
 @Component({
   selector: 'page-my-card',
   templateUrl: 'my-card.html'
@@ -29,10 +24,10 @@ export class MyCardPage extends BaseViewController {
     this.auth = this.authentication.getCurrentUser();
     this.myCardImg;
     this.items = [
-      {component: AddCardPage, name: 'Create Mobile Card'},
-      {component: AddCardValuePage, name: 'Add Value'},
-      {component: TransactionHistoryPage, name: 'Transaction History'},
-      {component: MyCardMorePage, name: 'More'},
+      {component: 'AddCardPage', name: 'Create Mobile Card'},
+      {component: 'AddCardValuePage', name: 'Add Value'},
+      {component: 'TransactionHistoryPage', name: 'Transaction History'},
+      {component: 'MyCardMorePage', name: 'More'},
     ]
   }
 
@@ -69,6 +64,6 @@ export class MyCardPage extends BaseViewController {
   }
 
   navBarcodePayPage() {
-    this.navCtrl.push(BarcodePayPage);
+    this.navCtrl.push('BarcodePayPage');
   }
 }

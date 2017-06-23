@@ -1,20 +1,16 @@
 import { Component } from '@angular/core';
-import { NavController, NavParams, AlertController, ToastController, ModalController, LoadingController, Events } from 'ionic-angular';
+import { IonicPage, NavController, NavParams, AlertController, ToastController, ModalController, LoadingController, Events } from 'ionic-angular';
 import { IOrder, IPurchaseItem, AuthUserInfo, ICompanyDetailsForProcessOrder } from '../../models/models';
 import { StoreService } from '../../global/store.service';
 import { API, ROUTES } from '../../global/api.service';
 import { Authentication } from '../../global/authentication.service';
-import { EditPurchaseItemPage } from '../edit-purchase-item/edit-purchase-item';
 import { BaseViewController } from '../base-view-controller/base-view-controller';
 import { Dates } from '../../global/dates.service';
 import { AppDataService } from '../../global/app-data.service';
 import { UtilityService } from '../../global/utility.service';
-import { OrderCompletePage } from '../order-complete/order-complete';
 import { SocketService } from '../../global/socket.service';
-import { HomePage } from '../home/home';
-import * as io from "socket.io-client";
 
-
+@IonicPage()
 @Component({
   selector: 'page-checkout',
   templateUrl: 'checkout.html'
@@ -235,8 +231,8 @@ export class CheckoutPage extends BaseViewController {
 
             this.socketService.emit(this.socketService.socketEvents.userPlacedNewOrder, toData);
             this.dismissLoading();
-            this.presentModal(OrderCompletePage, {}, { enableBackdropDismiss: false, showBackdrop: false });
-            this.navCtrl.setRoot(HomePage);
+            this.presentModal('OrderCompletePage', {}, { enableBackdropDismiss: false, showBackdrop: false });
+            this.navCtrl.setRoot('HomePage');
             
           }, (err) => {
             console.log("err: ", err);

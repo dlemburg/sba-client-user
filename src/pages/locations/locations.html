@@ -34,7 +34,7 @@
         <ion-card-content text-center>No locations to display.</ion-card-content>
       </ion-card>
     </div>
-    <ion-item (click)="updateActive(i)" *ngFor="let x of locations; let i = index" [ngClass]="{'item-highlight': isActive === i}">
+    <ion-item tappable (click)="updateActive(i)" *ngFor="let x of locations; let i = index" [ngClass]="{'item-highlight': isActive === i}">
       <div>
         <div class="address">{{ x.address }}</div>
         <div class="address">{{ x.city }}, {{ x.state }} {{ x.zipcode }}</div>

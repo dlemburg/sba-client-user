@@ -74,27 +74,30 @@ export const ROUTES = {
     getCategories: '/api/cs/shared/getCategories',
     getProducts: '/api/cs/shared/getProducts',
     getProductDetails: '/api/cs/shared/getProductDetails',
-    getLocations: '/api/cs/shared/getLocations',
+    getLocations: '/api/cs/shared/getLocationsShared',
     getRewardDetails: '/api/cs/user/getRewardDetails',
     getCompanyContactInfo: '/api/cs/shared/getCompanyContactInfo',
     getEmailUnique: '/api/cs/auth/getEmailUnique',
-
-
     getCompanyDetailsForTransaction: '/api/cs/shared/getCompanyDetailsForTransaction',
     getCompanyDetails: '/api/cs/shared/getCompanyDetails',
     getEligibleRewardsProcessingTypeAutomaticForTransaction: '/api/cs/rewards/getEligibleRewardsProcessingTypeAutomaticForTransaction',
     processTransaction: '/api/cs/shared/processTransaction',
-
-
-    generateRewardOnFirstMobileCardUpload: '/api/cs/user/generateRewardOnFirstMobileCardUpload',
     forgotPassword: '/api/node/emails/forgotPassword',
-
-    // TODO
-    getUserPaymentID: '/api/cs/user/getUserPaymentID',
-
-    // node (do last)
     reportIssue: '/api/node/users/reportIssue',
     contactCompany: '/api/node/emails/contactCompany',
+
+
+
+    // check these 
+    generateRewardOnFirstMobileCardUpload: '/api/cs/user/generateRewardOnFirstMobileCardUpload',
+    getUserPaymentID: '/api/cs/user/getUserPaymentID',
+    getHomePageImgs: '/api/cs/user/getHomePageImgs',
+    downloadImg: `${global.SERVER_URL_NODE}/api/node/download/img`,
+
+
+
+
+
     deleteCard: '/api/cs/stripe/deleteCard',
     submitPaymentDetails: '/api/node/stripe/submitPaymentDetails',
     addCard: '/api/node/stripe/addCard',

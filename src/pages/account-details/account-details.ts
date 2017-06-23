@@ -1,5 +1,5 @@
 import { Component } from '@angular/core';
-import { NavController, NavParams, ToastController, ModalController, AlertController, LoadingController } from 'ionic-angular';
+import { IonicPage, NavController, NavParams, ToastController, ModalController, AlertController, LoadingController } from 'ionic-angular';
 import { Validation } from '../../global/validation';
 import { FormBuilder, FormGroup, Validators, FormControl } from '@angular/forms';
 import { API, ROUTES } from '../../global/api.service';
@@ -7,6 +7,7 @@ import { Authentication } from '../../global/authentication.service';
 import { AppDataService } from '../../global/app-data.service';
 import { BaseViewController } from '../base-view-controller/base-view-controller';
 
+@IonicPage()
 @Component({
   selector: 'page-account-details',
   templateUrl: 'account-details.html'

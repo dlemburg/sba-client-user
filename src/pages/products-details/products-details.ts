@@ -1,17 +1,15 @@
 import { Component } from '@angular/core';
 import { UtilityService } from '../../global/utility.service';
 import { StoreService } from '../../global/store.service';
-import { CheckoutPage } from '../checkout/checkout';
 import { API, ROUTES } from '../../global/api.service';
 import { Authentication } from '../../global/authentication.service';
 import { ImgService } from '../../global/img.service';
-import { HomePage } from "../home/home";
-import { NavController, NavParams, AlertController, ToastController, LoadingController, ModalController } from 'ionic-angular';
+import { IonicPage, NavController, NavParams, AlertController, ToastController, LoadingController, ModalController } from 'ionic-angular';
 import { AppDataService } from '../../global/app-data.service';
 import { IPopup, ProductDetailsToClient, IPurchaseItem, IErrChecks } from '../../models/models';
 import { BaseViewController } from '../base-view-controller/base-view-controller';
-import { AddedToCartPage } from '../added-to-cart/added-to-cart';
 
+@IonicPage()
 @Component({
   selector: 'page-products-details',
   templateUrl: 'products-details.html'
@@ -94,7 +92,7 @@ export class ProductsDetailsPage extends BaseViewController {
        this.presentToast(false, {message: checks.errs.join(" "), position: "bottom", duration: 5000})
     } else {
       this.storeService.addToOrder(this.purchaseItem, this.productDetails);
-      this.presentModal(AddedToCartPage, {purchaseItem: this.purchaseItem, productImg: this.productDetails.img, categoryOid: this.productDetails.categoryOid}, {enableBackdropDismiss: false, showBackdrop: false});
+      this.presentModal('AddedToCartPage', {purchaseItem: this.purchaseItem, productImg: this.productDetails.img, categoryOid: this.productDetails.categoryOid}, {enableBackdropDismiss: false, showBackdrop: false});
     }
   }
 
@@ -131,6 +129,6 @@ export class ProductsDetailsPage extends BaseViewController {
             message: "Your cart doesn't have any items in it yet!", 
             buttons: [ {text: "OK"}]
           });
-      } else this.navCtrl.push(CheckoutPage);
+      } else this.navCtrl.push('CheckoutPage');
   } 
 }

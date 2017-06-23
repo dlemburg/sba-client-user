@@ -15,7 +15,7 @@
   <ion-list>
     <ion-item *ngIf="!products.length">No products to display.</ion-item>
     <ion-item *ngFor="let x of products" class="" >
-      <ion-card class="hover" (click)="navToProductDetails(x)" >
+      <ion-card tappable class="hover" (click)="navToProductDetails(x)" >
         <!--<img src="{{x.img}}"/>-->
         <img src="img/family.png" />
         <div class="card-title">{{ x.name }}</div>

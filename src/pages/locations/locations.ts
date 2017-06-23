@@ -1,14 +1,13 @@
 import { Component } from '@angular/core';
-import { NavController, NavParams, AlertController, ModalController, ToastController, LoadingController } from 'ionic-angular';
+import { IonicPage, NavController, NavParams, AlertController, ModalController, ToastController, LoadingController } from 'ionic-angular';
 import { StoreService } from '../../global/store.service';
-import { CategoriesPage } from '../categories/categories';
 import { API, ROUTES } from '../../global/api.service';
 import { Authentication } from '../../global/authentication.service';
 import { BaseViewController  } from '../base-view-controller/base-view-controller';
-import { HoursPage } from '../hours/hours';
 import { UtilityService } from '../../global/utility.service';
 import { Dates } from '../../global/dates.service';
 
+@IonicPage()
 @Component({
   selector: 'page-locations',
   templateUrl: 'locations.html'
@@ -20,6 +19,7 @@ export class LocationsPage extends BaseViewController {
   isActive: number;
   isProceedingToOrder: boolean = false;
   auth: any;
+  initHasRun: boolean = false;
   constructor(public navCtrl: NavController, public navParams: NavParams, public API: API, public authentication: Authentication, public modalCtrl: ModalController, public alertCtrl: AlertController, public toastCtrl: ToastController, public loadingCtrl: LoadingController, private storeService: StoreService) {
     super(navCtrl, navParams, API, authentication, modalCtrl, alertCtrl, toastCtrl, loadingCtrl);
   }
@@ -51,6 +51,20 @@ export class LocationsPage extends BaseViewController {
             const shouldPopView = false;
             this.errorHandler.call(this, err, shouldPopView)
           });
+  }
+
+  ionViewDidEnter() {
+    if (this.initHasRun) {
+      this.locations.forEach((x, index) => {
+        x.isOpen = this.determineIsOpen(x);
+      });
+      this.storeService.setOrderInProgress(false);
+      this.storeService.deleteOrder();
+    } else this.initHasRun = true;
+  }
+
+  ionViewDidLeave() {
+   
   }
 
   determineIsOpen(location): boolean {
@@ -110,16 +124,6 @@ export class LocationsPage extends BaseViewController {
     }
   }
 
-  ionViewDidEnter() {
-    this.determineIsOpen(this.locations)
-    this.storeService.setOrderInProgress(false);
-    this.storeService.deleteOrder();
-  }
-
-  ionViewDidLeave() {
-   
-  }
-
 
   updateActive(i) { 
     this.isActive = i; 
@@ -146,7 +150,7 @@ export class LocationsPage extends BaseViewController {
       }
     });
 
-    this.presentModal(HoursPage, {locationHours});
+    this.presentModal('HoursPage', {locationHours});
   }
 
  createLocationCloseTime(location): Date {
@@ -161,6 +165,6 @@ export class LocationsPage extends BaseViewController {
     this.storeService.setOrderInProgress(true);
     this.storeService.setLocationOid(location.oid); 
     this.storeService.setLocationCloseTime(this.createLocationCloseTime(location));
-    this.navCtrl.push(CategoriesPage);
+    this.navCtrl.push('CategoriesPage');
   }
 }

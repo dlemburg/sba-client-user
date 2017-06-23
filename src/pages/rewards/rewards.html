@@ -32,7 +32,7 @@
             <ion-card-content text-center>No rewards available at this time.</ion-card-content>
           </ion-card>
         </div>
-        <ion-card class="reward-card" (click)="navRewardsDetails(x)" *ngFor="let x of rewards_individual; let i = index;" no-padding no-margin>
+        <ion-card tappable class="reward-card" (click)="navRewardsDetails(x)" *ngFor="let x of rewards_individual; let i = index;" no-padding no-margin>
           <!--<img src="{{x.img}}"/>-->
           <img src="img/family.png" />
           <div class="reward-card-title">{{x.name}}</div>
@@ -44,7 +44,7 @@
           </div>
           <div class="reward-header">{{ rewardTypeIndividualMessage }}</div>
         </ion-card>
-        <ion-card class=" reward-card" (click)="navRewardsDetails(x)" *ngFor="let x of rewards_all; let i = index;" no-padding no-margin>
+        <ion-card tappable class=" reward-card" (click)="navRewardsDetails(x)" *ngFor="let x of rewards_all; let i = index;" no-padding no-margin>
           <!--<img src="{{x.img}}"/>-->
           <img src="img/family.png" />
           <div class="reward-card-title">{{x.name}}</div>

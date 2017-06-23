@@ -1,16 +1,14 @@
 import { Component } from '@angular/core';
-import { ProductsDetailsPage } from '../products-details/products-details';
 import { StoreService } from '../../global/store.service';
-import { CheckoutPage } from '../checkout/checkout';
 import { API, ROUTES } from '../../global/api.service';
 import { Authentication } from '../../global/authentication.service';
 import { ImgService } from '../../global/img.service';
-import { HomePage } from "../home/home";
-import { NavController, NavParams, AlertController, ToastController, ModalController, LoadingController } from 'ionic-angular';
+import { IonicPage, NavController, NavParams, AlertController, ToastController, ModalController, LoadingController } from 'ionic-angular';
 import { AppDataService } from '../../global/app-data.service';
 import { IPopup } from '../../models/models';
 import { BaseViewController } from '../base-view-controller/base-view-controller';
 
+@IonicPage()
 @Component({
   selector: 'page-products-list',
   templateUrl: 'products-list.html'
@@ -51,7 +49,7 @@ export class ProductsListPage extends BaseViewController {
   }
 
   navToProductDetails(product) {
-    this.navCtrl.push(ProductsDetailsPage, {product})
+    this.navCtrl.push('ProductsDetailsPage', {product})
   }
 
   navCheckout() {
@@ -63,6 +61,6 @@ export class ProductsListPage extends BaseViewController {
           message: "Your cart doesn't have any items in it yet!", 
           buttons: [ {text: "OK"}]
         });
-    } else this.navCtrl.push(CheckoutPage);
+    } else this.navCtrl.push('CheckoutPage');
   }
 }

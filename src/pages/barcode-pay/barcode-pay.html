@@ -25,9 +25,9 @@
 <ion-footer>
   <ion-toolbar text-center *ngIf="companyDetails.hasSocialMedia">
       <div class="follow-us">Post to Social Media for a {{ socialMediaDiscountString }} discount!</div>
-      <ion-icon *ngIf="companyDetails.hasFacebook" (click)="facebook()" class="icon-facebook" ios="logo-facebook" md="logo-facebook" padding-horizontal></ion-icon>
-      <ion-icon *ngIf="companyDetails.hasTwitter" (click)="twitter" class="icon-twitter" ios="logo-twitter" md="logo-twitter" padding-horizontal></ion-icon>
-      <ion-icon *ngIf="companyDetails.hasInstagram" (click)="instagram()" class="icon-instagram" ios="logo-instagram" md="logo-instagram" padding-horizontal></ion-icon>
+      <ion-icon tappable *ngIf="companyDetails.hasFacebook" (click)="facebook()" class="icon-facebook" ios="logo-facebook" md="logo-facebook" padding-horizontal></ion-icon>
+      <ion-icon tappable *ngIf="companyDetails.hasTwitter" (click)="twitter" class="icon-twitter" ios="logo-twitter" md="logo-twitter" padding-horizontal></ion-icon>
+      <ion-icon tappable *ngIf="companyDetails.hasInstagram" (click)="instagram()" class="icon-instagram" ios="logo-instagram" md="logo-instagram" padding-horizontal></ion-icon>
   </ion-toolbar>
   <ion-toolbar>
         <button class="scan-barcode-btn" (click)="submit()" ion-button block detail-push>Finish  <ion-icon class="arrow-right" ios="ios-arrow-forward" md="ios-arrow-forward"></ion-icon></button>

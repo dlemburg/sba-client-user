@@ -1,16 +1,14 @@
 import { Component } from '@angular/core';
-import { RegisterPage } from '../register/register';
-import { ForgotPasswordPage } from '../forgot-password/forgot-password';
 import { Validation } from '../../global/validation';
 import { FormBuilder, FormGroup, Validators, FormControl } from '@angular/forms';
 import { API, ROUTES } from '../../global/api.service';
 import { Authentication } from '../../global/authentication.service';
-import { HomePage } from "../home/home";
-import { NavController, NavParams, AlertController, ToastController, LoadingController, ModalController } from 'ionic-angular';
+import { IonicPage, NavController, NavParams, AlertController, ToastController, LoadingController, ModalController } from 'ionic-angular';
 import { AppDataService } from '../../global/app-data.service';
 import { IPopup } from '../../models/models';
 import { BaseViewController } from '../base-view-controller/base-view-controller';
 
+@IonicPage()
 @Component({
   selector: 'page-login',
   templateUrl: 'login.html'
@@ -31,15 +29,14 @@ export class LoginPage extends BaseViewController {
     });
   }
   ionViewDidLoad() {
-    console.log('ionViewDidLoad LoginPage');
   }
 
   navForgotPassword() {
-    this.navCtrl.push(ForgotPasswordPage);
+    this.navCtrl.push('ForgotPasswordPage');
   }
 
   navRegister() {
-    this.navCtrl.push(RegisterPage);
+    this.navCtrl.push('RegisterPage');
   }
 
   submit(myForm, isValid) {
@@ -53,14 +50,14 @@ export class LoginPage extends BaseViewController {
             if (response.code === 2) {
               this.showPopup({
                 title: AppDataService.defaultErrorTitle, 
-                message: response.data.message || "No email found.", 
+                message: response.message || "No email found.", 
                 buttons: [{text: AppDataService.defaultConfirmButtonText}]
               });
             } else {
 
               let {token} = response.data;
               this.authentication.saveToken(token);
-              this.navCtrl.setRoot(HomePage);
+              this.navCtrl.setRoot('HomePage');
             }
           }, (err) => {
             const shouldPopView = false;

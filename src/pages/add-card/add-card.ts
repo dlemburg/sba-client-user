@@ -4,7 +4,6 @@ import { FormBuilder, FormGroup, Validators, FormControl } from '@angular/forms'
 import { UtilityService } from '../../global/utility.service';
 import { API, ROUTES } from '../../global/api.service';
 import { Authentication } from '../../global/authentication.service';
-import { HomePage } from "../home/home";
 import { NavController, NavParams, AlertController, ToastController, LoadingController, ModalController } from 'ionic-angular';
 import { AppDataService } from '../../global/app-data.service';
 import { IPopup } from '../../models/models';
@@ -50,7 +49,7 @@ export class AddCardPage extends BaseViewController {
     this.isSubmitted = true;
 
     const onConfirmFn = () => {
-      this.navCtrl.setRoot(HomePage);
+      this.navCtrl.setRoot('HomePage');
     }
 
     /*** Package for submit ***/

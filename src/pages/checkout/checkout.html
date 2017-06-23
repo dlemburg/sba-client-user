@@ -64,7 +64,7 @@
   </ion-list>
 
   <!-- rewards -->
-  <ion-item (click)="showRewards = !showRewards" detail-push>
+  <ion-item tappable (click)="showRewards = !showRewards" detail-push>
     <div>See Rewards applied to this transaction</div>
   </ion-item>
   <div *ngIf="showRewards">

@@ -1,12 +1,13 @@
 import { Component } from '@angular/core';
-import { HomePage } from '../home/home';
 import { API, ROUTES } from '../../global/api.service';
 import { Authentication } from '../../global/authentication.service';
 import { UtilityService } from '../../global/utility.service';
 import { AuthUserInfo } from '../../models/models';
-import { NavController, NavParams, AlertController, ToastController, LoadingController, ModalController } from 'ionic-angular';
+import { IonicPage, NavController, NavParams, AlertController, ToastController, LoadingController, ModalController } from 'ionic-angular';
 import { BaseViewController } from '../base-view-controller/base-view-controller';
 
+
+@IonicPage()
 @Component({
   selector: 'page-barcode-pay',
   templateUrl: 'barcode-pay.html'
@@ -68,7 +69,7 @@ export class BarcodePayPage extends BaseViewController {
   }
 
   submit() {
-    this.navCtrl.setRoot(HomePage);
+    this.navCtrl.setRoot('HomePage');
   }
 
 }

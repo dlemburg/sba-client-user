@@ -4,13 +4,12 @@ import { AsyncValidation } from '../../global/async-validation.service';
 import { FormBuilder, FormGroup, Validators, FormControl } from '@angular/forms';
 import { Authentication } from '../../global/authentication.service';
 import { API, ROUTES } from '../../global/api.service';
-import { HomePage } from "../home/home";
-import { NavController, NavParams, AlertController, ToastController, LoadingController, ModalController } from 'ionic-angular';
+import { IonicPage, NavController, NavParams, AlertController, ToastController, LoadingController, ModalController } from 'ionic-angular';
 import { AppDataService } from '../../global/app-data.service';
 import { IPopup } from '../../models/models';
 import { BaseViewController } from '../base-view-controller/base-view-controller';
-import { LoginPage } from '../login/login';
 
+@IonicPage()
 @Component({
   selector: 'page-register',
   templateUrl: 'register.html'
@@ -37,7 +36,7 @@ export class RegisterPage extends BaseViewController {
   }
 
   navLogin() {
-    this.navCtrl.setRoot(LoginPage);
+    this.navCtrl.setRoot('LoginPage');
   }
 
   submit(myForm, isValid) {
@@ -60,7 +59,7 @@ export class RegisterPage extends BaseViewController {
                 this.dismissLoading();
                 const {token} = response.data;
                 this.authentication.saveToken(token);
-                this.navCtrl.setRoot(HomePage);
+                this.navCtrl.setRoot('HomePage');
               }
             }, (err) => {
               console.log("err: ", err);

@@ -5,9 +5,18 @@ export class AppDataService {
 
 constructor() { }
 
+    private static _storageDirectory = null;
     /* Company  oid*/
     public static get getCompanyOid(): number {
         return 1;
+    }
+
+    /* storage directory sets on app load */
+    public static setStorageDirectory(dir) {
+        AppDataService._storageDirectory = dir;
+    }
+    public static get getStorageDirectory(): any {
+        return AppDataService._storageDirectory;
     }
 
     /* Popup */

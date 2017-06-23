@@ -4,12 +4,10 @@ import { FormBuilder, FormGroup, Validators, FormControl } from '@angular/forms'
 import { UtilityService } from '../../global/utility.service';
 import { API, ROUTES } from '../../global/api.service';
 import { Authentication } from '../../global/authentication.service';
-import { HomePage } from "../home/home";
-import { NavController, NavParams, AlertController, ToastController, ModalController, LoadingController } from 'ionic-angular';
-import { AppDataService } from '../../global/app-data.service';
-import { IPopup } from '../../models/models';
+import { IonicPage, NavController, NavParams, AlertController, ToastController, ModalController, LoadingController } from 'ionic-angular';
 import { BaseViewController } from '../base-view-controller/base-view-controller';
 
+@IonicPage()
 @Component({
   selector: 'page-add-card-value',
   templateUrl: 'add-card-value.html'
@@ -70,7 +68,7 @@ export class AddCardValuePage extends BaseViewController {
     // POPUP: confirm password
 
     const onConfirmFn = () => {
-      this.navCtrl.setRoot(HomePage);
+      this.navCtrl.setRoot('HomePage');
     }
 
     // ROUTES.generateRewardOnFirstMobileCardUpload   (server side done, client needs implementation)

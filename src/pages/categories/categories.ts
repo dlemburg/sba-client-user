@@ -1,14 +1,13 @@
 import { Component } from '@angular/core';
-import { NavController, NavParams, AlertController, ToastController, ModalController, LoadingController } from 'ionic-angular';
+import { IonicPage, NavController, NavParams, AlertController, ToastController, ModalController, LoadingController } from 'ionic-angular';
 import { StoreService } from '../../global/store.service';
-import { ProductsListPage } from '../products-list/products-list';
-import { CheckoutPage } from '../checkout/checkout';
 import { API, ROUTES } from '../../global/api.service';
 import { Authentication } from '../../global/authentication.service';
 import { ImgService } from '../../global/img.service';
 import { BaseViewController } from '../base-view-controller/base-view-controller';
-import { AppDataService } from '../../global/app-data.service';
 
+
+@IonicPage()
 @Component({
   selector: 'page-categories',
   templateUrl: 'categories.html'
@@ -49,7 +48,7 @@ export class CategoriesPage extends BaseViewController {
 
   navToProductsList(category) {
     this.canLeave = true;
-    this.navCtrl.push(ProductsListPage, {category}).catch(() => {});
+    this.navCtrl.push('ProductsListPage', {category}).catch(() => {});
   }
 
   navCheckout() {
@@ -62,7 +61,7 @@ export class CategoriesPage extends BaseViewController {
           message: "Your cart doesn't have any items in it yet!", 
           buttons: [ {text: "OK"}]
         });
-    } else this.navCtrl.push(CheckoutPage).catch(() => {});
+    } else this.navCtrl.push('CheckoutPage').catch(() => {});
   }
 
   // canLeave is set to true on any nav route except going back

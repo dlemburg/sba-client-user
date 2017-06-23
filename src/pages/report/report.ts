@@ -3,12 +3,13 @@ import { API, ROUTES } from '../../global/api.service';
 import { FormBuilder, FormGroup, Validators, FormControl } from '@angular/forms';
 import { Authentication } from '../../global/authentication.service';
 import { HomePage } from "../home/home";
-import { NavController, NavParams, AlertController, ToastController, LoadingController, ModalController } from 'ionic-angular';
+import { IonicPage, NavController, NavParams, AlertController, ToastController, LoadingController, ModalController } from 'ionic-angular';
 import { AppDataService } from '../../global/app-data.service';
 import { IPopup } from '../../models/models';
 import { BaseViewController } from '../base-view-controller/base-view-controller';
 import { Dates } from '../../global/dates.service';
 
+@IonicPage()
 @Component({
   selector: 'page-report',
   templateUrl: 'report.html'
@@ -47,7 +48,7 @@ export class ReportPage extends BaseViewController {
             (response) => {
               console.log('response: ', response);
               this.dismissLoading("Sent!");
-              this.navCtrl.setRoot(HomePage);
+              this.navCtrl.setRoot('HomePage');
             }, (err) => {
               const shouldPopView = false;
               this.errorHandler.call(this, err, shouldPopView)

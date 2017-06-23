@@ -19,7 +19,7 @@
 <ion-content padding>
   <ion-row>
     <ion-col *ngFor="let x of categories" class="" col-6 style="border-bottom: 1px solid lightgray;">
-      <ion-card class="hover" (click)="navToProductsList(x)">
+      <ion-card tappable class="hover" (click)="navToProductsList(x)">
         <!--<img src="{{x.img}}"/>-->
         <img src="img/family.png" />
         <div class="card-title">{{ x.name }}</div>

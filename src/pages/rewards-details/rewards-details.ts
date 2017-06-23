@@ -1,7 +1,7 @@
 import { Component } from '@angular/core';
-import { NavController, NavParams } from 'ionic-angular';
-import { BarcodeRewardPage } from '../barcode-reward/barcode-reward';
+import { IonicPage, NavController, NavParams } from 'ionic-angular';
 
+@IonicPage()
 @Component({
   selector: 'page-rewards-details',
   templateUrl: 'rewards-details.html'
@@ -43,7 +43,7 @@ export class RewardsDetailsPage {
     i think this is correct
    */
   navBarcodeReward() {
-    this.navCtrl.push(BarcodeRewardPage, {reward: this.reward});
+    this.navCtrl.push('BarcodeRewardPage', {reward: this.reward});
   }
 
 }

@@ -1,6 +1,7 @@
 import { Component } from '@angular/core';
-import { NavController, NavParams, ViewController } from 'ionic-angular';
+import { IonicPage, NavController, NavParams, ViewController } from 'ionic-angular';
 
+@IonicPage()
 @Component({
   selector: 'page-hours',
   templateUrl: 'hours.html'
@@ -13,7 +14,7 @@ export class HoursPage {
     this.locationHours = this.navParams.data.locationHours;
   }
 
-  dismissModal() {
+  dismiss() {
     console.log("trying to dismiss");
     this.viewCtrl.dismiss();
   }

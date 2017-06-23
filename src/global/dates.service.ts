@@ -15,6 +15,7 @@ constructor() { }
     }
     // i.e.:  "09:20am" -> 20
     public static convertTimeStringToMinutes(timeString: string): number {
+        console.log("timestring: ", timeString);
         return Dates.getMinutes(timeString);
     }
 
@@ -53,7 +54,7 @@ constructor() { }
     // i.e.: ISOString ->  "09:30am"  
     // keeps in military hours
     public static convertIsoStringToHoursAndMinutesString(IsoString: string): string {
-
+        
         // this accounts for closed days. should not be apart of re-usable utility fn
         if (IsoString === "closed" || IsoString === "Closed") return IsoString;
 
@@ -136,6 +137,7 @@ constructor() { }
 
     // gets minutes from timeString   i.e.  "09:30"  ->  30
     private static getMinutes(time:string): number {
+        console.log("time: ", time);
         let start = time.indexOf(":") + 1;
         //let amOrPm = time.indexOf("m");
         let minutes = time.slice(start, -2);

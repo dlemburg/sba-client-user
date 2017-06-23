@@ -4,13 +4,13 @@ import { FormBuilder, FormGroup, Validators, FormControl } from '@angular/forms'
 import { API, ROUTES } from '../../global/api.service';
 import { Authentication } from '../../global/authentication.service';
 import { IContactInfo } from '../../models/models';
-import { HomePage } from "../home/home";
-import { NavController, NavParams, AlertController, ToastController, LoadingController, ModalController } from 'ionic-angular';
+import { IonicPage, NavController, NavParams, AlertController, ToastController, LoadingController, ModalController } from 'ionic-angular';
 import { AppDataService } from '../../global/app-data.service';
 import { IPopup } from '../../models/models';
 import { BaseViewController } from '../base-view-controller/base-view-controller';
 import { Dates } from '../../global/dates.service';
 
+@IonicPage()
 @Component({
   selector: 'page-contact',
   templateUrl: 'contact.html'
@@ -70,7 +70,7 @@ export class ContactPage extends BaseViewController {
     this.isSubmitted = true;
 
     const onConfirmFn = () => {
-      this.navCtrl.setRoot(HomePage);
+      this.navCtrl.setRoot('HomePage');
     }
 
     /*** Package for submit ***/
@@ -88,7 +88,7 @@ export class ContactPage extends BaseViewController {
           (response) => {
             console.log('response: ', response);
             this.dismissLoading("Sent!");
-            this.navCtrl.setRoot(HomePage);
+            this.navCtrl.setRoot('HomePage');
           },  (err) => {
             const shouldPopView = false;
             this.errorHandler.call(this, err, shouldPopView)
