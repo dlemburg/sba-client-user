@@ -1,14 +1,14 @@
 import { Component } from '@angular/core';
 import { IonicPage, NavController, NavParams, AlertController, ToastController, ModalController, LoadingController, Events } from 'ionic-angular';
 import { IOrder, IPurchaseItem, AuthUserInfo, ICompanyDetailsForProcessOrder } from '../../models/models';
-import { StoreService } from '../../global/store.service';
-import { API, ROUTES } from '../../global/api.service';
-import { Authentication } from '../../global/authentication.service';
+import { CheckoutStore } from '../../global/checkout-store.service';
+import { API, ROUTES } from '../../global/api';
+import { Authentication } from '../../global/authentication';
 import { BaseViewController } from '../base-view-controller/base-view-controller';
-import { Dates } from '../../global/dates.service';
-import { AppDataService } from '../../global/app-data.service';
-import { UtilityService } from '../../global/utility.service';
-import { SocketService } from '../../global/socket.service';
+import { DateUtils } from '../../utils/date-utils';
+import { AppData } from '../../global/app-data.service';
+import { AppUtils } from '../../utils/app-utils';
+import { SocketIO } from '../../global/socket-io';
 
 @IonicPage()
 @Component({
@@ -42,7 +42,7 @@ export class CheckoutPage extends BaseViewController {
   unavailable: string = "Unavailable";
   room: number = null;
   socket: SocketIOClient.Socket;
-  etas: Array<number> = UtilityService.getEtas();
+  etas: Array<number> = this.appUtils.getEtas();
   eta: number = 15;
   comments: string = null;
   exclusions: string = 'Note: Some rewards are not redeemable when using Order-Ahead';
@@ -78,17 +78,22 @@ export class CheckoutPage extends BaseViewController {
     NEW_PRICE: "New Price",
     PERCENT: "Percent"
   }
-  constructor(public navCtrl: NavController, public navParams: NavParams, public API: API, public authentication: Authentication, public modalCtrl: ModalController, public alertCtrl: AlertController, public toastCtrl: ToastController, public loadingCtrl: LoadingController, public storeService: StoreService, public events: Events, public socketService: SocketService) {
-    super(navCtrl, navParams, API, authentication, modalCtrl, alertCtrl, toastCtrl, loadingCtrl);
+
+
+  /*
+    All state held in checkout-store
+  */
+  constructor(public navCtrl: NavController, public navParams: NavParams, public dateUtils: DateUtils, public appUtils: AppUtils, public appData: AppData, public API: API, public authentication: Authentication, public modalCtrl: ModalController, public alertCtrl: AlertController, public toastCtrl: ToastController, public loadingCtrl: LoadingController, public checkoutStore: CheckoutStore, public events: Events, public socketIO: SocketIO) {
+    super(appData, modalCtrl, alertCtrl, toastCtrl, loadingCtrl);
     this.auth = this.authentication.getCurrentUser();
-    this.room = this.auth.companyOid + this.storeService.getLocationOid;
+    this.room = this.auth.companyOid + this.checkoutStore.getLocationOid;
   }
 
   ionViewDidLoad() {
-    this.minutesUntilClose = this.getMinutesUntilClose(this.storeService.getLocationCloseTime);
+    this.minutesUntilClose = this.getMinutesUntilClose(this.checkoutStore.getLocationCloseTime);
 
 
-    this.socketService.connect(this.room);
+    this.socketIO.connect(this.room);
     this.presentLoading();
 
     const toData = { companyOid: this.auth.companyOid };
@@ -105,13 +110,14 @@ export class CheckoutPage extends BaseViewController {
             this.COMPANY_DETAILS.ALLOWS_COMMENTS_ON_ORDER_AHEAD = response.data.companyDetails.allowsCommentsOnOrderAhead;
             
             // get order and rewards
-            this.order =  Object.assign({}, this.storeService.getOrder());
+            this.order =  Object.assign({}, this.checkoutStore.getOrder());
             this.getEligibleRewardsAPI();
             this.dismissLoading();
             console.log('response: ', response);
           }, (err) => {
             const shouldPopView = false;
-            this.errorHandler.call(this, err, shouldPopView);
+            const shouldDismiss = false;
+            this.errorHandler.call(this, err, shouldPopView, shouldDismiss);
           });   
       
       // does not need to be async
@@ -122,22 +128,23 @@ export class CheckoutPage extends BaseViewController {
             this.balance = response.data.balance;
           }, (err) => {
             const shouldPopView = false;
+            const shouldDismiss = false;
             this.balance = this.UNAVAILABLE;
-            this.errorHandler.call(this, err, shouldPopView)
+            this.errorHandler.call(this, err, shouldPopView, shouldDismiss)
           }); 
   }
 
   ionViewDidLeave() {
     if (!this.orderSubmitted) {
-      this.storeService.setOrder(this.order);  // gives control back to service
+      this.checkoutStore.setOrder(this.order);  // gives control back to service
     }
-    this.socketService.disconnect();
+    this.socketIO.disconnect();
   }
 
-  // calculate difference between now and closing time of currently selected location in storeService
+  // calculate difference between now and closing time of currently selected location in checkoutStore
   getMinutesUntilClose(closeTime: Date): number {
-    let nowMinutes = Dates.millisecondsToMinutes(new Date().getTime());
-    let closeMinutes = Dates.millisecondsToMinutes(closeTime.getTime());
+    let nowMinutes = this.dateUtils.millisecondsToMinutes(new Date().getTime());
+    let closeMinutes = this.dateUtils.millisecondsToMinutes(closeTime.getTime());
 
     return closeMinutes - nowMinutes;
   }
@@ -156,11 +163,10 @@ export class CheckoutPage extends BaseViewController {
   }
 
   getEligibleRewardsAPI() {
-    this.presentLoading();
 
-    const dateInfo = Dates.getCurrentDateInfo();
+    const dateInfo = this.dateUtils.getCurrentDateInfo();
     const toData = {
-      date: Dates.toLocalIsoString(dateInfo.date.toString()), // get all rewards where expiry date < date
+      date: this.dateUtils.toLocalIsoString(dateInfo.date.toString()), // get all rewards where expiry date < date
       day: dateInfo.day, 
       hours: dateInfo.hours,
       mins: dateInfo.mins, 
@@ -175,9 +181,8 @@ export class CheckoutPage extends BaseViewController {
           (response) => {
             console.log('response.data: ' , response.data);
 
-            this.order.purchaseItems = response.data.purchaseItems;
-            this.order.transactionDetails = response.data.transactionDetails;
-            this.order = this.storeService.calculateTaxesSubtotalTotalAndReturnOrder(this.order, this.order.transactionDetails.subtotal, this.COMPANY_DETAILS.TAX_RATE);
+            this.order = this.checkoutStore.setPurchaseItemsAndTransactionDetails(response.data.purchaseItems, response.data.transactionDetails);
+            this.order = this.checkoutStore.calculateTaxesSubtotalTotalAndReturnOrder(this.order, this.order.transactionDetails.subtotal, this.COMPANY_DETAILS.TAX_RATE);
 
             this.dismissLoading();
           },  (err) => {
@@ -188,33 +193,37 @@ export class CheckoutPage extends BaseViewController {
   }
 
   deletePurchaseItem(purchaseItem: IPurchaseItem, index: number) {
-    this.order = this.storeService.deletePurchaseItemAndReturnOrder(this.order, purchaseItem, index, this.COMPANY_DETAILS.TAX_RATE);
+    this.order = this.checkoutStore.deletePurchaseItemAndReturnOrder(this.order, purchaseItem, index, this.COMPANY_DETAILS.TAX_RATE);
+    this.order = this.checkoutStore.clearDiscountsAndRewardsAndReturnOrder(this.order);
 
-    // clear discounts here
-    this.order = this.storeService.clearDiscountsAndRewardsAndReturnOrder(this.order);
 
     if (this.order.transactionDetails.rewards.length) {
       this.getEligibleRewardsAPI();
+    } else {
+      this.order = this.checkoutStore.deleteOrder();
+
+      console.log("this.order", this.order);
+      //this.navCtrl.pop();
     }
   }
 
   submit() {
 
-    this.presentLoading(AppDataService.loading.processing);
+    this.presentLoading(this.appData.getLoading().processing);
     let toData = { 
       companyOid: this.auth.companyOid, 
-      locationOid: this.storeService.getLocationOid, 
+      locationOid: this.checkoutStore.getLocationOid, 
       userOid: this.auth.userOid,
       isOrderAhead: true,
       isProcessing: false,
       isExpired: false,
       eta: this.eta,
       userComments: this.comments,
-      purchaseDate: Dates.toLocalIsoString(new Date().toString()),
+      purchaseDate: this.dateUtils.toLocalIsoString(new Date().toString()),
       purchaseItems: this.order.purchaseItems,
       transactionDetails: this.order.transactionDetails,
       customerName: this.auth.firstName,
-      room: this.auth.companyOid + this.storeService.getLocationOid     // for websockets
+      room: this.auth.companyOid + this.checkoutStore.getLocationOid     // for websockets
     };
 
     console.log("toData: ", toData);
@@ -225,11 +234,10 @@ export class CheckoutPage extends BaseViewController {
             console.log('response: ', response);
 
             this.orderSubmitted = true;
-            this.storeService.clearOrder();
+            this.order = this.checkoutStore.clearOrder();
 
-            //console.log("this.order (checkout): ", this.order);
 
-            this.socketService.emit(this.socketService.socketEvents.userPlacedNewOrder, toData);
+            this.socketIO.emit(this.socketIO.socketEvents.userPlacedNewOrder, toData);
             this.dismissLoading();
             this.presentModal('OrderCompletePage', {}, { enableBackdropDismiss: false, showBackdrop: false });
             this.navCtrl.setRoot('HomePage');
@@ -248,7 +256,7 @@ export class CheckoutPage extends BaseViewController {
     parseRewardsForTransaction() {
     
     let rewards = this.order.transactionDetails.rewards;
-    let subtotal = this.storeService.calculateSubtotal(this.order);
+    let subtotal = this.checkoutStore.calculateSubtotal(this.order);
     let dateTimeRangeMoneyOff = 0;
     let dateTimeRangePercentOff = 0;
     let dtrPercentSavings = 0;
@@ -282,7 +290,7 @@ export class CheckoutPage extends BaseViewController {
       const allProductsDiscounts = this.calculateAllProductsDiscounts();
 
       subtotal -= (allProductsDiscounts + dateTimeRangeMoneyOff);
-      if (subtotal < 0) subtotal = 0; // calculate subtotal-  make new calculateSubtotalWithDiscounts fn in storeService
+      if (subtotal < 0) subtotal = 0; // calculate subtotal-  make new calculateSubtotalWithDiscounts fn in checkoutStore
 
       if (dateTimeRangePercentOff > 0) {         // calculate dtr percentage for whole order
         dtrPercentSavings = subtotal * dateTimeRangePercentOff;
@@ -291,7 +299,7 @@ export class CheckoutPage extends BaseViewController {
 
       // calculate rewards savings & total & taxes
       this.order.transactionDetails.rewardsSavings = (allProductsDiscounts  + dateTimeRangeMoneyOff + dtrPercentSavings);
-      this.order = this.storeService.calculateTaxesSubtotalTotalAndReturnOrder(this.order, subtotal, this.COMPANY_DETAILS.TAX_RATE);
+      this.order = this.checkoutStore.calculateTaxesSubtotalTotalAndReturnOrder(this.order, subtotal, this.COMPANY_DETAILS.TAX_RATE);
 
     }
   }

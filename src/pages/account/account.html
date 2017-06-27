@@ -8,11 +8,7 @@
 </ion-header>
 
 <ion-content padding>
-  <ion-list no-lines>
-    <ion-item>
-      <div text-center>Logo</div>
-    </ion-item>
-  </ion-list>
+  <CompanyLogo [logo]="logoImgSrc"></CompanyLogo>
 
   <ion-list margin-top>
       <button ion-item detail-push (click)="nav(x)" *ngFor="let x of items; let i = index;">{{ x.name}}</button>

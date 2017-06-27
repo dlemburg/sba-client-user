@@ -1,13 +1,14 @@
 import { Component } from '@angular/core';
-import { Validation } from '../../global/validation';
-import { AsyncValidation } from '../../global/async-validation.service';
+import { Validation } from '../../utils/validation-utils';
 import { FormBuilder, FormGroup, Validators, FormControl } from '@angular/forms';
-import { Authentication } from '../../global/authentication.service';
-import { API, ROUTES } from '../../global/api.service';
+import { Authentication } from '../../global/authentication';
+import { API, ROUTES } from '../../global/api';
 import { IonicPage, NavController, NavParams, AlertController, ToastController, LoadingController, ModalController } from 'ionic-angular';
-import { AppDataService } from '../../global/app-data.service';
+import { AppData } from '../../global/app-data.service';
 import { IPopup } from '../../models/models';
 import { BaseViewController } from '../base-view-controller/base-view-controller';
+import { COMPANY_OID } from '../../global/companyOid';
+import { APP_IMGS } from '../../global/global';
 
 @IonicPage()
 @Component({
@@ -17,22 +18,25 @@ import { BaseViewController } from '../base-view-controller/base-view-controller
 export class RegisterPage extends BaseViewController {
   myForm: FormGroup;
   auth: any;
+  logoImgSrc: string = this.appData.getImg().logoImgSrc; 
 
-  constructor(public navCtrl: NavController, public navParams: NavParams, public API: API, public authentication: Authentication, public modalCtrl: ModalController, public alertCtrl: AlertController, public toastCtrl: ToastController, public loadingCtrl: LoadingController, private AsyncValidation: AsyncValidation, private formBuilder: FormBuilder) {
-    super(navCtrl, navParams, API, authentication, modalCtrl, alertCtrl, toastCtrl, loadingCtrl);
+  constructor(public navCtrl: NavController, public navParams: NavParams, public validation: Validation, public appData: AppData, public API: API, public authentication: Authentication, public modalCtrl: ModalController, public alertCtrl: AlertController, public toastCtrl: ToastController, public loadingCtrl: LoadingController, private formBuilder: FormBuilder) {
+    super(appData, modalCtrl, alertCtrl, toastCtrl, loadingCtrl);
     this.myForm = this.formBuilder.group({
       firstName: [null, Validators.required],
       lastName: [null, Validators.required],
-      email: [null, Validators.compose([Validators.required, Validation.isEmail]) /* this.AsyncValidation.isEmailNotUniqueAsync.bind(this) */],
-      zipcode: [null, Validators.compose([Validators.required, Validation.isZipCode])],
+      email: [null, Validators.compose([Validators.required, this.validation.test('isEmail')]) /* this.Asyncthis.validation.test(isEmailNotUniqueAsync.bind(this) */],
+      zipcode: [null, Validators.compose([Validators.required, this.validation.test('isZipcode')])],
       password: [null, Validators.required],
       password2: [null, Validators.required],
       birthday: [null, Validators.required]
-    }, {validator: Validation.isMismatch('password', 'password2')});
+    }, {validator: this.validation.isMismatch('password', 'password2')});
   }
 
   ionViewDidLoad() {
     this.auth = this.authentication.getCurrentUser();
+
+    
   }
 
   navLogin() {
@@ -43,7 +47,7 @@ export class RegisterPage extends BaseViewController {
     const toData = myForm;
     this.presentLoading();
 
-    this.API.stack(ROUTES.registerUser + `/${AppDataService.getCompanyOid}`, "POST", toData)
+    this.API.stack(ROUTES.registerUser + `/${COMPANY_OID}`, "POST", toData)
         .subscribe(
             (response) => {
               console.log('response ', response);
@@ -51,9 +55,9 @@ export class RegisterPage extends BaseViewController {
               if (response.code === 4) {
                 this.dismissLoading();
                 this.showPopup({
-                  title: AppDataService.defaultErrorTitle, 
+                  title: this.appData.getPopup().defaultErrorTitle, 
                   message: response.message || "Sorry, this email is taken.", 
-                  buttons: [{text: AppDataService.defaultConfirmButtonText}]
+                  buttons: [{text: this.appData.getPopup().defaultConfirmButtonText}]
                 });
               } else {
                 this.dismissLoading();

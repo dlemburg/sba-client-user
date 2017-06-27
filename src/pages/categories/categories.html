@@ -20,8 +20,7 @@
   <ion-row>
     <ion-col *ngFor="let x of categories" class="" col-6 style="border-bottom: 1px solid lightgray;">
       <ion-card tappable class="hover" (click)="navToProductsList(x)">
-        <!--<img src="{{x.img}}"/>-->
-        <img src="img/family.png" />
+        <img [src]="x.imgSrc" />
         <div class="card-title">{{ x.name }}</div>
       </ion-card>
     </ion-col>

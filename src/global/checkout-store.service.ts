@@ -1,13 +1,13 @@
 import { Injectable } from '@angular/core';
 import { Component } from '@angular/core';
 import { CheckoutPage } from '../pages/checkout/checkout';
-import { IPurchaseItem, IOrder } from '../models/models';
-import { UtilityService } from './utility.service';
+import { IPurchaseItem, IOrder, ITransactionDetails } from '../models/models';
+import { Utils } from '../utils/utils';
 
 
 @Injectable()
-export class StoreService {
-    constructor() {}
+export class CheckoutStore {
+    constructor(private utils: Utils) {}
     
     private _isOrderInProgress: boolean = false; 
     private _locationOid: number = null;
@@ -36,11 +36,14 @@ export class StoreService {
 
     /* order-ahead global properties */
     public get isOrderInProgress(): boolean {
+        console.log("getting...", this._isOrderInProgress);
         return this._isOrderInProgress;
     }
 
     public setOrderInProgress(status: boolean): void {
         this._isOrderInProgress = status;
+        console.log("setting...", this._isOrderInProgress);
+
     }
 
     public get getLocationOid(): number {
@@ -78,31 +81,38 @@ export class StoreService {
         return this.order;
     }
 
-    public setOrder(order: IOrder) {
+    public setOrder(order: IOrder): IOrder {
         this.order = Object.assign({}, order);
 
         console.log('this.order (setOrder): ', this.order);
+
+
+        return this.order;
     }
 
-    public editOrder(index: number, purchaseItem: IPurchaseItem) {
+    public editOrder(index: number, purchaseItem: IPurchaseItem): IOrder {
         this.order.purchaseItems[index] = purchaseItem;
         this.order.transactionDetails.subtotal = this.calculateSubtotal(this.order);
         console.log('this.order: (editOrder) ', this.order);
+
+        return this.order;
     }
 
-    public addToOrder(purchaseItem: IPurchaseItem, productDetails): void {
+    public addToOrder(purchaseItem: IPurchaseItem, productDetails): IOrder {
         purchaseItem.addonsCost = this.calculateAddonsCost(purchaseItem, productDetails);
         purchaseItem.dairyCost = this.calculateDairyCost(purchaseItem, productDetails);
         this.order.purchaseItems = [...this.order.purchaseItems, Object.assign({}, purchaseItem)];
         this.order.transactionDetails.subtotal = this.calculateSubtotal(this.order);
         console.log('this.order: (addToOrder) ', this.order);
+
+        return this.order;
     }
     
     public getPurchaseItemToEdit(index: number): IPurchaseItem {
         return this.order.purchaseItems[index];
     } 
 
-    public deleteOrder(): void {
+    public deleteOrder(): IOrder {
        let order =  {
             purchaseItems: [], 
             transactionDetails: { 
@@ -124,7 +134,14 @@ export class StoreService {
                 newPrice: null
             }
         };
-        this.setOrder(order);
+        return this.setOrder(order);
+    }
+
+    public setPurchaseItemsAndTransactionDetails(purchaseItems: Array<IPurchaseItem>, transactionDetails: ITransactionDetails): IOrder {
+        this.order.purchaseItems = purchaseItems;
+        this.order.transactionDetails = Object.assign({}, transactionDetails);
+
+        return this.order;
     }
 
 
@@ -157,19 +174,20 @@ export class StoreService {
 
     }
 
-    public clearOrder(): void {
-        this.deleteOrder();
+    public clearOrder(): IOrder {
         this.setOrderInProgress(false);
         this.setLocationOid(null);
         this.setLocationCloseTime(null);
+
+        return this.deleteOrder();
     }
 
     public calculateTaxes(subtotal: number, TAX_RATE: number): number {
-        return UtilityService.round(subtotal * TAX_RATE);
+        return this.utils.round(subtotal * TAX_RATE);
     }
 
     public calculateTotal(subtotal: number, taxes: number): number {
-        return UtilityService.round(subtotal + taxes);
+        return this.utils.round(subtotal + taxes);
     }
 
     public calculateSubtotal(order: IOrder): number {
@@ -179,14 +197,14 @@ export class StoreService {
           order.transactionDetails.subtotal += (x.sizeAndOrPrice.price * x.quantity) + (x.addonsCost * x.quantity) + (x.dairyCost);
       });
       
-      return UtilityService.round(order.transactionDetails.subtotal);
+      return this.utils.round(order.transactionDetails.subtotal);
     }
 
 
     public calculateTaxesSubtotalTotalAndReturnOrder(order: IOrder, subtotal: number, TAX_RATE: number): IOrder {
-        order.transactionDetails.subtotal = UtilityService.round(subtotal);
-        order.transactionDetails.taxes = UtilityService.round(this.calculateTaxes(order.transactionDetails.subtotal, TAX_RATE));
-        order.transactionDetails.total = UtilityService.round(this.calculateTotal(order.transactionDetails.subtotal, order.transactionDetails.taxes));
+        order.transactionDetails.subtotal = this.utils.round(subtotal);
+        order.transactionDetails.taxes = this.utils.round(this.calculateTaxes(order.transactionDetails.subtotal, TAX_RATE));
+        order.transactionDetails.total = this.utils.round(this.calculateTotal(order.transactionDetails.subtotal, order.transactionDetails.taxes));
 
         return order;
     }

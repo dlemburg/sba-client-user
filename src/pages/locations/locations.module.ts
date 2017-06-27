@@ -1,6 +1,8 @@
 import { NgModule } from '@angular/core';
 import { IonicPageModule } from 'ionic-angular';
 import { LocationsPage } from './locations';
+import { EmptyMessageComponentModule } from '../../components/empty-message/empty-message.component.module';
+
  
 @NgModule({
   declarations: [
@@ -8,6 +10,7 @@ import { LocationsPage } from './locations';
   ],
   imports: [
     IonicPageModule.forChild(LocationsPage),
+    EmptyMessageComponentModule
   ],
   exports: [
     LocationsPage

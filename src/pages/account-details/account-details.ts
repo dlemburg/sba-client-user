@@ -1,11 +1,11 @@
 import { Component } from '@angular/core';
 import { IonicPage, NavController, NavParams, ToastController, ModalController, AlertController, LoadingController } from 'ionic-angular';
-import { Validation } from '../../global/validation';
+import { Validation } from '../../utils/validation-utils';
 import { FormBuilder, FormGroup, Validators, FormControl } from '@angular/forms';
-import { API, ROUTES } from '../../global/api.service';
-import { Authentication } from '../../global/authentication.service';
-import { AppDataService } from '../../global/app-data.service';
+import { API, ROUTES } from '../../global/api';
+import { Authentication } from '../../global/authentication';
 import { BaseViewController } from '../base-view-controller/base-view-controller';
+import { AppData } from '../../global/app-data.service';
 
 @IonicPage()
 @Component({
@@ -15,14 +15,13 @@ import { BaseViewController } from '../base-view-controller/base-view-controller
 export class AccountDetailsPage extends BaseViewController {
   myForm: FormGroup;
   auth: any;
-    constructor(public navCtrl: NavController, public navParams: NavParams, public API: API, public authentication: Authentication, public modalCtrl: ModalController, public alertCtrl: AlertController, public toastCtrl: ToastController, public loadingCtrl: LoadingController, private formBuilder: FormBuilder ) {
-      super(navCtrl, navParams, API, authentication, modalCtrl, alertCtrl, toastCtrl, loadingCtrl);
-
+    constructor(public navCtrl: NavController, public navParams: NavParams, public appData: AppData, private validation: Validation, public API: API, public authentication: Authentication, public modalCtrl: ModalController, public alertCtrl: AlertController, public toastCtrl: ToastController, public loadingCtrl: LoadingController, private formBuilder: FormBuilder ) {
+      super(appData, modalCtrl, alertCtrl, toastCtrl, loadingCtrl);
       this.myForm = this.formBuilder.group({
         firstName: [null, Validators.required],
         lastName: [null, Validators.required],
-        email: [null, Validators.compose([Validators.required, Validation.isEmail])],
-        zipcode: [null, Validators.compose([Validators.required, Validation.isZipCode])],
+        email: [null, Validators.compose([Validators.required, this.validation.test("isEmail")])],
+        zipcode: [null, Validators.compose([Validators.required, this.validation.test('isZipCode')])],
         hasPushNotifications: [true, Validators.required]
       });
   }
@@ -45,12 +44,12 @@ export class AccountDetailsPage extends BaseViewController {
   } 
 
   submit(myForm) {
-    this.presentLoading(AppDataService.loading.saving);
+    this.presentLoading(this.appData.getLoading().saving);
     let toData = {toData: myForm, userOid: this.auth.userOid};
     this.API.stack(ROUTES.editUserAccountDetails, "POST", toData)
       .subscribe(
           (response) => {
-            this.dismissLoading(AppDataService.loading.saved)
+            this.dismissLoading(this.appData.getLoading().saved)
             console.log('response: ', response);
           },  (err) => {
             const shouldPopView = true;

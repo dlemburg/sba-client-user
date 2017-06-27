@@ -1,10 +1,10 @@
 import { Component } from '@angular/core';
 import { IonicPage, NavController, NavParams,  AlertController, ModalController, ToastController, LoadingController } from 'ionic-angular';
-import { AppDataService } from '../../global/app-data.service';
-import { API, ROUTES } from '../../global/api.service';
-import { Authentication } from '../../global/authentication.service';
-import { ImgService } from '../../global/img.service';
+import { AppData } from '../../global/app-data.service';
+import { API, ROUTES } from '../../global/api';
+import { Authentication } from '../../global/authentication';
 import { BaseViewController } from '../base-view-controller/base-view-controller';
+import { APP_IMGS } from '../../global/global';
 
 @IonicPage()
 @Component({
@@ -13,21 +13,20 @@ import { BaseViewController } from '../base-view-controller/base-view-controller
 })
 export class MyCardPage extends BaseViewController {
   balance: number|string = 0;
-  myCardImg: string = AppDataService.getDefaultImg;
+  mobileCardImgSrc: string = "";
   items: Array<{component: Component, name: string}>;
   auth: any;
   unavailable: string = "Unavailable";
 
-  constructor(public navCtrl: NavController, public navParams: NavParams, public API: API, public authentication: Authentication, public modalCtrl: ModalController, public alertCtrl: AlertController, public toastCtrl: ToastController, public loadingCtrl: LoadingController) {
-    super(navCtrl, navParams, API, authentication, modalCtrl, alertCtrl, toastCtrl, loadingCtrl);
+  constructor(public navCtrl: NavController, public navParams: NavParams, public appData: AppData, public API: API, public authentication: Authentication, public modalCtrl: ModalController, public alertCtrl: AlertController, public toastCtrl: ToastController, public loadingCtrl: LoadingController) {
+    super(appData, modalCtrl, alertCtrl, toastCtrl, loadingCtrl);
     
     this.auth = this.authentication.getCurrentUser();
-    this.myCardImg;
     this.items = [
       {component: 'AddCardPage', name: 'Create Mobile Card'},
-      {component: 'AddCardValuePage', name: 'Add Value'},
+      {component: 'AddCardValuePage', name: 'Add Value to Mobile Card'},
       {component: 'TransactionHistoryPage', name: 'Transaction History'},
-      {component: 'MyCardMorePage', name: 'More'},
+      {component: 'MyCardMorePage', name: 'More...'},
     ]
   }
 
@@ -46,16 +45,16 @@ export class MyCardPage extends BaseViewController {
           });
 
     // get myCardImg, doesn't need to be async
-    // has nothing to do with getting balance, so just separated it
-    this.API.stack(ROUTES.getMyCardImg + `/${this.auth.companyOid}`, "GET")
+    const imgName = APP_IMGS[11];
+    this.API.stack(ROUTES.getImgName + `/${this.auth.companyOid}/${imgName}`, "GET")
       .subscribe(
           (response) => {
             console.log('response: ', response);
-            
-            this.myCardImg = ImgService.checkImgIsNull(response.data.myCardImg, "img");
-            //  CORDOVA FILE TRANSFER
+            const img = response.data.img;
+            this.mobileCardImgSrc = this.appData.getDisplayImgSrc(img);
           }, (err) => {
-            this.myCardImg = AppDataService.getDefaultImg;
+            console.log("ERROR DOWNLOADING myMobileCardImg");
+            this.mobileCardImgSrc = this.appData.getDisplayImgSrc(null);
           });
   }
 

@@ -1,11 +1,10 @@
 import { Component } from '@angular/core';
 import { IonicPage, NavController, NavParams, AlertController, ToastController, ModalController, LoadingController } from 'ionic-angular';
-import { StoreService } from '../../global/store.service';
-import { API, ROUTES } from '../../global/api.service';
-import { Authentication } from '../../global/authentication.service';
-import { ImgService } from '../../global/img.service';
+import { CheckoutStore } from '../../global/checkout-store.service';
+import { API, ROUTES } from '../../global/api';
+import { Authentication } from '../../global/authentication';
 import { BaseViewController } from '../base-view-controller/base-view-controller';
-
+import { AppData } from '../../global/app-data.service';
 
 @IonicPage()
 @Component({
@@ -20,8 +19,8 @@ export class CategoriesPage extends BaseViewController {
   };
   auth: any;
   canLeave: boolean = false;
-  constructor(public navCtrl: NavController, public navParams: NavParams, public API: API, public authentication: Authentication, public modalCtrl: ModalController, public alertCtrl: AlertController, public toastCtrl: ToastController, public loadingCtrl: LoadingController, public storeService: StoreService) {
-    super(navCtrl, navParams, API, authentication, modalCtrl, alertCtrl, toastCtrl, loadingCtrl);
+  constructor(public navCtrl: NavController, public navParams: NavParams, public appData: AppData, public API: API, public authentication: Authentication, public modalCtrl: ModalController, public alertCtrl: AlertController, public toastCtrl: ToastController, public loadingCtrl: LoadingController, public checkoutStore: CheckoutStore) {
+    super(appData, modalCtrl, alertCtrl, toastCtrl, loadingCtrl);
   }
 
   ionViewDidEnter() {
@@ -29,7 +28,7 @@ export class CategoriesPage extends BaseViewController {
   }
 
   ionViewDidLoad() {
-    this.store.isOrderInProgress = this.storeService.isOrderInProgress;
+    this.store.isOrderInProgress = this.checkoutStore.isOrderInProgress;
     this.auth = this.authentication.getCurrentUser();
     this.presentLoading();
     this.API.stack(ROUTES.getCategories + `/${this.auth.companyOid}`, "GET")
@@ -38,7 +37,10 @@ export class CategoriesPage extends BaseViewController {
             this.dismissLoading();
             console.log('response: ', response);
             this.categories = response.data.categories;
-            if (this.categories.length) this.categories = ImgService.checkImgIsNull(this.categories, "img");
+
+            this.categories.forEach((x) => {
+              x.imgSrc = this.appData.getDisplayImgSrc(x.img);
+            });
           }, (err) => {
             const shouldPopView = false;
             this.errorHandler.call(this, err, shouldPopView)
@@ -52,7 +54,7 @@ export class CategoriesPage extends BaseViewController {
   }
 
   navCheckout() {
-    let order = this.storeService.getOrder();
+    let order = this.checkoutStore.getOrder();
     this.canLeave = true;
     
     if (!order.purchaseItems.length) {
@@ -67,7 +69,7 @@ export class CategoriesPage extends BaseViewController {
   // canLeave is set to true on any nav route except going back
   // so if order is in progress and going back, nav guard will popup
   ionViewCanLeave(): Promise<{}>|boolean {
-    if (this.storeService.isOrderInProgress && !this.canLeave) {
+    if (this.checkoutStore.isOrderInProgress && !this.canLeave) {
       return new Promise((resolve, reject) => {
         let confirm = this.alertCtrl.create({
           title: "Please Confirm", 
@@ -82,7 +84,7 @@ export class CategoriesPage extends BaseViewController {
             {
               text: "Yes, it's OK", 
               handler: () => { 
-                this.storeService.clearOrderInProgress();
+                this.checkoutStore.clearOrderInProgress();
                 resolve(); 
               } 
             }

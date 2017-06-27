@@ -1,104 +1,94 @@
 import { Injectable } from '@angular/core';
+import { ROUTES } from './api';
 
 @Injectable()
-export class AppDataService {
+export class AppData {
 
 constructor() { }
 
-    private static _storageDirectory = null;
-    /* Company  oid*/
-    public static get getCompanyOid(): number {
-        return 1;
+    private _storageDirectory = null;
+    private toast = {
+        defaultToastDuration: 5000,
+        defaultToastPosition: "bottom",
+        defaultErrorMessage: "Sorry, there was an unexpected error. We will work hard to get it fixed soon."
+    }
+    private img = {
+        logoImgSrc: null,
+        defaultImgSrc: "img/default.png",
+    }
+    private loading = {
+        default: this.getLoadingInnerHtml(`Loading...`),
+        saving: this.getLoadingInnerHtml(`Saving...`),
+        processing: this.getLoadingInnerHtml(`Processing...`),
+        complete: this.getLoadingInnerHtml(`Complete!`),
+        saved: this.getLoadingInnerHtml(`Saved!`)
+    }
+    private rewards = {
+        rewardTypeIndividualMessage: "Just for you!"
+    }
+    private popup = {
+        defaultMissingInfoMessage: "Looks like you forgot to fill in everything!",
+        defaultEditSuccessMessage: "Edit Successful",
+        defaultSaveMessage: "Save Successful",
+        defaultConfirmButtonText: "OK",
+        defaultCancelButtonText: "Cancel",
+        defaultSuccessTitle: "Success!",
+        defaultErrorTitle: "Uh Oh!",
+        defaultSuccessMessage: "Success!"
     }
 
+   
     /* storage directory sets on app load */
-    public static setStorageDirectory(dir) {
-        AppDataService._storageDirectory = dir;
+    public setStorageDirectory(dir) {
+        this._storageDirectory = dir;
     }
-    public static get getStorageDirectory(): any {
-        return AppDataService._storageDirectory;
-    }
-
-    /* Popup */
-    public static get defaultMissingInfoMessage(): string {
-        return "Looks like you forgot to fill in everything!";
+    public get getStorageDirectory(): any {
+        return this._storageDirectory;
     }
 
-    public static get defaultEditSuccessMessage(): string {
-        return "Edit successful!";
+    // if img == null, set imgSrc to the default img
+    public getDisplayImgSrc(img: string = null): string {
+        const defaultImgSrc = this.getImg().defaultImgSrc;
+        const imgSrc = img ? `${ROUTES.downloadImg}?img=${img}` : defaultImgSrc;
+
+        return imgSrc;
     }
 
-    public static get defaultSaveMessage(): string {
-        return "Save successful!";
+    public setImgs(args) {
+        this.img = {
+            defaultImgSrc: args.defaultImgSrc,
+            logoImgSrc: args.logoImgSrc
+        };
+    }
+    
+    public getPopup() {
+        return this.popup;
     }
 
-    public static get defaultConfirmButtonText(): string {
-        return "OK";
+    public getToast() {
+        return this.toast;
     }
 
-    public static get defaultCancelButtonText(): string {
-        return "Cancel";
+    public getImg() {
+        return this.img;
     }
 
-    public static get defaultSuccessTitle(): string {
-        return "Success!";
+    public getLoading() {
+        return this.loading;
     }
 
-    public static get defaultErrorTitle(): string {
-        return "Uh Oh!";
+    public getRewards() {
+        return this.rewards;
     }
 
-    public static get defaultSuccessMessage(): string {
-        return "Success!";
-    }
-
-
-
-    /* Toast */
-    public static get defaultToastPosition(): string {
-        return "bottom";
-    }
-
-    public static get defaultToastDuration(): number {
-        return 5000;
-    }
-
-    public static get defaultErrorMessage(): string {
-        return "Sorry, there was an unexpected error. We will work hard to get it fixed soon.";
-    }
-
-
-    /* IMG */
-    public static get getGenericImg(): string {
-        return "img/family.png";
-    }
-
-    public static get getDefaultImg(): string {
-        return "img/family.png";
-    }
-
-    public static get loginBackgroundImg(): string {
-        return "img/family.png";
-    }
-
-
-
-    /* Loading */
-    private static getLoadingInnerHtml(message) {
+    private getLoadingInnerHtml(message) {
         return `<div class="custom-spinner-container">
                   <div class="custom-spinner-box">${message}</div>
                 </div>`
     }
 
-    public static loading = {
-        default: AppDataService.getLoadingInnerHtml(`Loading...`),
-        saving: AppDataService.getLoadingInnerHtml(`Saving...`),
-        processing: AppDataService.getLoadingInnerHtml(`Processing...`),
-        complete: AppDataService.getLoadingInnerHtml(`Complete!`),
-        saved: AppDataService.getLoadingInnerHtml(`Saved!`)
+    public cleanup() {
+
     }
 
-    public static rewards = {
-        rewardTypeIndividualMessage: "Just for you!"
-    }
 }

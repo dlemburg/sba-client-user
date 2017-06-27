@@ -6,4 +6,8 @@ page-register {
     ion-item {
         height: 80px;
     }
+
+    .company-logo-container {
+        background-color: map-get($colors, primary);
+    }
 }

@@ -30,7 +30,6 @@ export class RewardsDetailsPage {
 
  /* gets all reward details from navParams */
   ionViewDidLoad() {
-    debugger;
     this.reward = this.navParams.data.reward;
     console.log(this.reward);
   }

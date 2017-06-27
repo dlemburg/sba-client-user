@@ -7,6 +7,35 @@
   </ion-navbar>
 </ion-header>
 
+<ion-content>
+  <div>
+    <EmptyMessage *ngIf="!locations.length" message="locations"></EmptyMessage>
+    <ion-list>
+      <ion-item tappable (click)="updateActive(i)" *ngFor="let x of locations; let i = index" [ngClass]="{'item-highlight': isActive === i}">
+        <div>
+          <div class="address">{{ x.address }}</div>
+          <div class="address">{{ x.city }}, {{ x.state }} {{ x.zipcode }}</div>
+          <div margin-top>
+            <span *ngIf="x.distanceTo"> 
+                <span class="miles-away"> {{ x.distanceTo }} miles away</span>
+            </span>
+          </div>
+          <button margin-top *ngIf="isOpen(x)" (click)="proceedToOrder(x)" ion-button outline block detail-push>Proceed to Order</button>
+          <div *ngIf="!isOpen(x)" text-center class="closed">{{ closedMessage }}</div>
+          <div *ngIf="isOpen(x)" text-center class="open">Open</div>
+
+          <button class="hours-btn" (click)="viewHours(x)" ion-button>Hours</button>
+          <button class="map-btn" mini (click)="navLocationMap(x)" ion-fab>
+            <ion-icon class="map-icon" ios="ios-pin" md="md-pin"></ion-icon>
+          </button>
+          
+        </div>
+      </ion-item>
+    </ion-list>
+  </div>
+</ion-content>
+
+<!--
 <ion-content padding>
   <ion-toolbar color="dl-white">
     <ion-title text-center>Select a Location</ion-title>
@@ -23,29 +52,13 @@
 </div>
 
 <div [ngSwitch]="category">
-  <ion-list *ngSwitchCase="'map'">
-    <ion-item>
-    </ion-item>
-  </ion-list>
 
-  <ion-list *ngSwitchCase="'list'">
-    <div *ngIf="!locations.length">
-      <ion-card>
-        <ion-card-content text-center>No locations to display.</ion-card-content>
-      </ion-card>
-    </div>
-    <ion-item tappable (click)="updateActive(i)" *ngFor="let x of locations; let i = index" [ngClass]="{'item-highlight': isActive === i}">
-      <div>
-        <div class="address">{{ x.address }}</div>
-        <div class="address">{{ x.city }}, {{ x.state }} {{ x.zipcode }}</div>
-        <div class="miles-away">4.18 mi</div>
-        <button *ngIf="x.isOpen" (click)="proceedToOrder(x)" ion-button outline block detail-push>Proceed to Order</button>
-        <div *ngIf="!x.isOpen" text-center class="closed">{{ closedMessage }}</div>
-        <div *ngIf="x.isOpen" text-center class="open">Open</div>
-        <button class="hours-btn" (click)="viewHours(x)" ion-button>Hours</button>
-      </div>
-    </ion-item>
-  </ion-list>
+  <div *ngSwitchCase="'map'">
+    <div #map id="map" style="height:100%;"></div>
+  </div>
+
+  
 </div>
 
 </ion-content>
+ -->

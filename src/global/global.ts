@@ -18,4 +18,21 @@ export const COMPANY_DETAILS = {
     HAS_SWEETENER: false,
     HAS_FLAVORS: false,
     HAS_ADDONS: false
-  }
+}
+
+export const APP_IMGS = {
+    0: 'homeMyCardImg',
+    1: 'homeRewardsImg',
+    2: 'homeOrderAheadImg',
+    3: 'homeMenuImg',
+    4: 'logoImg',
+    5: 'appHeaderBarImg',
+    6: 'defaultImg',
+    7: 'rewardsPageImg',
+    8: 'loginPageBackgroundImg',
+    9: 'orderCompleteBackgroundImg',
+    10: 'orderCompleteMiddleOfPageImg',
+    11: 'mobileCardImg',
+    12: 'addedToCartBackgroundImg'
+}
+

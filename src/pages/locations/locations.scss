@@ -1,6 +1,9 @@
 page-locations {
     ion-item {
         position: relative;
+        border-bottom: 1px solid map-get($colors, light) !important;
+       // border-top: 1px solid map-get($colors, light) !important;
+
     }
     .miles-away {
         font-size: 10px;
@@ -24,11 +27,34 @@ page-locations {
 
     .hours-btn {
         position: absolute;
-        top: 8px;
+        top: 10px;
         right:30px;
     }
 
     .item-highlight {
         background-color: map-get($colors , light) !important;
     }
+
+    .map-btn {
+        position: absolute;
+        top: -3px;
+        right: 100px;
+        background-color: white
+    }
+
+    .map-icon {
+        color: map-get($colors, danger);
+        background-color: transparent;
+    }
+
+
 }
+
+.ios page-map.ion-page.show-page ~ .nav-decor {
+  display: none !important;
+}
+
+/*ion-app._gmaps_cdv_ .nav-decor{
+    display: none !important;
+}*/
+

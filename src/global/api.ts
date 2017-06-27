@@ -4,7 +4,7 @@ import * as global from './global';
 import { Observable } from 'rxjs/Observable';
 import 'rxjs/add/operator/catch';
 import 'rxjs/add/operator/map';
-import { Authentication } from '../global/authentication.service';
+import { Authentication } from '../global/auth.service';
 import { Ihttp } from '../models/models';
 
 @Injectable()
@@ -24,7 +24,6 @@ export class API {
 
   
     public stack(route: string, verb: string, body: any = {}): Observable<any> {
-      //  let {toData, method, route} = args;
 
         let url: string = route.indexOf('/api/node/') > -1 ? global.SERVER_URL_NODE : global.SERVER_URL_CSHARP;
             url += route;
@@ -52,7 +51,6 @@ export class API {
 
 /////*****************************  ROUTES  ******************************///////
 
-// all API routes
 
 // api | server: cs?node | controller | action
 export const ROUTES = {
@@ -93,11 +91,12 @@ export const ROUTES = {
     getUserPaymentID: '/api/cs/user/getUserPaymentID',
     getHomePageImgs: '/api/cs/user/getHomePageImgs',
     downloadImg: `${global.SERVER_URL_NODE}/api/node/download/img`,
+    getImgName: `/api/cs/shared/getImgName`,
+    getImgsOnAppStartup: `/api/cs/shared/getImgsOnAppStartup`,
+    getLocationsFilterByGps: `/api/cs/shared/getLocationsFilterByGps`,
 
 
-
-
-
+    // stripe
     deleteCard: '/api/cs/stripe/deleteCard',
     submitPaymentDetails: '/api/node/stripe/submitPaymentDetails',
     addCard: '/api/node/stripe/addCard',

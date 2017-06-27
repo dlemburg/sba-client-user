@@ -1,10 +1,9 @@
 import { Component } from '@angular/core';
-import { StoreService } from '../../global/store.service';
-import { API, ROUTES } from '../../global/api.service';
-import { Authentication } from '../../global/authentication.service';
-import { ImgService } from '../../global/img.service';
+import { CheckoutStore } from '../../global/checkout-store.service';
+import { API, ROUTES } from '../../global/api';
+import { Authentication } from '../../global/authentication';
 import { IonicPage, NavController, NavParams, AlertController, ToastController, ModalController, LoadingController } from 'ionic-angular';
-import { AppDataService } from '../../global/app-data.service';
+import { AppData } from '../../global/app-data.service';
 import { IPopup } from '../../models/models';
 import { BaseViewController } from '../base-view-controller/base-view-controller';
 
@@ -22,14 +21,14 @@ export class ProductsListPage extends BaseViewController {
   auth: any;
   categoryOid: number = 0;
   categoryName: string = "";
-  isOrderInProgress: boolean;
-  constructor(public navCtrl: NavController, public navParams: NavParams, public API: API, public authentication: Authentication, public modalCtrl: ModalController, public alertCtrl: AlertController, public toastCtrl: ToastController, public loadingCtrl: LoadingController, private storeService: StoreService) {
-    super(navCtrl, navParams, API, authentication, modalCtrl, alertCtrl, toastCtrl, loadingCtrl);
+  isOrderInProgress: boolean = this.checkoutStore.isOrderInProgress;
+  constructor(public navCtrl: NavController, public navParams: NavParams, public appData: AppData, public API: API, public authentication: Authentication, public modalCtrl: ModalController, public alertCtrl: AlertController, public toastCtrl: ToastController, public loadingCtrl: LoadingController, private checkoutStore: CheckoutStore) {
+    super(appData, modalCtrl, alertCtrl, toastCtrl, loadingCtrl);
   }
 
-// this page used storeService
+// this page used checkoutStore
   ionViewDidLoad() {
-   // this.isOrderInProgress = this.storeService
+   // this.isOrderInProgress = this.checkoutStore
     this.auth = this.authentication.getCurrentUser();
     this.categoryOid = this.navParams.data.category.oid;
     this.categoryName = this.navParams.data.category.categoryName;
@@ -41,7 +40,11 @@ export class ProductsListPage extends BaseViewController {
             this.dismissLoading();
             console.log('response: ', response);
             this.products = response.data.products;
-            if (this.products.length) this.products = ImgService.checkImgIsNull(this.products, "img");
+
+            this.products.forEach((x) => {
+              x.imgSrc = this.appData.getDisplayImgSrc(x.img);
+            });
+
           }, (err) => {
             const shouldPopView = false;
             this.errorHandler.call(this, err, shouldPopView);
@@ -53,7 +56,7 @@ export class ProductsListPage extends BaseViewController {
   }
 
   navCheckout() {
-    let order = this.storeService.getOrder();
+    let order = this.checkoutStore.getOrder();
 
     if (!order.purchaseItems.length) {
       this.showPopup({

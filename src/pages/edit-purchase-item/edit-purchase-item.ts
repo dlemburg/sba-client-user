@@ -1,13 +1,12 @@
 import { Component } from '@angular/core';
 import { IPurchaseItem, IErrChecks, IPopup, ProductDetailsToClient, AuthUserInfo } from '../../models/models';
-import { UtilityService } from '../../global/utility.service';
-import { StoreService } from '../../global/store.service';
+import { Utils } from '../../utils/utils';
+import { CheckoutStore } from '../../global/checkout-store.service';
 import { IonicPage, NavController, NavParams, AlertController, ToastController, LoadingController, ModalController } from 'ionic-angular';
-import { AppDataService } from '../../global/app-data.service';
+import { AppData } from '../../global/app-data.service';
 import { BaseViewController } from '../base-view-controller/base-view-controller';
-import { API, ROUTES } from '../../global/api.service';
-import { Authentication } from '../../global/authentication.service';
-import { ImgService } from '../../global/img.service';
+import { API, ROUTES } from '../../global/api';
+import { Authentication } from '../../global/authentication';
 
 @IonicPage()
 @Component({
@@ -32,10 +31,11 @@ export class EditPurchaseItemPage extends BaseViewController {
     dairyToClient: [],
     sweetenerToClient: [],
     img: '',
+    imgSrc: '',
     numberOfFreeAddonsUntilCharged: 0,
     addonsPriceAboveLimit: 0
   };
-  quantities: Array<number> = UtilityService.getNumbersList();
+  quantities: Array<number> = this.utils.getNumbersList();
   purchaseItem: IPurchaseItem = {
     selectedProduct: {oid: null, name: null},
     sizeAndOrPrice: { oid: null, name: null, price: null},
@@ -47,8 +47,8 @@ export class EditPurchaseItemPage extends BaseViewController {
   };
   order: any = {};
   index: number;
-  constructor(public navCtrl: NavController, public navParams: NavParams, public API: API, public authentication: Authentication, public modalCtrl: ModalController, public alertCtrl: AlertController, public toastCtrl: ToastController, public loadingCtrl: LoadingController, private storeService: StoreService) {
-    super(navCtrl, navParams, API, authentication, modalCtrl, alertCtrl, toastCtrl, loadingCtrl);
+  constructor(public navCtrl: NavController, public navParams: NavParams, public utils: Utils, public appData: AppData, public API: API, public authentication: Authentication, public modalCtrl: ModalController, public alertCtrl: AlertController, public toastCtrl: ToastController, public loadingCtrl: LoadingController, private checkoutStore: CheckoutStore) {
+    super(appData, modalCtrl, alertCtrl, toastCtrl, loadingCtrl);
   }
 
   ionViewDidLoad() {
@@ -64,7 +64,7 @@ export class EditPurchaseItemPage extends BaseViewController {
             this.productDetails = response.data.productDetails;
             
             /* init values */
-            this.productDetails.img = ImgService.checkImgIsNull(this.productDetails.img);
+            this.productDetails.imgSrc = this.appData.getDisplayImgSrc(this.productDetails.img);
             if (!this.productDetails.sizesAndPrices.length) {
               this.purchaseItem.sizeAndOrPrice = {price: this.productDetails.fixedPrice};
             }
@@ -81,12 +81,12 @@ export class EditPurchaseItemPage extends BaseViewController {
     
     if (!checks.isValid) {
        this.showPopup({
-          title: AppDataService.defaultSuccessTitle, 
+          title: this.appData.getPopup().defaultSuccessTitle, 
           message: checks.errs.join(" "), 
-          buttons: [{text: AppDataService.defaultConfirmButtonText}]
+          buttons: [{text: this.appData.getPopup().defaultConfirmButtonText}]
         });
     } else {
-      this.storeService.editOrder(this.index, this.purchaseItem); 
+      this.checkoutStore.editOrder(this.index, this.purchaseItem); 
       this.navCtrl.pop();
     }
   }

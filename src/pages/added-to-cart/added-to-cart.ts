@@ -1,6 +1,10 @@
 import { Component } from '@angular/core';
 import { IonicPage, NavController, NavParams, ViewController, App } from 'ionic-angular';
-import { IPurchaseItem } from '../../models/models';
+import { IPurchaseItem, AuthUserInfo } from '../../models/models';
+import { AppData } from '../../global/app-data.service';
+import { APP_IMGS } from '../../global/global';
+import { API, ROUTES } from '../../global/api';
+import { Authentication } from '../../global/authentication';
 
 @IonicPage()
 @Component({
@@ -10,24 +14,41 @@ import { IPurchaseItem } from '../../models/models';
 export class AddedToCartPage {
   purchaseItem: IPurchaseItem;
   categoryOid: number;
-  backgroundImg: string = "";
   img: string = `img/computer.png`;
   title: string = "Boooo YAHHH!";
   subtitle: string = "Added to your cart!"
   productName: string;
-  productImg: string;
-  constructor(public navCtrl: NavController, public navParams: NavParams, public viewCtrl: ViewController, public appCtrl: App) {
-    this.backgroundImg =  `linear-gradient(
-      rgba(56, 126, 245, 0.80), 
-      rgba(56, 126, 245, 0.80)
-    ), url(../../../${this.img}) no-repeat`;
+  productImg: string = null;
+  productImgSrc: string = null;
+  addedToCartBackgroundImgSrc: string = null;
+  auth: AuthUserInfo;
+  constructor(public navCtrl: NavController, public navParams: NavParams, public API: API, public authentication: Authentication, public appData: AppData, public viewCtrl: ViewController, public appCtrl: App) {
   }
 
   ionViewDidLoad() {
+    this.auth = this.authentication.getCurrentUser();
     this.productName = this.navParams.data.purchaseItem.selectedProduct.name;
-    this.productImg = this.navParams.data.productImg;
     this.categoryOid = this.navParams.data.categoryOid;
+    this.productImgSrc = this.appData.getDisplayImgSrc(this.navParams.data.productImg);
+    
+    const imgName = APP_IMGS[12];
+    this.API.stack(ROUTES.getImgName + `/${this.auth.companyOid}/${imgName}`, "GET")
+      .subscribe(
+        (response) => {
+          console.log("response.data: ", response.data);
+
+          if (response.data.img) {
+            let url = `${ROUTES.downloadImg}?img=${response.data.img}`;
+            this.addedToCartBackgroundImgSrc =  `linear-gradient(
+              rgba(56, 126, 245, 0.80), 
+              rgba(56, 126, 245, 0.80)
+            ), url(${url}) no-repeat`;
+          }
+        }, (err) => {
+         // this.logoImgSrc = this.appData.getDisplayImgSrc(null);
+        });
   }
+
 
   navCheckout() {
     this.viewCtrl.dismiss();

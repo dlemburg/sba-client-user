@@ -1,11 +1,10 @@
 import { Component } from '@angular/core';
-import { UtilityService } from '../../global/utility.service';
-import { StoreService } from '../../global/store.service';
-import { API, ROUTES } from '../../global/api.service';
-import { Authentication } from '../../global/authentication.service';
-import { ImgService } from '../../global/img.service';
+import { Utils } from '../../utils/utils';
+import { CheckoutStore } from '../../global/checkout-store.service';
+import { API, ROUTES } from '../../global/api';
+import { Authentication } from '../../global/authentication';
 import { IonicPage, NavController, NavParams, AlertController, ToastController, LoadingController, ModalController } from 'ionic-angular';
-import { AppDataService } from '../../global/app-data.service';
+import { AppData } from '../../global/app-data.service';
 import { IPopup, ProductDetailsToClient, IPurchaseItem, IErrChecks } from '../../models/models';
 import { BaseViewController } from '../base-view-controller/base-view-controller';
 
@@ -16,6 +15,7 @@ import { BaseViewController } from '../base-view-controller/base-view-controller
 })
 export class ProductsDetailsPage extends BaseViewController {
   productImg: string = '';
+  productImgSrc: string = null;
   productDetails: ProductDetailsToClient = {
     name: '',
     oid: 0,
@@ -33,8 +33,8 @@ export class ProductsDetailsPage extends BaseViewController {
     numberOfFreeAddonsUntilCharged: null,
     addonsPriceAboveLimit: null
   };
-  quantities: Array<number> = UtilityService.getNumbersList();
-  dairyQuantities: Array<number> = UtilityService.getNumbersList(5);
+  quantities: Array<number> = this.utils.getNumbersList();
+  dairyQuantities: Array<number> = this.utils.getNumbersList(5);
   productOid: any;
   purchaseItem: IPurchaseItem = {
     selectedProduct: {oid: null, name: null},
@@ -51,17 +51,17 @@ export class ProductsDetailsPage extends BaseViewController {
   order: any = {};
   auth: any;
   isOrderInProgress: boolean;
-  constructor(public navCtrl: NavController, public navParams: NavParams, public API: API, public authentication: Authentication, public modalCtrl: ModalController, public alertCtrl: AlertController, public toastCtrl: ToastController, public loadingCtrl: LoadingController, private storeService: StoreService) {
-    super(navCtrl, navParams, API, authentication, modalCtrl, alertCtrl, toastCtrl, loadingCtrl);
+  constructor(public navCtrl: NavController, public navParams: NavParams, public appData: AppData, public utils: Utils, public API: API, public authentication: Authentication, public modalCtrl: ModalController, public alertCtrl: AlertController, public toastCtrl: ToastController, public loadingCtrl: LoadingController, private checkoutStore: CheckoutStore) {
+    super(appData, modalCtrl, alertCtrl, toastCtrl, loadingCtrl);
   }
 
-// this page uses storeService
+// this page uses checkoutStore
   ionViewDidLoad() {
     this.auth = this.authentication.getCurrentUser();
-    this.productImg = this.navParams.data.product.img;
+    this.productImgSrc = this.appData.getDisplayImgSrc(this.navParams.data.product.img);
     this.productOid = this.navParams.data.product.oid;
     this.purchaseItem.selectedProduct.oid = this.navParams.data.product.oid;
-    this.isOrderInProgress = this.storeService.isOrderInProgress;
+    this.isOrderInProgress = this.checkoutStore.isOrderInProgress;
     this.presentLoading();
 
     this.API.stack(ROUTES.getProductDetails + `/${this.auth.companyOid}/${this.productOid}`, "GET")
@@ -74,7 +74,8 @@ export class ProductsDetailsPage extends BaseViewController {
             /* init values and purchase item */
             this.purchaseItem.selectedProduct = { name: this.productDetails.name, oid: this.productDetails.oid};
            
-            this.productDetails.img = ImgService.checkImgIsNull(this.productDetails.img);
+            // IMG
+            //this.productDetails.img = ImgService.checkImgIsNull(this.productDetails.img);
             if (!this.productDetails.sizesAndPrices.length && this.productDetails.fixedPrice) {
               this.purchaseItem.sizeAndOrPrice = {name: null, oid: null, price: this.productDetails.fixedPrice};
             }
@@ -91,7 +92,10 @@ export class ProductsDetailsPage extends BaseViewController {
     if (!checks.isValid) {
        this.presentToast(false, {message: checks.errs.join(" "), position: "bottom", duration: 5000})
     } else {
-      this.storeService.addToOrder(this.purchaseItem, this.productDetails);
+      this.checkoutStore.addToOrder(this.purchaseItem, this.productDetails);
+
+
+      // change this to listen for on dismiss and change route from here
       this.presentModal('AddedToCartPage', {purchaseItem: this.purchaseItem, productImg: this.productDetails.img, categoryOid: this.productDetails.categoryOid}, {enableBackdropDismiss: false, showBackdrop: false});
     }
   }
@@ -121,7 +125,7 @@ export class ProductsDetailsPage extends BaseViewController {
   }
 
   navCheckout() {
-    let order = this.storeService.getOrder();
+    let order = this.checkoutStore.getOrder();
 
     if (!order.purchaseItems.length) {
         this.showPopup({

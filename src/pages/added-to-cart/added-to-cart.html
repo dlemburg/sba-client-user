@@ -1,4 +1,4 @@
-<ion-content [ngStyle]="{'background': backgroundImg }" class="added-to-cart-container background-img" padding>
+<ion-content [ngStyle]="{background: addedToCartBackgroundImgSrc}" class="added-to-cart-container background-img" padding>
   <ion-grid>
     <div class="flex-1 center">
       <div class="added-to-cart-title">{{ title }}</div>
@@ -6,8 +6,7 @@
     </div>
     <ion-row class="flex-2">
       <ion-card class="hover align-center" >
-        <!--<img src="{{x.img}}"/>-->
-        <img src="img/family.png" />
+        <img [src]="productImgSrc" />
         <div class="card-title">{{ productName }}</div>
       </ion-card>
     </ion-row>

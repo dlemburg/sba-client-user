@@ -1,12 +1,14 @@
 import { Component } from '@angular/core';
 import { IonicPage, Platform, NavController, NavParams, AlertController, ModalController, ToastController, LoadingController } from 'ionic-angular';
 import { IOwnerAlert } from '../../models/models';
-import { API, ROUTES } from '../../global/api.service';
-import { Authentication } from '../../global/authentication.service';
-import { AppDataService } from '../../global/app-data.service';
+import { API, ROUTES } from '../../global/api';
+import { Authentication } from '../../global/authentication';
+import { AppData } from '../../global/app-data.service';
 import { BaseViewController } from '../base-view-controller/base-view-controller';
 import { Transfer, FileUploadOptions, TransferObject } from '@ionic-native/transfer';
 import { File } from '@ionic-native/file';
+import { APP_IMGS } from '../../global/global';
+
 declare var cordova: any;
 @IonicPage()
 @Component({
@@ -25,13 +27,14 @@ export class HomePage extends BaseViewController {
   points: number|string;
   auth: any;
   unavailable: "Unavailable";
-  defaultImgSrc: string = AppDataService.getDefaultImg;
+  defaultImgSrc: string = this.appData.getImg().defaultImgSrc;
 
 
   constructor(
     public navCtrl: NavController, 
     public navParams: NavParams, 
     public API: API, 
+    public appData: AppData,
     public authentication: Authentication, 
     public modalCtrl: ModalController, 
     public alertCtrl: AlertController, 
@@ -42,13 +45,13 @@ export class HomePage extends BaseViewController {
     private platform: Platform,
 
     ) {
-    super(navCtrl, navParams, API, authentication, modalCtrl, alertCtrl, toastCtrl, loadingCtrl);
+    super(appData, modalCtrl, alertCtrl, toastCtrl, loadingCtrl);
 
     this.cards = [
         {
             img: null,
-            imgSrc: null,
-            name: 'homeMyCardImg',
+            imgSrc: this.defaultImgSrc,
+            name: APP_IMGS[0],
             title: 'My Mobile Card',
             subtitle: 'View card details and Pay',
             component: 'MyCardPage',
@@ -56,8 +59,8 @@ export class HomePage extends BaseViewController {
         },
         {
             img: null,
-            imgSrc: null,
-            name: 'homeRewardsImg',
+            imgSrc: this.defaultImgSrc,
+            name: APP_IMGS[1],
             title: 'Rewards',
             subtitle: 'Discounts and specials you don\'t want to miss out on!',
             component: 'RewardsPage',
@@ -65,8 +68,8 @@ export class HomePage extends BaseViewController {
         },
         {
             img: null,
-            imgSrc: null,
-            name: 'homeOrderAheadImg',
+            imgSrc: this.defaultImgSrc,
+            name: APP_IMGS[2],
             title: 'Order Ahead',
             subtitle: 'Skip the line!',
             component: 'LocationsPage',
@@ -74,8 +77,8 @@ export class HomePage extends BaseViewController {
         },
         {
             img: null,
-            imgSrc: null,
-            name: 'homeMenuImg',
+            imgSrc: this.defaultImgSrc,
+            name: APP_IMGS[3],
             title: 'Menu',
             subtitle: 'See what we have to offer!',
             component: 'CategoriesPage',
@@ -97,6 +100,7 @@ export class HomePage extends BaseViewController {
   ionViewDidEnter() {
     if (this.initHasRun) {
       this.getPointsAndPointsNeeded();
+      this.getHomePageImgs();
     } else this.initHasRun = true;
   }
 
@@ -107,15 +111,24 @@ export class HomePage extends BaseViewController {
           console.log("response.data: ", response.data);
           this.cards.forEach((x) => {
             x.img = response.data.homePageImgs[x.name];
-            x.imgSrc = x.img ? ROUTES.downloadImg + `?img=${x.img}` : AppDataService.getDefaultImg;     // this.downloadImg(x, "img", "imgSrc");
+            x.imgSrc = this.appData.getDisplayImgSrc(x.img);
+
+            console.log("x.imgSrc: ", x.imgSrc);
           });
         }, (err) => {
             this.points = this.unavailable;
+            /*
+            this.cards.forEach((x) => {
+              x.imgSrc = this.appData.getDisplayImgSrc(null);
+            });
+            */
            // const shouldPopView = false;
            // this.errorHandler.call(this, err, shouldPopView);
         });
+
   }
 
+  
   getPointsAndPointsNeeded() {
      //this.presentLoading();
      this.API.stack(ROUTES.getPointsAndPointsNeeded + `/${this.auth.companyOid}/${this.auth.userOid}`, "GET")

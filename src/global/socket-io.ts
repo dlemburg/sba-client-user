@@ -2,19 +2,14 @@ import { Injectable } from '@angular/core';
 import { Events } from 'ionic-angular'
 import * as global from './global';
 import * as io from "socket.io-client";
-import { Subject } from 'rxjs/Subject';
-import { Observable } from 'rxjs/Observable';
-import { Authentication } from './authentication.service';
+import { Authentication } from './authentication';
 import { AuthUserInfo, SocketEvents }  from '../models/models';
-import { StoreService } from './store-service';
 
 @Injectable()
-export class SocketService {
+export class SocketIO {
   private socket: SocketIOClient.Socket = null;
   private auth: AuthUserInfo;
-  private currentObservables: any;
   public socketEvents: SocketEvents;
-  private subscriber$: any;
 
   constructor(public authentication: Authentication, public events: Events) {
     this.auth = this.authentication.getCurrentUser();
@@ -61,7 +56,7 @@ export class SocketService {
         this.events.publish(event, data);
     }
 
-    /*
+    /*  observable pattern instead of using Ionic Events
     public on(eventName: string) {
         let observable = new Observable(observer => {
             this.socket.on(eventName, (data) => {

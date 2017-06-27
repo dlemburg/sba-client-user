@@ -73,6 +73,7 @@ export interface ProductDetailsToClient {
     sweetenerToClient: Array<any>;
     varietyToClient: Array<any>;
     img: string,
+    imgSrc?: string;
     numberOfFreeAddonsUntilCharged: number;
     addonsPriceAboveLimit: number;
   };

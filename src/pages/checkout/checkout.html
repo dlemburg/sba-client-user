@@ -129,7 +129,7 @@
       <div class="bold" *ngIf="areAnyEtasDisabled()">Minutes until location close: {{ minutesUntilClose }}</div>
   </div>
   <ion-row margin>
-    <ion-col>
+    <ion-col text-center>
       <button [ngClass]="{'selected': eta === x }"  
               *ngFor="let x of etas; let i = index;" 
               [disabled]="minutesUntilClose < x"
@@ -146,7 +146,7 @@
   </div>
   -->
    <ion-toolbar margin-top>
-    <button [disabled]="balance < order.transactionDetails.total" (click)="submit()" class="footer-btn" color="secondary" ion-button block detail-push>Complete Transaction</button>
+    <button [disabled]="(balance < order.transactionDetails.total) || !order.purchaseItems.length" (click)="submit()" class="footer-btn" color="secondary" ion-button block detail-push>Complete Transaction</button>
   </ion-toolbar>
 </ion-content>
  <ion-footer>

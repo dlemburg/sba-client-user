@@ -1,14 +1,14 @@
 import { Component } from '@angular/core';
 import { Validation } from '../../global/validation';
 import { FormBuilder, FormGroup, Validators, FormControl } from '@angular/forms';
-import { API, ROUTES } from '../../global/api.service';
-import { Authentication } from '../../global/authentication.service';
+import { API, ROUTES } from '../../global/api';
+import { Authentication } from '../../global/authentication';
 import { IContactInfo } from '../../models/models';
 import { IonicPage, NavController, NavParams, AlertController, ToastController, LoadingController, ModalController } from 'ionic-angular';
-import { AppDataService } from '../../global/app-data.service';
+import { AppData } from '../../global/app-data.service';
 import { IPopup } from '../../models/models';
 import { BaseViewController } from '../base-view-controller/base-view-controller';
-import { Dates } from '../../global/dates.service';
+import { DateUtils } from '../../utils/date-utils';
 
 @IonicPage()
 @Component({
@@ -22,8 +22,8 @@ export class ContactPage extends BaseViewController {
   showContactInfo: boolean = false;
   doCallGetCompanyContactInfo: boolean = true;
   isSubmitted: boolean;
-  constructor(public navCtrl: NavController, public navParams: NavParams, public API: API, public authentication: Authentication, public modalCtrl: ModalController, public alertCtrl: AlertController, public toastCtrl: ToastController, public loadingCtrl: LoadingController, private formBuilder: FormBuilder) {
-    super(navCtrl, navParams, API, authentication, modalCtrl, alertCtrl, toastCtrl, loadingCtrl);
+  constructor(public navCtrl: NavController, public navParams: NavParams, public appData: AppData, public dateUtils: DateUtils, public API: API, public authentication: Authentication, public modalCtrl: ModalController, public alertCtrl: AlertController, public toastCtrl: ToastController, public loadingCtrl: LoadingController, private formBuilder: FormBuilder) {
+    super(appData, modalCtrl, alertCtrl, toastCtrl, loadingCtrl);
 
     this.myForm = this.formBuilder.group({
       message: [null, Validators.compose([Validators.required, Validators.maxLength(200)])]
@@ -77,7 +77,7 @@ export class ContactPage extends BaseViewController {
     this.presentLoading("Sending...");
     const toData = {
       message: myForm.message, 
-      date: Dates.toLocalIsoString(new Date().toString()), 
+      date: this.dateUtils.toLocalIsoString(new Date().toString()), 
       name: this.auth.firstName + " " + this.auth.lastName, 
       email: this.auth.email, 
       userOid: this.auth.userOid, 

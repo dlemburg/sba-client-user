@@ -3,7 +3,7 @@
     <button ion-button menuToggle>
       <ion-icon name="menu"></ion-icon>
     </button>
-    <ion-buttons *ngIf="storeService.isOrderInProgress" end>
+    <ion-buttons *ngIf="isOrderInProgress" end>
       <button ion-button icon-only (click)="navCheckout()">
         <ion-icon class="checkout-basket" ios="md-basket" md="md-basket"></ion-icon> Checkout<ion-icon ios="ios-arrow-forward" md="ios-arrow-forward"></ion-icon>
       </button>
@@ -12,14 +12,13 @@
   </ion-navbar>
 </ion-header>
 <ion-content padding>
-  <ion-list>
     <ion-item *ngIf="!products.length">No products to display.</ion-item>
-    <ion-item *ngFor="let x of products" class="" >
-      <ion-card tappable class="hover" (click)="navToProductDetails(x)" >
-        <!--<img src="{{x.img}}"/>-->
-        <img src="img/family.png" />
+    <ion-row style="border-bottom: 1px solid lightgray;" >
+    <ion-col *ngFor="let x of products" >
+      <ion-card class="hover" tappable (click)="navToProductDetails(x)" >
+        <img [src]="x.imgSrc" />
         <div class="card-title">{{ x.name }}</div>
       </ion-card>
-    </ion-item>
-  </ion-list>
+    </ion-col>
+  </ion-row>
 </ion-content>

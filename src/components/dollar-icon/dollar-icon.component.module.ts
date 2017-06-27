@@ -1,4 +1,3 @@
-// music-card module
 import { NgModule } from '@angular/core';
 import { IonicModule } from 'ionic-angular';  // to use ionic components
 import { DollarIconComponent } from './dollar-icon.component';

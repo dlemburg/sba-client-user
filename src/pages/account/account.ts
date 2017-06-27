@@ -1,8 +1,11 @@
 import { Component } from '@angular/core';
 import { IonicPage, NavController, NavParams, AlertController } from 'ionic-angular';
 import { Validators, FormBuilder, FormGroup } from '@angular/forms';
-import { IPopup } from '../../models/models';
-import { Authentication } from '../../global/authentication.service';
+import { IPopup, AuthUserInfo } from '../../models/models';
+import { Authentication } from '../../global/authentication';
+import { API, ROUTES } from '../../global/api';
+import { APP_IMGS } from '../../global/global';
+import { AppData } from '../../global/app-data.service';
 
 @IonicPage()
 @Component({
@@ -11,11 +14,24 @@ import { Authentication } from '../../global/authentication.service';
 })
 export class AccountPage {
   public items: Array<{component: Component, name: string}>;
-  constructor(public navCtrl: NavController, public navParams: NavParams, private authentication: Authentication, private formBuilder: FormBuilder, private alertCtrl: AlertController) {
-    
+  public logoImgSrc: string = this.appData.getImg().logoImgSrc; 
+  public auth: AuthUserInfo;
+
+  constructor(public navCtrl: NavController, public navParams: NavParams, public appData: AppData, public API: API, private authentication: Authentication, private formBuilder: FormBuilder, private alertCtrl: AlertController) {
+    this.auth
   }
 
   ionViewDidLoad() {
+    const img = APP_IMGS[0];
+    this.API.stack(ROUTES.getImgName + `/${this.auth.companyOid}/${img}`, "GET")
+      .subscribe(
+        (response) => {
+          console.log("response.data: ", response.data);
+          this.logoImgSrc = this.appData.getDisplayImgSrc(response.data.img);
+        }, (err) => {
+         // this.logoImgSrc = this.appData.getDisplayImgSrc(null);
+        });
+
     this.items = [
       {name: "My Details", component: 'AccountDetailsPage'},
       {name: "Passwords", component: 'AccountPasswordsPage'},

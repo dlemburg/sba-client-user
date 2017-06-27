@@ -1,19 +1,12 @@
 <ion-header>
   <ion-navbar>
-    <!--
-    <button (click)="navLogin()" ion-button>
-      <ion-icon name="arrow-back"></ion-icon>
-    </button>
-    -->
+    <ion-title>Register</ion-title>
   </ion-navbar>
 </ion-header>
 <ion-content padding>
-   <ion-list no-lines>
-    <ion-item>
-      <div text-center>Logo</div>
-    </ion-item>
-  </ion-list>
-
+  <div class="company-logo-container">
+    <CompanyLogo [logo]="logoImgSrc"></CompanyLogo>
+  </div>
   <form [formGroup]="myForm" (ngSubmit)="submit(myForm.value, myForm.valid)">
     <ion-list>
       <ion-item>

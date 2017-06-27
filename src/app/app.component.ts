@@ -2,8 +2,10 @@ import { Component, ViewChild } from '@angular/core';
 import { Nav, Platform } from 'ionic-angular';
 import { SplashScreen } from "@ionic-native/splash-screen";
 import { StatusBar } from "@ionic-native/status-bar";
-import { Authentication } from '../global/authentication.service';
-import { AppDataService } from '../global/app-data.service';
+import { Authentication } from '../global/authentication';
+import { AppData } from '../global/app-data.service';
+import { API, ROUTES } from '../global/api';
+import { COMPANY_OID } from '../global/companyOid';
 
 declare var cordova: any;
 
@@ -13,103 +15,69 @@ declare var cordova: any;
 export class MyApp {
   @ViewChild(Nav) nav: Nav;
 
-  rootPage: any;   // sets the root page to be the page we want to start on
+  rootPage: any; 
   pages: Array<{title: string, component: any}>;
 
-  constructor(public platform: Platform, private authentication: Authentication, public statusBar: StatusBar, public splashScreen: SplashScreen) {
-    this.initializeApp();
-
-    // used for an example of ngFor and navigation
-    this.authentication.isLoggedIn() ? this.rootPage = 'HomePage' : this.rootPage = 'LoginPage';
-
-    this.pages = [
-      { title: 'Home', component: 'HomePage' },      
-      { title: 'My Card', component: 'MyCardPage' },
-      { title: 'Locations', component: 'LocationsPage' },
-      { title: 'Menu', component: 'CategoriesPage' },
-     // { title: 'New Products', component: ProductsNewPage },
-     // { title: 'About Order Ahead', component: AboutOrderAheadPage },
-      { title: 'Contact Us', component: 'ContactPage' },
-      { title: 'Report Issue', component: 'ReportPage' },
-      { title: 'My Account', component: 'AccountPage' },
-     // { title: 'FAQs', component: FAQPage },
-     // { title: 'Login', component: LoginPage},      // this won't be here
-      // { title: 'Register', component: RegisterPage}  // this won't be here
-    ];
-
+  constructor(public platform: Platform, public API: API, public appData: AppData, private authentication: Authentication, public statusBar: StatusBar, public splashScreen: SplashScreen) {
+    this.platform.ready().then(() => {
+      this.initializeApp();
+    });
   }
 
   initializeApp() {
-    //this.presentLoading();  loader
+    this.API.stack(ROUTES.getImgsOnAppStartup + `/${COMPANY_OID}`, "GET")
+      .subscribe(
+        (response) => {
+          const defaultImg = response.data.imgs.defaultImg;
+          this.appData.setImgs({
+            logoImgSrc: `${ROUTES.downloadImg}?img=${response.data.imgs.logoImg}`,
+            defaultImgSrc: defaultImg ? `${ROUTES.downloadImg}?img=${defaultImg}` : "img/default.png"
+          });
+          this.finishInitialization();
+        }, (err) => {
+          this.finishInitialization();
+          console.log("Problem downloading images on app startup");
+        });
 
-    this.platform.ready().then(() => {
-      // Okay, so the platform is ready and our plugins are available.
-      // Here you can do any higher level native things you might need.
+  }
+
+  finishInitialization() {
       this.statusBar.styleDefault();
       this.splashScreen.hide();
 
-      console.log("is Android: ", this.platform.is('android'));
-       //cordova.file.cacheDirectory ??
-      if (this.platform.is('ios')) {
-        AppDataService.setStorageDirectory(cordova.file.documentsDirectory);
-      }
-      else if(this.platform.is('android')) {
-         AppDataService.setStorageDirectory(cordova.file.dataDirectory);
-      }
-    });
-
-   // this.loader.dismiss();
+      this.authentication.isLoggedIn() ? this.rootPage = 'HomePage' : this.rootPage = 'LoginPage';
+      
+      this.pages = [
+        { title: 'Home', component: 'HomePage' },      
+        { title: 'My Card', component: 'MyCardPage' },
+        { title: 'Locations', component: 'LocationsPage' },
+        { title: 'Menu', component: 'CategoriesPage' },
+      // { title: 'New Products', component: ProductsNewPage },
+      // { title: 'About Order Ahead', component: AboutOrderAheadPage },
+        { title: 'Contact Us', component: 'ContactPage' },
+        { title: 'Report Issue', component: 'ReportPage' },
+        { title: 'My Account', component: 'AccountPage' },
+      // { title: 'FAQs', component: FAQPage },
+      // { title: 'Login', component: LoginPage},      // this won't be here
+        // { title: 'Register', component: RegisterPage}  // this won't be here
+      ];
   }
 
   openPage(page) {
     // Reset the content nav to have just this page
     // we wouldn't want the back button to show in this scenario
     this.nav.setRoot(page.component);
-  }
-  /*
-  presentLoading() {
- 
-    this.loader = this.loadingCtrl.create({
-      content: "Authenticating..."
-    });
-    this.loader.present();
- 
-  }
-  */
- 
+  } 
 }
 
 
 
-
-/* lifecycle events
-
-  // runs on every page load
-  ionViewDidEnter() {
-
-  }
-
-  // auth guard enter
-  ionViewCanEnter() {
-     if('valid function from Auth here'){
-      return true;
-    } else {
-      return false;
+//  console.log("is Android: ", this.platform.is('android'));
+    /*
+    if (this.platform.is('ios')) {
+      this.appData.setStorageDirectory(cordova.file.documentsDirectory);
     }
-  }
-
-  // auth guard leave
-  ionViewCanLeave() {
-
-  }
-
-  //tear down page
-  ionViewDidLeave() {
-
-  }
-
-
-
-
-
-*/
+    else if(this.platform.is('android')) {
+        this.appData.setStorageDirectory(cordova.file.dataDirectory);
+    }
+    */

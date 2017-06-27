@@ -1,11 +1,14 @@
 import { Component } from '@angular/core';
-import { IonicPage, NavController, NavParams, AlertController, ModalController, ToastController, LoadingController } from 'ionic-angular';
-import { StoreService } from '../../global/store.service';
-import { API, ROUTES } from '../../global/api.service';
-import { Authentication } from '../../global/authentication.service';
+import { Platform, IonicPage, NavController, NavParams, AlertController, ModalController, ToastController, LoadingController } from 'ionic-angular';
+import { CheckoutStore } from '../../global/checkout-store.service';
+import { API, ROUTES } from '../../global/api';
+import { Authentication } from '../../global/authentication';
 import { BaseViewController  } from '../base-view-controller/base-view-controller';
-import { UtilityService } from '../../global/utility.service';
-import { Dates } from '../../global/dates.service';
+import { Utils } from '../../utils/utils';
+import { AppUtils } from '../../utils/app-utils';
+import { DateUtils } from '../../utils/date-utils';
+import { AppData } from '../../global/app-data.service';
+import { Geolocation } from '@ionic-native/geolocation';
 
 @IonicPage()
 @Component({
@@ -16,50 +19,56 @@ export class LocationsPage extends BaseViewController {
   closedMessage: string;
   category: string;
   locations: Array<any> = [];
-  isActive: number;
+  isActive: number = 0;
   isProceedingToOrder: boolean = false;
   auth: any;
   initHasRun: boolean = false;
-  constructor(public navCtrl: NavController, public navParams: NavParams, public API: API, public authentication: Authentication, public modalCtrl: ModalController, public alertCtrl: AlertController, public toastCtrl: ToastController, public loadingCtrl: LoadingController, private storeService: StoreService) {
-    super(navCtrl, navParams, API, authentication, modalCtrl, alertCtrl, toastCtrl, loadingCtrl);
+  lat: number;
+  long: number;
+  distanceFilter: number = 25;
+  showMap = true;
+  constructor(
+    public navCtrl: NavController, 
+    public navParams: NavParams,
+    public geolocation: Geolocation,
+    public platform: Platform, 
+    public appUtils: AppUtils, 
+    public utils: Utils, 
+    public dateUtils: DateUtils, 
+    public appData: AppData, 
+    public API: API, 
+    public authentication: Authentication, 
+    public modalCtrl: ModalController, 
+    public alertCtrl: AlertController, 
+    public toastCtrl: ToastController, 
+    public loadingCtrl: LoadingController,
+    public checkoutStore: CheckoutStore) {
+    super(appData, modalCtrl, alertCtrl, toastCtrl, loadingCtrl);
   }
 
   // address, city, state, zipcode, lat, long, hours
   ionViewDidLoad() {
-    this.isActive = 0;
-    this.category = "list";
-    // google maps plugin
-    // get locations
-    // get user location
-    // determine mileage
-    // determine open/closed
-
-    this.presentLoading();
+   // this.presentLoading();
     this.auth = this.authentication.getCurrentUser();
-    this.API.stack(ROUTES.getLocations + `/${this.auth.companyOid}`, "GET")
-      .subscribe(
-          (response) => {
-            console.log('response: ', response);
-            this.locations = response.data.locations;
-            
-            // isOpen
-            this.locations.forEach((x, index) => {
-              x.isOpen = this.determineIsOpen(x);
-            });
-            this.dismissLoading();
-          }, (err) => {
-            const shouldPopView = false;
-            this.errorHandler.call(this, err, shouldPopView)
-          });
+
+    this.platform.ready().then(() => {
+       this.geolocation.getCurrentPosition().then((data) => {
+        this.lat = +data.coords.latitude.toFixed(7);
+        this.long = +data.coords.longitude.toFixed(7);
+
+        console.log("this.lat: ", this.lat, "/n this.long: ", this.long);
+
+        this.getLocationsFilterByGpsAPI(this.lat, this.long);
+      }).catch((error) => {
+        console.log('Error getting location', error);
+      });
+    })
   }
 
   ionViewDidEnter() {
     if (this.initHasRun) {
-      this.locations.forEach((x, index) => {
-        x.isOpen = this.determineIsOpen(x);
-      });
-      this.storeService.setOrderInProgress(false);
-      this.storeService.deleteOrder();
+      this.checkoutStore.setOrderInProgress(false);
+      this.checkoutStore.deleteOrder();
     } else this.initHasRun = true;
   }
 
@@ -67,9 +76,23 @@ export class LocationsPage extends BaseViewController {
    
   }
 
-  determineIsOpen(location): boolean {
+  getLocationsFilterByGpsAPI(lat, long) {
+    this.API.stack(ROUTES.getLocationsFilterByGps + `/${this.auth.companyOid}/${lat}/${long}/${this.distanceFilter}`, "GET")
+      .subscribe(
+          (response) => {
+            console.log('response: ', response);
+            this.locations = response.data.locations;
+          
+           // this.dismissLoading();
+          }, (err) => {
+            const shouldPopView = false;
+            this.errorHandler.call(this, err, shouldPopView)
+          });
+  }
+
+  isOpen(location): boolean {
     let now = new Date(); 
-    let day = UtilityService.getDays()[now.getDay()].toLowerCase(); 
+    let day = this.appUtils.getDays()[now.getDay()].toLowerCase(); 
     let hours = now.getHours();
     let minutes = now.getMinutes();
 
@@ -81,10 +104,10 @@ export class LocationsPage extends BaseViewController {
       return false;
     }
     else {
-      let openMinutes = Dates.convertTimeStringToMinutes(todayOpen);
-      let openHours = Dates.convertTimeStringToHours(todayOpen);
-      let closeMinutes = Dates.convertTimeStringToMinutes(todayClose);
-      let closeHours = Dates.convertTimeStringToHours(todayClose);
+      let openMinutes = this.dateUtils.convertTimeStringToMinutes(todayOpen);
+      let openHours = this.dateUtils.convertTimeStringToHours(todayOpen);
+      let closeMinutes = this.dateUtils.convertTimeStringToMinutes(todayClose);
+      let closeHours = this.dateUtils.convertTimeStringToHours(todayClose);
       let closeMidnight = false;
 
 
@@ -124,13 +147,22 @@ export class LocationsPage extends BaseViewController {
     }
   }
 
-
   updateActive(i) { 
     this.isActive = i; 
   }
+
+  navLocationMap(selectedLocation) {
+    /*
+    let locations = this.locations.filter((x) => {
+      return x.oid !== selectedLocation.oid;
+    });
+    */
+
+    this.navCtrl.push('LocationsMapPage', {selectedLocation, locations: this.locations})
+  }
   
   viewHours(location) {
-    let days = UtilityService.getDays();
+    let days = this.appUtils.getDays();
     let locationHours = [];
 
     /* package for modal */
@@ -144,8 +176,8 @@ export class LocationsPage extends BaseViewController {
       if (dayOpen === "closed") {
         locationHours[index].hours = "closed";
       } else {
-        dayOpen = Dates.convertMilitaryTimeStringToNormalTimeString(dayOpen);
-        dayClose = Dates.convertMilitaryTimeStringToNormalTimeString(dayClose);
+        dayOpen = this.dateUtils.convertMilitaryTimeStringToNormalTimeString(dayOpen);
+        dayClose = this.dateUtils.convertMilitaryTimeStringToNormalTimeString(dayClose);
         locationHours[index].hours = [dayOpen, dayClose];
       }
     });
@@ -154,17 +186,17 @@ export class LocationsPage extends BaseViewController {
   }
 
  createLocationCloseTime(location): Date {
-    const days = UtilityService.getDays();
+    const days = this.appUtils.getDays();
     const today = new Date().getDay();
     const closeTime = location[days[today].toLowerCase() + "Close"];
 
-    return Dates.convertTimeStringToJavascriptDate(closeTime);
+    return this.dateUtils.convertTimeStringToJavascriptDate(closeTime);
  }
 
   proceedToOrder(location) {
-    this.storeService.setOrderInProgress(true);
-    this.storeService.setLocationOid(location.oid); 
-    this.storeService.setLocationCloseTime(this.createLocationCloseTime(location));
+    this.checkoutStore.setOrderInProgress(true);
+    this.checkoutStore.setLocationOid(location.oid); 
+    this.checkoutStore.setLocationCloseTime(this.createLocationCloseTime(location));
     this.navCtrl.push('CategoriesPage');
   }
 }

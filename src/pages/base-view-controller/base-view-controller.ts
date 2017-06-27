@@ -1,16 +1,12 @@
 import { Component } from '@angular/core';
-import { RewardsDetailsPage } from '../rewards-details/rewards-details';
-import { API, ROUTES } from '../../global/api.service';
-import { UtilityService } from '../../global/utility.service';
-import { IErrChecks, IReward } from '../../models/models';
-import { Authentication } from '../../global/authentication.service';
+import { API, ROUTES } from '../../global/api';
+import { Utils } from '../../global/utils/utils';
+import { Authentication } from '../../global/authentication';
 
-import { TabsPage } from "../tabs/tabs";
 import { NavController, NavParams, AlertController, ToastController, LoadingController, ModalController } from 'ionic-angular';
-import { AppDataService } from '../../global/app-data.service';
+import { AppData } from '../../global/app-data.service';
 import { IPopup } from '../../models/models';
 
-import { HomePage } from '../home/home';
 
 @Component({
   selector: 'page-base-view-controller',
@@ -18,18 +14,18 @@ import { HomePage } from '../home/home';
 })
 export class BaseViewController {
   public loading: any;
-  constructor(public navCtrl: NavController, public navParams: NavParams, public API: API, public authentication: Authentication, public modalCtrl: ModalController, public alertCtrl: AlertController, public toastCtrl: ToastController, public loadingCtrl: LoadingController ) {
+  constructor(public appData: AppData, public modalCtrl: ModalController, public alertCtrl: AlertController, public toastCtrl: ToastController, public loadingCtrl: LoadingController ) {
   }
 
   // app-wide error-handler
-  public errorHandler(err, shouldPopView = false) {
+  public errorHandler(err, shouldPopView = false, isLoading = true) {
     this.presentToast(shouldPopView);
-    this.dismissLoading();
+    isLoading && this.dismissLoading();
   }
 
 
   // app-wide toast
-  public presentToast(shouldPopView: Boolean, args = {message: AppDataService.defaultErrorMessage, position: AppDataService.defaultToastPosition, duration: AppDataService.defaultToastDuration}) {
+  public presentToast(shouldPopView: Boolean, args = {message: this.appData.getToast().defaultErrorMessage, position: this.appData.getToast().defaultToastPosition, duration: this.appData.getToast().defaultToastDuration}) {
     let toast = this.toastCtrl.create({
       message: args.message,
       duration: args.duration,
@@ -38,7 +34,7 @@ export class BaseViewController {
 
     toast.onDidDismiss(() => {
       if (shouldPopView) {
-        this.navCtrl.pop();
+        //this.navCtrl.pop();
       } else {
         // do nothing
       }
@@ -62,10 +58,9 @@ export class BaseViewController {
 
   
   // app-wide loading
-  public presentLoading(message = AppDataService.loading.default) {
+  public presentLoading(message = this.appData.getLoading().default) {
     this.loading = this.loadingCtrl.create({
       content: message,
-      //dismissOnPageChange: true   // this is broken
     });
     this.loading.present();
 

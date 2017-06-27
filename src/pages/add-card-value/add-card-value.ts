@@ -1,11 +1,12 @@
 import { Component } from '@angular/core';
-import { Validation } from '../../global/validation';
+import { Validation } from '../../utils/validation-utils';
 import { FormBuilder, FormGroup, Validators, FormControl } from '@angular/forms';
-import { UtilityService } from '../../global/utility.service';
-import { API, ROUTES } from '../../global/api.service';
-import { Authentication } from '../../global/authentication.service';
+import { AppUtils } from '../../utils/app-utils';
+import { API, ROUTES } from '../../global/api';
+import { Authentication } from '../../global/authentication';
 import { IonicPage, NavController, NavParams, AlertController, ToastController, ModalController, LoadingController } from 'ionic-angular';
 import { BaseViewController } from '../base-view-controller/base-view-controller';
+import { AppData } from '../../global/app-data.service';
 
 @IonicPage()
 @Component({
@@ -19,15 +20,17 @@ export class AddCardValuePage extends BaseViewController {
   isSubmitted: boolean = false;
   auth: any;
   myForm: FormGroup;
-  dollarValues: any = UtilityService.getDollarValues();
+  dollarValues: any = this.appUtils.getDollarValues();
 
-  constructor(public navCtrl: NavController, public navParams: NavParams, public API: API, public authentication: Authentication, public modalCtrl: ModalController, public alertCtrl: AlertController, public toastCtrl: ToastController, public loadingCtrl: LoadingController, private formBuilder: FormBuilder ) {
-    super(navCtrl, navParams, API, authentication, modalCtrl, alertCtrl, toastCtrl, loadingCtrl);
+  constructor(public navCtrl: NavController, public navParams: NavParams, public validation: Validation, public appData: AppData, public appUtils: AppUtils, public API: API, public authentication: Authentication, public modalCtrl: ModalController, public alertCtrl: AlertController, public toastCtrl: ToastController, public loadingCtrl: LoadingController, private formBuilder: FormBuilder ) {
+    super(appData, modalCtrl, alertCtrl, toastCtrl, loadingCtrl);
 
     this.myForm = this.formBuilder.group({
-      cardCVV: [null, Validators.compose([Validators.required, Validation.isCreditCardCVV])],
+      cardCVV: [null, Validators.compose([Validators.required, this.validation.test("isCreditCardCvv")])],
       dollarValue: [10, Validators.required]
     });
+
+    this.auth = this.authentication.getCurrentUser();
   }
 
   ionViewDidLoad() {
