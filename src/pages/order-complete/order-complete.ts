@@ -1,10 +1,10 @@
 import { Component } from '@angular/core';
 import { IonicPage, NavController, NavParams, ViewController, App } from 'ionic-angular';
 import { IPurchaseItem, AuthUserInfo } from '../../models/models';
-import { APP_IMGS } from '../../global/global';
+import { CONST_APP_IMGS } from '../../global/global';
 import { API, ROUTES } from '../../global/api';
 import { Authentication } from '../../global/authentication';
-import { AppData } from '../../global/app-data.service';
+import { AppViewData } from '../../global/app-data.service';
 
 @IonicPage()
 @Component({
@@ -12,7 +12,6 @@ import { AppData } from '../../global/app-data.service';
   templateUrl: 'order-complete.html'
 })
 export class OrderCompletePage {
-
   purchaseItem: IPurchaseItem;
   categoryOid: number;
   backgroundImg: string = "";
@@ -23,13 +22,13 @@ export class OrderCompletePage {
   productName: string;
   productImg: string;
   auth: AuthUserInfo;
-  constructor(public navCtrl: NavController, public navParams: NavParams, public appData: AppData, public API: API, public viewCtrl: ViewController, public appCtrl: App) {
+  constructor(public navCtrl: NavController, public navParams: NavParams, public API: API, public viewCtrl: ViewController, public appCtrl: App) {
 
   }
 
   ionViewDidLoad() {
     this.auth = this.auth
-    const imgName = APP_IMGS[9];
+    const imgName = CONST_APP_IMGS[9];
     this.API.stack(ROUTES.getImgName + `/${this.auth.companyOid}/${imgName}`, "GET")
       .subscribe(
         (response) => {
@@ -42,18 +41,18 @@ export class OrderCompletePage {
             rgba(56, 126, 245, 0.80)
           ), url(${url}) no-repeat`;
         }, (err) => {
-         // this.logoImgSrc = this.appData.getDisplayImgSrc(null);
+         // this.logoImgSrc = AppViewData.getDisplayImgSrc(null);
         });
 
-    const imgName2 = APP_IMGS[10];
+    const imgName2 = CONST_APP_IMGS[10];
     this.API.stack(ROUTES.getImgName + `/${this.auth.companyOid}/${imgName2}`, "GET")
       .subscribe(
         (response) => {
           console.log("response.data: ", response.data);
-          let url = this.appData.getDisplayImgSrc(response.data.img);
+          let url = AppViewData.getDisplayImgSrc(response.data.img);
           
         }, (err) => {
-          this.orderCompleteMiddleOfPageImgSrc = this.appData.getDisplayImgSrc(null);
+          this.orderCompleteMiddleOfPageImgSrc = AppViewData.getDisplayImgSrc(null);
         });
   }
 

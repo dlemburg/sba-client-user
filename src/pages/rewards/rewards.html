@@ -12,7 +12,7 @@
 
       <!-- top -->
      <ion-card class="hover ion-card-top" no-padding no-margin>
-        <img [src]="rewardImgSrc"/>
+        <img [src]="rewardImgSrc" onError="this.src='img/default.png';"/>
         <CompanyLogo [logo]="logoImgSrc"></CompanyLogo>
         <ion-grid class="top-card-footer">
             <ion-row>
@@ -33,7 +33,7 @@
           </ion-card>
         </div>
         <ion-card tappable class="reward-card" (click)="navRewardsDetails(x)" *ngFor="let x of rewards_individual; let i = index;" no-padding no-margin>
-          <img [src]="x.imgSrc"/>
+          <img [src]="x.imgSrc" onError="this.src='img/default.png';"/>
           <div class="reward-card-title">{{x.name}}</div>
           <div *ngIf="x.hasExpiryDate" class="reward-card-expiry">
             <span>Expires: </span> <span> {{ x.expiryDate | date }}</span>
@@ -44,7 +44,7 @@
           <div class="reward-header">{{ rewardTypeIndividualMessage }}</div>
         </ion-card>
         <ion-card tappable class=" reward-card" (click)="navRewardsDetails(x)" *ngFor="let x of rewards_all; let i = index;" no-padding no-margin>
-          <img [src]="x.imgSrc" />
+          <img [src]="x.imgSrc" onError="this.src='img/default.png';" />
           <div class="reward-card-title">{{x.name}}</div>
           <div class="reward-card-expiry">
             <span>{{ x.startDate | date }} </span> --- <span> {{ x.expiryDate | date }}</span>

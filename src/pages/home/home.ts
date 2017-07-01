@@ -3,11 +3,11 @@ import { IonicPage, Platform, NavController, NavParams, AlertController, ModalCo
 import { IOwnerAlert } from '../../models/models';
 import { API, ROUTES } from '../../global/api';
 import { Authentication } from '../../global/authentication';
-import { AppData } from '../../global/app-data.service';
+import { AppViewData } from '../../global/app-data.service';
 import { BaseViewController } from '../base-view-controller/base-view-controller';
 import { Transfer, FileUploadOptions, TransferObject } from '@ionic-native/transfer';
 import { File } from '@ionic-native/file';
-import { APP_IMGS } from '../../global/global';
+import { CONST_APP_IMGS } from '../../global/global';
 
 declare var cordova: any;
 @IonicPage()
@@ -24,17 +24,16 @@ export class HomePage extends BaseViewController {
     img: '',
     headline: ''  // on home page
   };
-  points: number|string;
+  points: number|string = "Unavailable";
   auth: any;
   unavailable: "Unavailable";
-  defaultImgSrc: string = this.appData.getImg().defaultImgSrc;
+  defaultImgSrc: string = AppViewData.getImg().defaultImgSrc;
 
 
   constructor(
     public navCtrl: NavController, 
     public navParams: NavParams, 
     public API: API, 
-    public appData: AppData,
     public authentication: Authentication, 
     public modalCtrl: ModalController, 
     public alertCtrl: AlertController, 
@@ -43,15 +42,14 @@ export class HomePage extends BaseViewController {
     private transfer: Transfer, 
     private file: File,
     private platform: Platform,
-
     ) {
-    super(appData, modalCtrl, alertCtrl, toastCtrl, loadingCtrl);
+    super(alertCtrl, toastCtrl, loadingCtrl);
 
     this.cards = [
         {
             img: null,
             imgSrc: this.defaultImgSrc,
-            name: APP_IMGS[0],
+            name: CONST_APP_IMGS[0],
             title: 'My Mobile Card',
             subtitle: 'View card details and Pay',
             component: 'MyCardPage',
@@ -60,7 +58,7 @@ export class HomePage extends BaseViewController {
         {
             img: null,
             imgSrc: this.defaultImgSrc,
-            name: APP_IMGS[1],
+            name: CONST_APP_IMGS[1],
             title: 'Rewards',
             subtitle: 'Discounts and specials you don\'t want to miss out on!',
             component: 'RewardsPage',
@@ -69,7 +67,7 @@ export class HomePage extends BaseViewController {
         {
             img: null,
             imgSrc: this.defaultImgSrc,
-            name: APP_IMGS[2],
+            name: CONST_APP_IMGS[2],
             title: 'Order Ahead',
             subtitle: 'Skip the line!',
             component: 'LocationsPage',
@@ -78,7 +76,7 @@ export class HomePage extends BaseViewController {
         {
             img: null,
             imgSrc: this.defaultImgSrc,
-            name: APP_IMGS[3],
+            name: CONST_APP_IMGS[3],
             title: 'Menu',
             subtitle: 'See what we have to offer!',
             component: 'CategoriesPage',
@@ -94,15 +92,17 @@ export class HomePage extends BaseViewController {
     this.auth = this.authentication.getCurrentUser();
     this.getPointsAndPointsNeeded();
     this.getHomePageImgs();
-   
   }
 
+/*
   ionViewDidEnter() {
     if (this.initHasRun) {
+      console.log("ionViewDidEnter run...")
       this.getPointsAndPointsNeeded();
       this.getHomePageImgs();
     } else this.initHasRun = true;
   }
+  */
 
   getHomePageImgs() {
     this.API.stack(ROUTES.getHomePageImgs + `/${this.auth.companyOid}`, "GET")
@@ -111,23 +111,12 @@ export class HomePage extends BaseViewController {
           console.log("response.data: ", response.data);
           this.cards.forEach((x) => {
             x.img = response.data.homePageImgs[x.name];
-            x.imgSrc = this.appData.getDisplayImgSrc(x.img);
+            x.imgSrc = AppViewData.getDisplayImgSrc(x.img);
 
             console.log("x.imgSrc: ", x.imgSrc);
           });
-        }, (err) => {
-            this.points = this.unavailable;
-            /*
-            this.cards.forEach((x) => {
-              x.imgSrc = this.appData.getDisplayImgSrc(null);
-            });
-            */
-           // const shouldPopView = false;
-           // this.errorHandler.call(this, err, shouldPopView);
-        });
-
+        }, this.errorHandler(this.ERROR_TYPES.API, undefined, {shouldDismissLoading: false}));
   }
-
   
   getPointsAndPointsNeeded() {
      //this.presentLoading();
@@ -136,14 +125,10 @@ export class HomePage extends BaseViewController {
         (response) => {
          // this.dismissLoading();
           this.points = response.data.points;
-        }, (err) => {
-            this.points = this.unavailable;
-           // const shouldPopView = false;
-           // this.errorHandler.call(this, err, shouldPopView);
-          });
+        }, this.errorHandler(this.ERROR_TYPES.API, undefined, {shouldDismissLoading: false}));
   }
 
-  nav(obj) {
-    this.navCtrl.push(obj.component);
+  nav(page) {
+    this.navCtrl.push(page.component);
   }
 }

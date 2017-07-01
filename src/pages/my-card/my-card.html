@@ -8,7 +8,7 @@
 </ion-header>
 <ion-content padding>
   <div class="my-card-img-container">
-    <img alt="Mobile Card Image" [src]="mobileCardImgSrc" />
+    <img alt="Mobile Card Image" [src]="mobileCardImgSrc" onError="this.src='img/default.png';" />
   </div>
   <div text-center>
     <div class="balance-container" padding>

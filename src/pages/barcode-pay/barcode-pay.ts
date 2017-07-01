@@ -1,90 +1,119 @@
-import { Component } from '@angular/core';
+import { Component, Directive } from '@angular/core';
 import { API, ROUTES } from '../../global/api';
 import { Authentication } from '../../global/authentication';
 import { Utils } from '../../utils/utils';
-import { AuthUserInfo } from '../../models/models';
+import { AuthUserInfo, ICompanyDetails } from '../../models/models';
 import { IonicPage, NavController, NavParams, AlertController, ToastController, LoadingController, ModalController } from 'ionic-angular';
 import { BaseViewController } from '../base-view-controller/base-view-controller';
-import { AppData } from '../../global/app-data.service';
+import { AppViewData } from '../../global/app-data.service';
 import { SocialSharing } from '@ionic-native/social-sharing';
-
+import { CONST_SOCIAL_MEDIA_TYPES } from '../../global/global';
 
 @IonicPage()
 @Component({
   selector: 'page-barcode-pay',
-  templateUrl: 'barcode-pay.html'
+  templateUrl: 'barcode-pay.html',
 })
 export class BarcodePayPage extends BaseViewController {
-  companyDetails: any = {
-    hasSocialMedia: false,
-    socialMediaDiscountPercent: 0,
-    hasFacebook: false,
-    hasTwitter: false,
-    hasInstagram: false
-  };
+  companyDetails: ICompanyDetails = {};
   socialMediaDiscountString: string;
+  socialMediaType: string = "";
+  isSocialMediaUsed: boolean = false;
   paymentID: string = null;
-  auth: AuthUserInfo;
+  auth: AuthUserInfo = this.authentication.getCurrentUser();
+  barcodeData: string = `${this.auth.userOid}$${this.auth.companyOid}$0$0`;
+  shareVia = {
+    TWITTER: () => {
+      this.twitter();
+    },
+    FACEBOOK: () => {
+      this.facebook();
+    },
+    INSTAGRAM: () => {
+       this.instagram();
+    }
+  };
+  SOCIAL_MEDIA_TYPES = CONST_SOCIAL_MEDIA_TYPES;
   constructor(
     public navCtrl: NavController, 
     public navParams: NavParams, 
     public socialSharing: SocialSharing,
-    public appData: AppData, 
-    public utils: Utils, 
     public API: API, 
     public authentication: Authentication, 
     public modalCtrl: ModalController, 
     public alertCtrl: AlertController, 
     public toastCtrl: ToastController, 
     public loadingCtrl: LoadingController) {
-      super(appData, modalCtrl, alertCtrl, toastCtrl, loadingCtrl);
+      super(alertCtrl, toastCtrl, loadingCtrl);
   }
+
   ionViewDidLoad() {
-    // API get company details && user pay code
     this.presentLoading();
-    this.socialMediaDiscountString = this.utils.percentToString(this.companyDetails.socialMediaDiscount, 1);
     this.auth = this.authentication.getCurrentUser();
     this.API.stack(ROUTES.getCompanyDetails, "POST", {companyOid: this.auth.companyOid})
       .subscribe(
           (response) => {
             console.log('response: ', response);
-            this.companyDetails.hasSocialMedia =  response.data.companyDetails.hasSocialMedia;
-            this.companyDetails.hasFacebook =  response.data.companyDetails.hasFacebook;
-            this.companyDetails.hasTwitter =  response.data.companyDetails.hasTwitter;
-            this.companyDetails.hasInstagram =  response.data.companyDetails.hasInstagram;
-            this.companyDetails.socialMediaDiscountPercent =  response.data.companyDetails.socialMediaDiscountPercent;
-            this.getUserPayCode();
-          }, (err) => {
-            const shouldPopView = false;
-            const shouldDismiss = false;
-            this.errorHandler.call(this, err, shouldPopView, shouldDismiss)
-          });
+            this.companyDetails = response.data.companyDetails;
+            this.companyDetails.socialMediaImg = `${ROUTES.downloadImg}?img=${response.data.companyDetails.socialMediaImg}`;
+
+            console.log("this.companyDetails: ", this.companyDetails);   
+            this.getUserPaymentID();
+            
+          }, this.errorHandler(this.ERROR_TYPES.API, undefined, {shouldDismissLoading: false}));
   }
 
-  getUserPayCode() {
+  getUserPaymentID() {
      this.API.stack(ROUTES.getUserPaymentID, "POST", {userOid: this.auth.userOid, companyOid: this.auth.companyOid})
       .subscribe(
           (response) => {
             console.log('response: ', response);
             this.paymentID = response.data.paymentID;
             this.dismissLoading();
-          }, (err) => {
-            const shouldPopView = false;
-            this.errorHandler.call(this, err, shouldPopView)
-          });
+          }, this.errorHandler(this.ERROR_TYPES.API));
+  }
+
+
+  // barcode data will have  userOid, companyOid, isSocialMediaUsed, socialMediaType separated by $
+  // i.e.:  148$12$0$TWITTER
+
+  generateBarcodeData(isSocialMediaUsed: boolean|number, socialMediaType: string) {
+    isSocialMediaUsed = isSocialMediaUsed ? 1 : 0;
+    this.barcodeData =`${this.auth.userOid}$${this.auth.companyOid}${isSocialMediaUsed}$${socialMediaType}`;
+  }
+
+  finishProcessSocialMedia(socialMediaType) {
+    this.generateBarcodeData(true, socialMediaType);
+  }
+
+  onShare(socialMediaType:string) {
+    this.presentLoading("Posting...");
+    this.shareVia[socialMediaType]();
   }
 
   twitter() {
-
+    this.socialSharing.shareViaTwitter(this.companyDetails.socialMediaMessage, this.companyDetails.socialMediaImg).then(() => {
+      this.finishProcessSocialMedia(this.SOCIAL_MEDIA_TYPES.TWITTER);
+    })
+    .catch(this.errorHandler(this.ERROR_TYPES.PLUGIN.SOCIAL_MEDIA))
   }
 
   facebook() {
+    this.socialSharing.shareViaFacebook(this.companyDetails.socialMediaMessage, this.companyDetails.socialMediaImg).then(() => {
+      this.finishProcessSocialMedia(this.SOCIAL_MEDIA_TYPES.FACEBOOK);
 
+    })
+    .catch(this.errorHandler(this.ERROR_TYPES.PLUGIN.SOCIAL_MEDIA))
   }
 
   instagram() {
+    this.socialSharing.shareViaInstagram(this.companyDetails.socialMediaMessage, this.companyDetails.socialMediaImg).then(() => {
+      this.finishProcessSocialMedia(this.SOCIAL_MEDIA_TYPES.INSTAGRAM);
+    })
+    .catch(this.errorHandler(this.ERROR_TYPES.PLUGIN.SOCIAL_MEDIA))
 
   }
+
 
   submit() {
     this.navCtrl.setRoot('HomePage');

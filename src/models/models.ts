@@ -168,3 +168,32 @@ export interface SocketEvents {
     alertUserProcessingOrder: string;  // user listener
     locationIsProcessingOrder: string;  // location emit
 }
+
+
+
+export interface IErrorHandlerOpts {
+  shouldPopView?: boolean
+  shouldDismissLoading?: boolean
+}
+
+export interface ICompanyDetails {
+    doesChargeForDairy?: boolean;
+    doesChargeForAddons?: boolean;
+    hasDairy?: boolean;
+    hasVariety?: boolean;
+    hasSweetener?: boolean;
+    hasAddons?: boolean;
+    hasFlavors?: boolean;
+    acceptsPartialPayments?: boolean;
+    taxRate?: number;
+    hasPrinter?: boolean;
+    hasSocialMediaRewards?: boolean;
+    hasFacebook?: boolean;
+    hasTwitter?: boolean;
+    hasInstagram?: boolean;
+    socialMediaPointsBonus?: boolean;
+    socialMediaMessage?: string;
+    socialMediaImg?: string;
+    allowsCommentsOnOrderAhead?: boolean;
+    
+}

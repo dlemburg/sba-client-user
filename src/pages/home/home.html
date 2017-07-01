@@ -15,7 +15,7 @@
   </ion-toolbar>
   -->
   <ion-card tappable class="hover" *ngFor="let x of cards" (click)="nav(x)">
-    <img alt="{{ x.title}} Image" [src]="x.imgSrc"/>
+    <img alt="{{ x.title}} Image" [src]="x.imgSrc" onError="this.src='img/default.png';"/>
     <div class="card-title">{{ x.title }}</div>
     <div class="card-subtitle">{{ x.subtitle }}</div>
     <div *ngIf="x.id === 1" class="card-points">Current Points: &nbsp; <span class="card-points-number">{{ points }}</span></div>

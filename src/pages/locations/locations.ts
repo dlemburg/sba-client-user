@@ -7,8 +7,9 @@ import { BaseViewController  } from '../base-view-controller/base-view-controlle
 import { Utils } from '../../utils/utils';
 import { AppUtils } from '../../utils/app-utils';
 import { DateUtils } from '../../utils/date-utils';
-import { AppData } from '../../global/app-data.service';
+import { AppViewData } from '../../global/app-data.service';
 import { Geolocation } from '@ionic-native/geolocation';
+import { SocialSharing } from '@ionic-native/social-sharing';
 
 @IonicPage()
 @Component({
@@ -27,15 +28,13 @@ export class LocationsPage extends BaseViewController {
   long: number;
   distanceFilter: number = 25;
   showMap = true;
+  zero: boolean = false;
+
   constructor(
     public navCtrl: NavController, 
     public navParams: NavParams,
     public geolocation: Geolocation,
     public platform: Platform, 
-    public appUtils: AppUtils, 
-    public utils: Utils, 
-    public dateUtils: DateUtils, 
-    public appData: AppData, 
     public API: API, 
     public authentication: Authentication, 
     public modalCtrl: ModalController, 
@@ -43,26 +42,23 @@ export class LocationsPage extends BaseViewController {
     public toastCtrl: ToastController, 
     public loadingCtrl: LoadingController,
     public checkoutStore: CheckoutStore) {
-    super(appData, modalCtrl, alertCtrl, toastCtrl, loadingCtrl);
+    super(alertCtrl, toastCtrl, loadingCtrl);
   }
 
   // address, city, state, zipcode, lat, long, hours
   ionViewDidLoad() {
-   // this.presentLoading();
+    this.presentLoading();
     this.auth = this.authentication.getCurrentUser();
 
-    this.platform.ready().then(() => {
-       this.geolocation.getCurrentPosition().then((data) => {
-        this.lat = +data.coords.latitude.toFixed(7);
-        this.long = +data.coords.longitude.toFixed(7);
+    this.geolocation.getCurrentPosition().then((data) => {
+      this.lat = +data.coords.latitude.toFixed(7);
+      this.long = +data.coords.longitude.toFixed(7);
 
-        console.log("this.lat: ", this.lat, "/n this.long: ", this.long);
+      console.log("this.lat: ", this.lat, "/n this.long: ", this.long);
 
-        this.getLocationsFilterByGpsAPI(this.lat, this.long);
-      }).catch((error) => {
-        console.log('Error getting location', error);
-      });
+      this.getLocationsFilterByGpsAPI(this.lat, this.long);
     })
+    .catch(this.errorHandler(this.ERROR_TYPES.PLUGIN.GEOLOCATION));
   }
 
   ionViewDidEnter() {
@@ -82,17 +78,14 @@ export class LocationsPage extends BaseViewController {
           (response) => {
             console.log('response: ', response);
             this.locations = response.data.locations;
-          
-           // this.dismissLoading();
-          }, (err) => {
-            const shouldPopView = false;
-            this.errorHandler.call(this, err, shouldPopView)
-          });
+            if (!this.locations.length) this.zero = true;
+            this.dismissLoading();
+          }, this.errorHandler(this.ERROR_TYPES.API));
   }
 
   isOpen(location): boolean {
     let now = new Date(); 
-    let day = this.appUtils.getDays()[now.getDay()].toLowerCase(); 
+    let day = AppUtils.getDays()[now.getDay()].toLowerCase(); 
     let hours = now.getHours();
     let minutes = now.getMinutes();
 
@@ -104,10 +97,10 @@ export class LocationsPage extends BaseViewController {
       return false;
     }
     else {
-      let openMinutes = this.dateUtils.convertTimeStringToMinutes(todayOpen);
-      let openHours = this.dateUtils.convertTimeStringToHours(todayOpen);
-      let closeMinutes = this.dateUtils.convertTimeStringToMinutes(todayClose);
-      let closeHours = this.dateUtils.convertTimeStringToHours(todayClose);
+      let openMinutes = DateUtils.convertTimeStringToMinutes(todayOpen);
+      let openHours = DateUtils.convertTimeStringToHours(todayOpen);
+      let closeMinutes = DateUtils.convertTimeStringToMinutes(todayClose);
+      let closeHours = DateUtils.convertTimeStringToHours(todayClose);
       let closeMidnight = false;
 
 
@@ -162,7 +155,7 @@ export class LocationsPage extends BaseViewController {
   }
   
   viewHours(location) {
-    let days = this.appUtils.getDays();
+    let days = AppUtils.getDays();
     let locationHours = [];
 
     /* package for modal */
@@ -176,21 +169,21 @@ export class LocationsPage extends BaseViewController {
       if (dayOpen === "closed") {
         locationHours[index].hours = "closed";
       } else {
-        dayOpen = this.dateUtils.convertMilitaryTimeStringToNormalTimeString(dayOpen);
-        dayClose = this.dateUtils.convertMilitaryTimeStringToNormalTimeString(dayClose);
+        dayOpen = DateUtils.convertMilitaryTimeStringToNormalTimeString(dayOpen);
+        dayClose = DateUtils.convertMilitaryTimeStringToNormalTimeString(dayClose);
         locationHours[index].hours = [dayOpen, dayClose];
       }
     });
 
-    this.presentModal('HoursPage', {locationHours});
+    this.modalCtrl.create('HoursPage', {locationHours}).present();
   }
 
  createLocationCloseTime(location): Date {
-    const days = this.appUtils.getDays();
+    const days = AppUtils.getDays();
     const today = new Date().getDay();
     const closeTime = location[days[today].toLowerCase() + "Close"];
 
-    return this.dateUtils.convertTimeStringToJavascriptDate(closeTime);
+    return DateUtils.convertTimeStringToJavascriptDate(closeTime);
  }
 
   proceedToOrder(location) {

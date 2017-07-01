@@ -75,7 +75,5 @@ export class LocationsMapPage {
             });
           });
         });
-   
  }
-
 }

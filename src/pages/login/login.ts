@@ -4,11 +4,11 @@ import { FormBuilder, FormGroup, Validators, FormControl } from '@angular/forms'
 import { API, ROUTES } from '../../global/api';
 import { Authentication } from '../../global/authentication';
 import { IonicPage, NavController, NavParams, AlertController, ToastController, LoadingController, ModalController } from 'ionic-angular';
-import { AppData } from '../../global/app-data.service';
+import { AppViewData } from '../../global/app-data.service';
 import { IPopup, AuthUserInfo } from '../../models/models';
 import { BaseViewController } from '../base-view-controller/base-view-controller';
 import { COMPANY_OID } from '../../global/companyOid';
-import { APP_IMGS } from '../../global/global'
+import { CONST_APP_IMGS } from '../../global/global'
 
 @IonicPage()
 @Component({
@@ -20,11 +20,21 @@ export class LoginPage extends BaseViewController {
   myForm: FormGroup;
   loginBackgroundImgSrc: string = null;
   auth: AuthUserInfo;
-  logoImgSrc: string = this.appData.getImg().logoImgSrc; 
+  logoImgSrc: string = AppViewData.getImg().logoImgSrc; 
   
 
-  constructor(public navCtrl: NavController, public navParams: NavParams, public appData: AppData, public API: API, public authentication: Authentication, public modalCtrl: ModalController, public alertCtrl: AlertController, public toastCtrl: ToastController, public loadingCtrl: LoadingController, private formBuilder: FormBuilder) {
-    super(appData, modalCtrl, alertCtrl, toastCtrl, loadingCtrl);
+  constructor(
+    public navCtrl: NavController, 
+    public navParams: NavParams, 
+    public API: API, 
+    public authentication: Authentication, 
+    public modalCtrl: ModalController, 
+    public alertCtrl: AlertController, 
+    public toastCtrl: ToastController, 
+    public loadingCtrl: LoadingController, 
+    private formBuilder: FormBuilder) {
+    super(alertCtrl, toastCtrl, loadingCtrl);
+
     this.auth = this.authentication.getCurrentUser();
     this.myForm = this.formBuilder.group({
       email: [null, Validators.required],
@@ -34,7 +44,7 @@ export class LoginPage extends BaseViewController {
     console.log("logoImgSrc: ", this.logoImgSrc);
   }
   ionViewDidLoad() {
-    const imgName = APP_IMGS[8];
+    const imgName = CONST_APP_IMGS[8];
     this.API.stack(ROUTES.getImgName + `/${COMPANY_OID}/${imgName}`, "GET")
       .subscribe(
         (response) => {
@@ -51,7 +61,7 @@ export class LoginPage extends BaseViewController {
           this.loginBackgroundImgSrc =  `url(${url}) no-repeat`;
         }, (err) => {
           console.log('err: ', err);
-         // this.logoImgSrc = this.appData.getDisplayImgSrc(null);
+         // this.logoImgSrc = AppViewData.getDisplayImgSrc(null);
         });
   }
 
@@ -73,19 +83,15 @@ export class LoginPage extends BaseViewController {
 
             if (response.code === 2) {
               this.showPopup({
-                title: this.appData.getPopup().defaultErrorTitle, 
+                title: AppViewData.getPopup().defaultErrorTitle, 
                 message: response.message || "No email found.", 
-                buttons: [{text: this.appData.getPopup().defaultConfirmButtonText}]
+                buttons: [{text: AppViewData.getPopup().defaultConfirmButtonText}]
               });
             } else {
-
               let {token} = response.data;
               this.authentication.saveToken(token);
               this.navCtrl.setRoot('HomePage');
             }
-          }, (err) => {
-            const shouldPopView = false;
-            this.errorHandler.call(this, err, shouldPopView)
-          });
+          }, this.errorHandler(this.ERROR_TYPES.API));
   }
 }

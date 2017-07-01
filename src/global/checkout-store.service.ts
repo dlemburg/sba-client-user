@@ -7,7 +7,7 @@ import { Utils } from '../utils/utils';
 
 @Injectable()
 export class CheckoutStore {
-    constructor(private utils: Utils) {}
+    constructor() {}
     
     private _isOrderInProgress: boolean = false; 
     private _locationOid: number = null;
@@ -183,11 +183,11 @@ export class CheckoutStore {
     }
 
     public calculateTaxes(subtotal: number, TAX_RATE: number): number {
-        return this.utils.round(subtotal * TAX_RATE);
+        return Utils.round(subtotal * TAX_RATE);
     }
 
     public calculateTotal(subtotal: number, taxes: number): number {
-        return this.utils.round(subtotal + taxes);
+        return Utils.round(subtotal + taxes);
     }
 
     public calculateSubtotal(order: IOrder): number {
@@ -197,14 +197,14 @@ export class CheckoutStore {
           order.transactionDetails.subtotal += (x.sizeAndOrPrice.price * x.quantity) + (x.addonsCost * x.quantity) + (x.dairyCost);
       });
       
-      return this.utils.round(order.transactionDetails.subtotal);
+      return Utils.round(order.transactionDetails.subtotal);
     }
 
 
     public calculateTaxesSubtotalTotalAndReturnOrder(order: IOrder, subtotal: number, TAX_RATE: number): IOrder {
-        order.transactionDetails.subtotal = this.utils.round(subtotal);
-        order.transactionDetails.taxes = this.utils.round(this.calculateTaxes(order.transactionDetails.subtotal, TAX_RATE));
-        order.transactionDetails.total = this.utils.round(this.calculateTotal(order.transactionDetails.subtotal, order.transactionDetails.taxes));
+        order.transactionDetails.subtotal = Utils.round(subtotal);
+        order.transactionDetails.taxes = Utils.round(this.calculateTaxes(order.transactionDetails.subtotal, TAX_RATE));
+        order.transactionDetails.total = Utils.round(this.calculateTotal(order.transactionDetails.subtotal, order.transactionDetails.taxes));
 
         return order;
     }

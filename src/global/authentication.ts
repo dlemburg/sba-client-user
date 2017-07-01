@@ -1,7 +1,6 @@
 import { Injectable } from '@angular/core';
-import { TOKEN_NAME } from './global';
-
-import { IPayload, AuthUserInfo } from '../models/models';
+import { CONST_TOKEN_NAME } from './global';
+import { AuthUserInfo } from '../models/models';
 
 @Injectable()
 export class Authentication {
@@ -30,20 +29,20 @@ export class Authentication {
     }
 
     saveToken(token): void {
-        window.localStorage[TOKEN_NAME] = token;
+        window.localStorage[CONST_TOKEN_NAME] = token;
     };
 
     getToken(): any {
-        return window.localStorage[TOKEN_NAME];
+        return window.localStorage[CONST_TOKEN_NAME];
     };
 
     updateToken(token): void {
-        window.localStorage.removeItem(TOKEN_NAME);
-        window.localStorage[TOKEN_NAME] = token;
+        window.localStorage.removeItem(CONST_TOKEN_NAME);
+        window.localStorage[CONST_TOKEN_NAME] = token;
     };
 
     deleteToken(): void {
-        window.localStorage.removeItem(TOKEN_NAME);
+        window.localStorage.removeItem(CONST_TOKEN_NAME);
     };
 
     logout(): void {

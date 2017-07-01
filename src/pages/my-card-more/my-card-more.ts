@@ -2,8 +2,8 @@ import { Component } from '@angular/core';
 import { API, ROUTES } from '../../global/api';
 import { Authentication } from '../../global/authentication';
 import { IonicPage, NavController, NavParams, AlertController, ToastController, ModalController, LoadingController } from 'ionic-angular';
-import { AppData } from '../../global/app-data.service';
-import { IPopup } from '../../models/models';
+import { AppViewData } from '../../global/app-data.service';
+import { IPopup, AuthUserInfo } from '../../models/models';
 import { BaseViewController } from '../base-view-controller/base-view-controller';
 
 @IonicPage()
@@ -12,9 +12,17 @@ import { BaseViewController } from '../base-view-controller/base-view-controller
   templateUrl: 'my-card-more.html'
 })
 export class MyCardMorePage extends BaseViewController {
-  auth: any;
-  constructor(public navCtrl: NavController, public navParams: NavParams, public appData: AppData, public API: API, public authentication: Authentication, public modalCtrl: ModalController, public alertCtrl: AlertController, public toastCtrl: ToastController, public loadingCtrl: LoadingController) {
-    super(appData, modalCtrl, alertCtrl, toastCtrl, loadingCtrl);
+  auth: AuthUserInfo;
+  constructor(
+    public navCtrl: NavController, 
+    public navParams: NavParams, 
+    public API: API, 
+    public authentication: Authentication, 
+    public modalCtrl: ModalController, 
+    public alertCtrl: AlertController, 
+    public toastCtrl: ToastController, 
+    public loadingCtrl: LoadingController) {
+    super(alertCtrl, toastCtrl, loadingCtrl);
   }
 
   ionViewDidLoad() {
@@ -33,12 +41,9 @@ export class MyCardMorePage extends BaseViewController {
     this.presentLoading("Deleting...");
     this.API.stack(ROUTES.deleteCard, "GET")
       .subscribe(
-          (response) => {
-            console.log('response: ', response);
-            this.dismissLoading("Deleted!");
-          }, (err) => {
-            const shouldPopView = false;
-            this.errorHandler.call(this, err, shouldPopView)
-          });
+        (response) => {
+          console.log('response: ', response);
+          this.dismissLoading("Deleted!");
+        },this.errorHandler(this.ERROR_TYPES.API));
   }
 }

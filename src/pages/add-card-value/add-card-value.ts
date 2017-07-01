@@ -4,9 +4,9 @@ import { FormBuilder, FormGroup, Validators, FormControl } from '@angular/forms'
 import { AppUtils } from '../../utils/app-utils';
 import { API, ROUTES } from '../../global/api';
 import { Authentication } from '../../global/authentication';
-import { IonicPage, NavController, NavParams, AlertController, ToastController, ModalController, LoadingController } from 'ionic-angular';
+import { IonicPage, NavController, NavParams, AlertController, ToastController, LoadingController } from 'ionic-angular';
 import { BaseViewController } from '../base-view-controller/base-view-controller';
-import { AppData } from '../../global/app-data.service';
+import { AppViewData } from '../../global/app-data.service';
 
 @IonicPage()
 @Component({
@@ -20,13 +20,21 @@ export class AddCardValuePage extends BaseViewController {
   isSubmitted: boolean = false;
   auth: any;
   myForm: FormGroup;
-  dollarValues: any = this.appUtils.getDollarValues();
+  dollarValues: any = AppUtils.getDollarValues();
 
-  constructor(public navCtrl: NavController, public navParams: NavParams, public validation: Validation, public appData: AppData, public appUtils: AppUtils, public API: API, public authentication: Authentication, public modalCtrl: ModalController, public alertCtrl: AlertController, public toastCtrl: ToastController, public loadingCtrl: LoadingController, private formBuilder: FormBuilder ) {
-    super(appData, modalCtrl, alertCtrl, toastCtrl, loadingCtrl);
+  constructor(
+    public navCtrl: NavController, 
+    public navParams: NavParams,
+    public API: API, 
+    public authentication: Authentication, 
+    public alertCtrl: AlertController, 
+    public toastCtrl: ToastController, 
+    public loadingCtrl: LoadingController, 
+    private formBuilder: FormBuilder ) {
+    super(alertCtrl, toastCtrl, loadingCtrl);
 
     this.myForm = this.formBuilder.group({
-      cardCVV: [null, Validators.compose([Validators.required, this.validation.test("isCreditCardCvv")])],
+      cardCVV: [null, Validators.compose([Validators.required, Validation.test("isCreditCardCvv")])],
       dollarValue: [10, Validators.required]
     });
 
@@ -41,10 +49,7 @@ export class AddCardValuePage extends BaseViewController {
             console.log('response: ', response);
             this.dismissLoading();
             this.cardNumberLastFourDigits = response.data.cardNumberLastFourDigits;
-          }, (err) => {
-            const shouldPopView = false;
-            this.errorHandler.call(this, err, shouldPopView)
-          });
+          },this.errorHandler(this.ERROR_TYPES.API));
   }
 
   selectDollarValue(amount) {
@@ -59,10 +64,7 @@ export class AddCardValuePage extends BaseViewController {
           (response) => {
             this.dismissLoading();
             console.log('response: ', response);
-          }, (err) => {
-            const shouldPopView = true;
-            this.errorHandler.call(this, err, shouldPopView)
-          });
+          }, this.errorHandler(this.ERROR_TYPES.API));
   }
 
   submit(myForm, isValid) {
@@ -84,10 +86,7 @@ export class AddCardValuePage extends BaseViewController {
           (response) => {
             console.log('response: ', response);
             this.dismissLoading("Success!");
-          }, (err) => {
-            const shouldPopView = false;
-            this.errorHandler.call(this, err, shouldPopView)
-          });
+          }, this.errorHandler(this.ERROR_TYPES.API));
   }
 
 }

@@ -8,7 +8,7 @@
 </ion-header>
 
 <ion-content padding>
-  <CompanyLogo [src]="logoImgSrc"></CompanyLogo>
+  <CompanyLogo [logo]="logoImgSrc"></CompanyLogo>
   <div class="message-container">
     <form [formGroup]="myForm" (ngSubmit)="submit(myForm.value, myForm.valid)">
       <ion-item>

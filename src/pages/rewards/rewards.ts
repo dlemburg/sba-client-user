@@ -2,10 +2,10 @@ import { Component } from '@angular/core';
 import { API, ROUTES } from '../../global/api';
 import { Authentication } from '../../global/authentication';
 import { IonicPage, NavController, NavParams, AlertController, ToastController, LoadingController, ModalController } from 'ionic-angular';
-import { AppData } from '../../global/app-data.service';
+import { AppViewData } from '../../global/app-data.service';
 import { IPopup } from '../../models/models';
 import { BaseViewController } from '../base-view-controller/base-view-controller';
-import { APP_IMGS } from '../../global/global';
+import { CONST_APP_IMGS } from '../../global/global';
 
 @IonicPage()
 @Component({
@@ -18,16 +18,24 @@ export class RewardsPage extends BaseViewController {
   points: number|string = 0;
   pointsNeeded: number|string = 0;
   auth: any;
-  rewardTypeIndividualMessage: string = this.appData.getRewards().rewardTypeIndividualMessage;
+  rewardTypeIndividualMessage: string = AppViewData.getRewards().rewardTypeIndividualMessage;
   REWARDS_TYPE = {
     REWARDS_INDIVIDUAL: "rewards_individual",
     REWARDS_ALL: "rewards_all"
   };
-  logoImgSrc: string = this.appData.getImg().logoImgSrc;
+  logoImgSrc: string = AppViewData.getImg().logoImgSrc;
   rewardImgSrc: string = null; 
 
-  constructor(public navCtrl: NavController, public navParams: NavParams, public appData: AppData, public API: API, public authentication: Authentication, public modalCtrl: ModalController, public alertCtrl: AlertController, public toastCtrl: ToastController, public loadingCtrl: LoadingController) {
-    super(appData, modalCtrl, alertCtrl, toastCtrl, loadingCtrl);
+  constructor(
+    public navCtrl: NavController, 
+    public navParams: NavParams, 
+    public API: API, 
+    public authentication: Authentication, 
+    public modalCtrl: ModalController, 
+    public alertCtrl: AlertController, 
+    public toastCtrl: ToastController, 
+    public loadingCtrl: LoadingController) {
+    super(alertCtrl, toastCtrl, loadingCtrl);
   }
 
 // rewards: img, rewardOid, description, name, startDate, expiryDate, exclusions
@@ -40,12 +48,7 @@ export class RewardsPage extends BaseViewController {
             console.log('response: ', response);
             this.points = response.data.points;
             this.pointsNeeded = response.data.pointsNeeded;
-          }, (err) => {
-            const shouldPopView = false;
-            const shouldDismissLoading = false;
-            console.log("err: ", err);
-            this.errorHandler.call(this, err, shouldPopView, shouldDismissLoading)
-          });
+          }, this.errorHandler(this.ERROR_TYPES.API, undefined, {shouldDismissLoading: false}));
 
     // calls not related. don't need to be async
 
@@ -60,28 +63,24 @@ export class RewardsPage extends BaseViewController {
 
 
             this.rewards_all.forEach((x) => {
-              x.imgSrc = this.appData.getDisplayImgSrc(x.img);
+              x.imgSrc = AppViewData.getDisplayImgSrc(x.img);
             });
             this.rewards_individual.forEach((x) => {
-              x.imgSrc = this.appData.getDisplayImgSrc(x.img);
+              x.imgSrc = AppViewData.getDisplayImgSrc(x.img);
             });
 
             
-          }, (err) => {
-            const shouldPopView = false;
-            console.log("err: ", err);
-            this.errorHandler.call(this, err, shouldPopView)
-          });
+          }, this.errorHandler(this.ERROR_TYPES.API));
 
-    const imgName = APP_IMGS[7];
+    const imgName = CONST_APP_IMGS[7];
     this.API.stack(ROUTES.getImgName + `/${this.auth.companyOid}/${imgName}`, "GET")
       .subscribe(
           (response) => {
             console.log('response: ', response);
             const img = response.data.img;
-            this.rewardImgSrc = this.appData.getDisplayImgSrc(img);
+            this.rewardImgSrc = AppViewData.getDisplayImgSrc(img);
           }, (err) => {
-            this.rewardImgSrc = this.appData.getDisplayImgSrc(null);
+            this.rewardImgSrc = AppViewData.getDisplayImgSrc(null);
           });
 
   }

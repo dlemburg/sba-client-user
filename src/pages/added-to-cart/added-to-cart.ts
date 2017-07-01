@@ -1,8 +1,8 @@
 import { Component } from '@angular/core';
 import { IonicPage, NavController, NavParams, ViewController, App } from 'ionic-angular';
 import { IPurchaseItem, AuthUserInfo } from '../../models/models';
-import { AppData } from '../../global/app-data.service';
-import { APP_IMGS } from '../../global/global';
+import { AppViewData } from '../../global/app-data.service';
+import { CONST_APP_IMGS } from '../../global/global';
 import { API, ROUTES } from '../../global/api';
 import { Authentication } from '../../global/authentication';
 
@@ -22,16 +22,23 @@ export class AddedToCartPage {
   productImgSrc: string = null;
   addedToCartBackgroundImgSrc: string = null;
   auth: AuthUserInfo;
-  constructor(public navCtrl: NavController, public navParams: NavParams, public API: API, public authentication: Authentication, public appData: AppData, public viewCtrl: ViewController, public appCtrl: App) {
+  
+  constructor(
+    public navCtrl: NavController, 
+    public navParams: NavParams, 
+    public API: API, 
+    public authentication: Authentication, 
+    public viewCtrl: ViewController, 
+    public appCtrl: App) {
   }
 
   ionViewDidLoad() {
     this.auth = this.authentication.getCurrentUser();
     this.productName = this.navParams.data.purchaseItem.selectedProduct.name;
     this.categoryOid = this.navParams.data.categoryOid;
-    this.productImgSrc = this.appData.getDisplayImgSrc(this.navParams.data.productImg);
+    this.productImgSrc = AppViewData.getDisplayImgSrc(this.navParams.data.productImg);
     
-    const imgName = APP_IMGS[12];
+    const imgName = CONST_APP_IMGS[12];
     this.API.stack(ROUTES.getImgName + `/${this.auth.companyOid}/${imgName}`, "GET")
       .subscribe(
         (response) => {
@@ -45,17 +52,21 @@ export class AddedToCartPage {
             ), url(${url}) no-repeat`;
           }
         }, (err) => {
-         // this.logoImgSrc = this.appData.getDisplayImgSrc(null);
+         // this.logoImgSrc = AppViewData.getDisplayImgSrc(null);
         });
   }
 
 
   navCheckout() {
-    this.viewCtrl.dismiss();
-    this.appCtrl.getRootNav().push('CheckoutPage');
+    this.viewCtrl.dismiss({
+      checkout: true
+    });
+    //this.appCtrl.getRootNav().push('CheckoutPage');
   }
 
   navCategories() {
-    this.viewCtrl.dismiss();
+    this.viewCtrl.dismiss({
+      continueOrder: true
+    });
   }
 }

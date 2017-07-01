@@ -2,8 +2,8 @@ import { Component } from '@angular/core';
 import { CheckoutStore } from '../../global/checkout-store.service';
 import { API, ROUTES } from '../../global/api';
 import { Authentication } from '../../global/authentication';
-import { IonicPage, NavController, NavParams, AlertController, ToastController, ModalController, LoadingController } from 'ionic-angular';
-import { AppData } from '../../global/app-data.service';
+import { IonicPage, NavController, NavParams, AlertController, ToastController, LoadingController } from 'ionic-angular';
+import { AppViewData } from '../../global/app-data.service';
 import { IPopup } from '../../models/models';
 import { BaseViewController } from '../base-view-controller/base-view-controller';
 
@@ -22,8 +22,17 @@ export class ProductsListPage extends BaseViewController {
   categoryOid: number = 0;
   categoryName: string = "";
   isOrderInProgress: boolean = this.checkoutStore.isOrderInProgress;
-  constructor(public navCtrl: NavController, public navParams: NavParams, public appData: AppData, public API: API, public authentication: Authentication, public modalCtrl: ModalController, public alertCtrl: AlertController, public toastCtrl: ToastController, public loadingCtrl: LoadingController, private checkoutStore: CheckoutStore) {
-    super(appData, modalCtrl, alertCtrl, toastCtrl, loadingCtrl);
+  
+  constructor(
+    public navCtrl: NavController, 
+    public navParams: NavParams, 
+    public API: API, 
+    public authentication: Authentication, 
+    public alertCtrl: AlertController, 
+    public toastCtrl: ToastController, 
+    public loadingCtrl: LoadingController, 
+    private checkoutStore: CheckoutStore) {
+    super(alertCtrl, toastCtrl, loadingCtrl);
   }
 
 // this page used checkoutStore
@@ -42,13 +51,10 @@ export class ProductsListPage extends BaseViewController {
             this.products = response.data.products;
 
             this.products.forEach((x) => {
-              x.imgSrc = this.appData.getDisplayImgSrc(x.img);
+              x.imgSrc = AppViewData.getDisplayImgSrc(x.img);
             });
 
-          }, (err) => {
-            const shouldPopView = false;
-            this.errorHandler.call(this, err, shouldPopView);
-          });
+          },this.errorHandler(this.ERROR_TYPES.API));
   }
 
   navToProductDetails(product) {

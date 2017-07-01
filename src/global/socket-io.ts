@@ -25,7 +25,7 @@ export class SocketIO {
 
     public connect(room = null) {
         if (!this.socket) {
-            this.socket = io.connect(global.SERVER_URL_NODE, { reconnection: true });
+            this.socket = io.connect(global.SERVER_URL_NODE, { reconnection: true,  reconnectionAttempts: 10  });
 
             if (room) this.emit(this.socketEvents.subscribe, { room });
         }

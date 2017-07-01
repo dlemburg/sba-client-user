@@ -9,21 +9,25 @@
 
 <ion-content>
   <div>
-    <EmptyMessage *ngIf="!locations.length" message="locations"></EmptyMessage>
+    <EmptyMessage *ngIf="zero" message="locations"></EmptyMessage>
     <ion-list>
-      <ion-item tappable (click)="updateActive(i)" *ngFor="let x of locations; let i = index" [ngClass]="{'item-highlight': isActive === i}">
+      <ion-item class="location-container" tappable (click)="updateActive(i)" *ngFor="let x of locations; let i = index" [ngClass]="{'item-highlight': isActive === i}">
         <div>
-          <div class="address">{{ x.address }}</div>
-          <div class="address">{{ x.city }}, {{ x.state }} {{ x.zipcode }}</div>
-          <div margin-top>
-            <span *ngIf="x.distanceTo"> 
-                <span class="miles-away"> {{ x.distanceTo }} miles away</span>
-            </span>
-          </div>
-          <button margin-top *ngIf="isOpen(x)" (click)="proceedToOrder(x)" ion-button outline block detail-push>Proceed to Order</button>
-          <div *ngIf="!isOpen(x)" text-center class="closed">{{ closedMessage }}</div>
-          <div *ngIf="isOpen(x)" text-center class="open">Open</div>
+          <ion-item no-lines>
+            <ion-thumbnail item-start>
+              <img src="img/family.png">
+            </ion-thumbnail>
+            <div class="address">{{ x.address }}</div>
+            <div class="address">{{ x.city }}, {{ x.state }} {{ x.zipcode }}</div>
+            <div>
+              <span *ngIf="x.distanceTo" class="miles-away"> {{ x.distanceTo }} miles away</span>
+            </div>
+          </ion-item>
+          <div margin-top *ngIf="!isOpen(x)" text-center class="closed">{{ closedMessage }}</div>
+          <div margin-top *ngIf="isOpen(x)" text-center class="open">Open</div>
+          <button *ngIf="isOpen(x)" (click)="proceedToOrder(x)" ion-button outline block detail-push>Proceed to Order</button>
 
+          <!-- positioned absolutely -->
           <button class="hours-btn" (click)="viewHours(x)" ion-button>Hours</button>
           <button class="map-btn" mini (click)="navLocationMap(x)" ion-fab>
             <ion-icon class="map-icon" ios="ios-pin" md="md-pin"></ion-icon>

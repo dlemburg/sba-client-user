@@ -3,7 +3,7 @@ import { Nav, Platform } from 'ionic-angular';
 import { SplashScreen } from "@ionic-native/splash-screen";
 import { StatusBar } from "@ionic-native/status-bar";
 import { Authentication } from '../global/authentication';
-import { AppData } from '../global/app-data.service';
+import { AppViewData } from '../global/app-data.service';
 import { API, ROUTES } from '../global/api';
 import { COMPANY_OID } from '../global/companyOid';
 
@@ -18,10 +18,16 @@ export class MyApp {
   rootPage: any; 
   pages: Array<{title: string, component: any}>;
 
-  constructor(public platform: Platform, public API: API, public appData: AppData, private authentication: Authentication, public statusBar: StatusBar, public splashScreen: SplashScreen) {
-    this.platform.ready().then(() => {
-      this.initializeApp();
-    });
+  constructor(
+    public platform: Platform, 
+    public API: API, 
+    private authentication: Authentication, 
+    public statusBar: StatusBar, 
+    public splashScreen: SplashScreen) {
+
+      this.platform.ready().then(() => {
+        this.initializeApp();
+      });
   }
 
   initializeApp() {
@@ -29,7 +35,7 @@ export class MyApp {
       .subscribe(
         (response) => {
           const defaultImg = response.data.imgs.defaultImg;
-          this.appData.setImgs({
+          AppViewData.setImgs({
             logoImgSrc: `${ROUTES.downloadImg}?img=${response.data.imgs.logoImg}`,
             defaultImgSrc: defaultImg ? `${ROUTES.downloadImg}?img=${defaultImg}` : "img/default.png"
           });
@@ -75,9 +81,9 @@ export class MyApp {
 //  console.log("is Android: ", this.platform.is('android'));
     /*
     if (this.platform.is('ios')) {
-      this.appData.setStorageDirectory(cordova.file.documentsDirectory);
+      AppViewData.setStorageDirectory(cordova.file.documentsDirectory);
     }
     else if(this.platform.is('android')) {
-        this.appData.setStorageDirectory(cordova.file.dataDirectory);
+        AppViewData.setStorageDirectory(cordova.file.dataDirectory);
     }
     */

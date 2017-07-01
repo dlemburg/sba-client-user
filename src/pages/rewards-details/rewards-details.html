@@ -10,7 +10,7 @@
 <ion-content padding>
    <div class=" reward-card-container">
       <ion-card class=" reward-card" no-padding no-margin text-center>
-        <img [src]="reward.imgSrc" />
+        <img [src]="reward.imgSrc" onError="this.src='img/default.png';"/>
         <div class="reward-card-title">{{reward.name}}</div>
         <div class="reward-card-expiry">
            <span>{{ reward.startDate | date }} </span> --- <span> {{ reward.expiryDate | date }}</span>

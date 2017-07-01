@@ -1,10 +1,10 @@
 import { Component } from '@angular/core';
 import { IonicPage, NavController, NavParams,  AlertController, ModalController, ToastController, LoadingController } from 'ionic-angular';
-import { AppData } from '../../global/app-data.service';
+import { AppViewData } from '../../global/app-data.service';
 import { API, ROUTES } from '../../global/api';
 import { Authentication } from '../../global/authentication';
 import { BaseViewController } from '../base-view-controller/base-view-controller';
-import { APP_IMGS } from '../../global/global';
+import { CONST_APP_IMGS } from '../../global/global';
 
 @IonicPage()
 @Component({
@@ -18,8 +18,17 @@ export class MyCardPage extends BaseViewController {
   auth: any;
   unavailable: string = "Unavailable";
 
-  constructor(public navCtrl: NavController, public navParams: NavParams, public appData: AppData, public API: API, public authentication: Authentication, public modalCtrl: ModalController, public alertCtrl: AlertController, public toastCtrl: ToastController, public loadingCtrl: LoadingController) {
-    super(appData, modalCtrl, alertCtrl, toastCtrl, loadingCtrl);
+  constructor(
+    public navCtrl: NavController, 
+    public navParams: NavParams, 
+    public API: API, 
+    public authentication: Authentication, 
+    public modalCtrl: ModalController, 
+    public alertCtrl: AlertController, 
+    public toastCtrl: ToastController, 
+    public loadingCtrl: LoadingController) {
+
+    super(alertCtrl, toastCtrl, loadingCtrl);
     
     this.auth = this.authentication.getCurrentUser();
     this.items = [
@@ -38,24 +47,17 @@ export class MyCardPage extends BaseViewController {
             this.dismissLoading();
             console.log('response: ', response);
             this.balance = response.data.balance;
-          }, (err) => {
-            const shouldPopView = false;
-            this.balance = this.unavailable;
-            this.errorHandler.call(this, err, shouldPopView)
-          });
+          }, this.errorHandler(this.ERROR_TYPES.API));
 
     // get myCardImg, doesn't need to be async
-    const imgName = APP_IMGS[11];
+    const imgName =CONST_APP_IMGS[11];
     this.API.stack(ROUTES.getImgName + `/${this.auth.companyOid}/${imgName}`, "GET")
       .subscribe(
           (response) => {
             console.log('response: ', response);
             const img = response.data.img;
-            this.mobileCardImgSrc = this.appData.getDisplayImgSrc(img);
-          }, (err) => {
-            console.log("ERROR DOWNLOADING myMobileCardImg");
-            this.mobileCardImgSrc = this.appData.getDisplayImgSrc(null);
-          });
+            this.mobileCardImgSrc = AppViewData.getDisplayImgSrc(img);
+          },this.errorHandler(this.ERROR_TYPES.API));
   }
 
   nav(item) {

@@ -1,6 +1,7 @@
 import { NgModule } from '@angular/core';
 import { IonicPageModule } from 'ionic-angular';
 import { BarcodePayPage } from './barcode-pay';
+import { QRCodeModule } from 'angular2-qrcode';
  
 @NgModule({
   declarations: [
@@ -8,6 +9,7 @@ import { BarcodePayPage } from './barcode-pay';
   ],
   imports: [
     IonicPageModule.forChild(BarcodePayPage),
+    QRCodeModule
   ],
   exports: [
     BarcodePayPage

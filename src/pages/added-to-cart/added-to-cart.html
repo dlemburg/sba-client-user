@@ -6,7 +6,7 @@
     </div>
     <ion-row class="flex-2">
       <ion-card class="hover align-center" >
-        <img [src]="productImgSrc" />
+        <img [src]="productImgSrc" onError="this.src='img/default.png';"/>
         <div class="card-title">{{ productName }}</div>
       </ion-card>
     </ion-row>

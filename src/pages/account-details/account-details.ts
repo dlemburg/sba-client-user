@@ -5,7 +5,7 @@ import { FormBuilder, FormGroup, Validators, FormControl } from '@angular/forms'
 import { API, ROUTES } from '../../global/api';
 import { Authentication } from '../../global/authentication';
 import { BaseViewController } from '../base-view-controller/base-view-controller';
-import { AppData } from '../../global/app-data.service';
+import { AppViewData } from '../../global/app-data.service';
 
 @IonicPage()
 @Component({
@@ -15,13 +15,24 @@ import { AppData } from '../../global/app-data.service';
 export class AccountDetailsPage extends BaseViewController {
   myForm: FormGroup;
   auth: any;
-    constructor(public navCtrl: NavController, public navParams: NavParams, public appData: AppData, private validation: Validation, public API: API, public authentication: Authentication, public modalCtrl: ModalController, public alertCtrl: AlertController, public toastCtrl: ToastController, public loadingCtrl: LoadingController, private formBuilder: FormBuilder ) {
-      super(appData, modalCtrl, alertCtrl, toastCtrl, loadingCtrl);
+    constructor(
+      public navCtrl: NavController, 
+      public navParams: NavParams, 
+      private validation: Validation, 
+      public API: API, 
+      public authentication: Authentication, 
+      public modalCtrl: ModalController, 
+      public alertCtrl: AlertController, 
+      public toastCtrl: ToastController, 
+      public loadingCtrl: LoadingController, 
+      private formBuilder: FormBuilder ) {
+
+      super(alertCtrl, toastCtrl, loadingCtrl);
       this.myForm = this.formBuilder.group({
         firstName: [null, Validators.required],
         lastName: [null, Validators.required],
-        email: [null, Validators.compose([Validators.required, this.validation.test("isEmail")])],
-        zipcode: [null, Validators.compose([Validators.required, this.validation.test('isZipCode')])],
+        email: [null, Validators.compose([Validators.required, Validation.test("isEmail")])],
+        zipcode: [null, Validators.compose([Validators.required, Validation.test('isZipCode')])],
         hasPushNotifications: [true, Validators.required]
       });
   }
@@ -37,23 +48,17 @@ export class AccountDetailsPage extends BaseViewController {
             this.dismissLoading();
             let {firstName, lastName, email, zipcode, pushNotifications} = response.data.accountDetails;
             this.myForm.patchValue({firstName, lastName, email, zipcode, pushNotifications });
-          }, (err) => {
-            const shouldPopView = true;
-            this.errorHandler.call(this, err, shouldPopView)
-          });
+          }, this.errorHandler(this.ERROR_TYPES.API));
   } 
 
   submit(myForm) {
-    this.presentLoading(this.appData.getLoading().saving);
+    this.presentLoading(AppViewData.getLoading().saving);
     let toData = {toData: myForm, userOid: this.auth.userOid};
     this.API.stack(ROUTES.editUserAccountDetails, "POST", toData)
       .subscribe(
           (response) => {
-            this.dismissLoading(this.appData.getLoading().saved)
+            this.dismissLoading(AppViewData.getLoading().saved)
             console.log('response: ', response);
-          },  (err) => {
-            const shouldPopView = true;
-            this.errorHandler.call(this, err, shouldPopView)
-          });
+          },  this.errorHandler(this.ERROR_TYPES.API));
   }
 }

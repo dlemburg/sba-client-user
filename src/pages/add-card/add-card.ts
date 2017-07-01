@@ -5,7 +5,7 @@ import { AppUtils } from '../../utils/app-utils';
 import { API, ROUTES } from '../../global/api';
 import { Authentication } from '../../global/authentication';
 import { NavController, NavParams, AlertController, ToastController, LoadingController, ModalController } from 'ionic-angular';
-import { AppData } from '../../global/app-data.service';
+import { AppViewData } from '../../global/app-data.service';
 import { IPopup } from '../../models/models';
 import { BaseViewController } from '../base-view-controller/base-view-controller';
 
@@ -19,23 +19,32 @@ export class AddCardPage extends BaseViewController {
   isSubmitted: boolean = false;
   myForm: FormGroup;
   dollarValues: Array<any>;
-  constructor(public navCtrl: NavController, public navParams: NavParams, public validation: Validation, public appData: AppData, public appUtils: AppUtils, public API: API, public authentication: Authentication, public modalCtrl: ModalController, public alertCtrl: AlertController, public toastCtrl: ToastController, public loadingCtrl: LoadingController, private formBuilder: FormBuilder ) {
-    super(appData, modalCtrl, alertCtrl, toastCtrl, loadingCtrl);
+  constructor(
+    public navCtrl: NavController, 
+    public navParams: NavParams, 
+    public API: API, 
+    public authentication: Authentication, 
+    public modalCtrl: ModalController, 
+    public alertCtrl: AlertController, 
+    public toastCtrl: ToastController, 
+    public loadingCtrl: LoadingController, 
+    private formBuilder: FormBuilder ) {
+    super(alertCtrl, toastCtrl, loadingCtrl);
 
-    this.dollarValues = this.appUtils.getDollarValues();
+    this.dollarValues = AppUtils.getDollarValues();
 
     this.myForm = this.formBuilder.group({
       dollarValue: [10, Validators.required],
-      cardNumber: [null, Validators.compose([Validators.required, this.validation.test('isCreditCard')])],
-      cardExpiry: [null, Validators.compose([Validators.required, this.validation.test('isCreditCardExpiryDate')])],
-      cardCVV: [null, Validators.compose([Validators.required, this.validation.test('isCreditCardCVV')]) ],
+      cardNumber: [null, Validators.compose([Validators.required, Validation.test('isCreditCard')])],
+      cardExpiry: [null, Validators.compose([Validators.required, Validation.test('isCreditCardExpiryDate')])],
+      cardCVV: [null, Validators.compose([Validators.required, Validation.test('isCreditCardCVV')]) ],
       firstName: [null, Validators.compose([Validators.required])],
       lastName: [null, Validators.compose([Validators.required])],
-      address: [null, Validators.compose([Validators.required, this.validation.test('isStreetAddress')])],
-      city: [null, Validators.compose([Validators.required, this.validation.test('isCity')])],
-      state: [null, Validators.compose([Validators.required, this.validation.test('isState')])],
-      zipcode: [null, Validators.compose([Validators.required, this.validation.test('isZipcode')])],
-      phoneNumber: [null, Validators.compose([Validators.required, this.validation.test('isPhoneNumber')])]
+      address: [null, Validators.compose([Validators.required, Validation.test('isStreetAddress')])],
+      city: [null, Validators.compose([Validators.required, Validation.test('isCity')])],
+      state: [null, Validators.compose([Validators.required, Validation.test('isState')])],
+      zipcode: [null, Validators.compose([Validators.required, Validation.test('isZipcode')])],
+      phoneNumber: [null, Validators.compose([Validators.required, Validation.test('isPhoneNumber')])]
     });
   }
 
@@ -55,7 +64,7 @@ export class AddCardPage extends BaseViewController {
     }
 
     /*** Package for submit ***/
-    this.presentLoading(this.appData.getLoading().saving);
+    this.presentLoading(AppViewData.getLoading().saving);
     const toData: ToDataAddCard = {toData: myForm, userOid: this.auth.userOid};
     this.API.stack(ROUTES.addCard, "POST", toData)
       .subscribe(

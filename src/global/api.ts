@@ -25,8 +25,7 @@ export class API {
   
     public stack(route: string, verb: string, body: any = {}): Observable<any> {
 
-        let url: string = route.indexOf('/api/node/') > -1 ? global.SERVER_URL_NODE : global.SERVER_URL_CSHARP;
-            url += route;
+        let url: string = route.indexOf('/api/node/') > -1 ? global.SERVER_URL_NODE + route : global.SERVER_URL_CSHARP + route;
         const httpVerb = verb.toLowerCase();
         const options = this.options;
 
@@ -35,6 +34,11 @@ export class API {
                     .map((response: Response) => response.json())
                     .catch(this.errorHandler);
         } else if (httpVerb === "get") {
+
+            // do something with Auth: bearer token here
+            // contentHeaders.append("Authorization", "Bearer " + token));
+
+
             return this.http[httpVerb](url, options)
                     .map((response: Response) => response.json())
                     .catch(this.errorHandler);
@@ -83,6 +87,7 @@ export const ROUTES = {
     forgotPassword: '/api/node/emails/forgotPassword',
     reportIssue: '/api/node/users/reportIssue',
     contactCompany: '/api/node/emails/contactCompany',
+    getCompanyDetailsAndSocialMediaLkps: '/api/cs/user/getCompanyDetailsAndSocialMediaLkps',
 
 
 

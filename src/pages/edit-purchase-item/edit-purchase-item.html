@@ -9,7 +9,7 @@
 
 <ion-content no-padding>
     <ion-card class="hover ion-card-top" no-padding no-margin>
-      <img [src]="productDetails.imgSrc" />
+      <img [src]="productDetails.imgSrc" onError="this.src='img/default.png';" />
       <div class="product-name">{{ productDetails.name }}</div>
       <div class="product-description">
         <div>{{productDetails.description}}</div>

@@ -3,7 +3,7 @@ import { IPurchaseItem, IErrChecks, IPopup, ProductDetailsToClient, AuthUserInfo
 import { Utils } from '../../utils/utils';
 import { CheckoutStore } from '../../global/checkout-store.service';
 import { IonicPage, NavController, NavParams, AlertController, ToastController, LoadingController, ModalController } from 'ionic-angular';
-import { AppData } from '../../global/app-data.service';
+import { AppViewData } from '../../global/app-data.service';
 import { BaseViewController } from '../base-view-controller/base-view-controller';
 import { API, ROUTES } from '../../global/api';
 import { Authentication } from '../../global/authentication';
@@ -35,7 +35,7 @@ export class EditPurchaseItemPage extends BaseViewController {
     numberOfFreeAddonsUntilCharged: 0,
     addonsPriceAboveLimit: 0
   };
-  quantities: Array<number> = this.utils.getNumbersList();
+  quantities: Array<number> = Utils.getNumbersList();
   purchaseItem: IPurchaseItem = {
     selectedProduct: {oid: null, name: null},
     sizeAndOrPrice: { oid: null, name: null, price: null},
@@ -47,8 +47,18 @@ export class EditPurchaseItemPage extends BaseViewController {
   };
   order: any = {};
   index: number;
-  constructor(public navCtrl: NavController, public navParams: NavParams, public utils: Utils, public appData: AppData, public API: API, public authentication: Authentication, public modalCtrl: ModalController, public alertCtrl: AlertController, public toastCtrl: ToastController, public loadingCtrl: LoadingController, private checkoutStore: CheckoutStore) {
-    super(appData, modalCtrl, alertCtrl, toastCtrl, loadingCtrl);
+
+  constructor(
+    public navCtrl: NavController, 
+    public navParams: NavParams, 
+    public API: API, 
+    public authentication: Authentication, 
+    public modalCtrl: ModalController, 
+    public alertCtrl: AlertController, 
+    public toastCtrl: ToastController, 
+    public loadingCtrl: LoadingController, 
+    private checkoutStore: CheckoutStore) {
+    super(alertCtrl, toastCtrl, loadingCtrl);
   }
 
   ionViewDidLoad() {
@@ -64,26 +74,23 @@ export class EditPurchaseItemPage extends BaseViewController {
             this.productDetails = response.data.productDetails;
             
             /* init values */
-            this.productDetails.imgSrc = this.appData.getDisplayImgSrc(this.productDetails.img);
+            this.productDetails.imgSrc = AppViewData.getDisplayImgSrc(this.productDetails.img);
             if (!this.productDetails.sizesAndPrices.length) {
               this.purchaseItem.sizeAndOrPrice = {price: this.productDetails.fixedPrice};
             }
 
             this.dismissLoading();
-          }, (err) => {
-            const shouldPopView = false;
-            this.errorHandler.call(this, err, shouldPopView)
-          });    
+          }, this.errorHandler(this.ERROR_TYPES.API));    
   }
 
   submit(): void {
-    let checks = this.doChecksPurchaseItem(this.purchaseItem);
+    let doChecks = this.doChecksPurchaseItem(this.purchaseItem);
     
-    if (!checks.isValid) {
+    if (!doChecks.isValid) {
        this.showPopup({
-          title: this.appData.getPopup().defaultSuccessTitle, 
-          message: checks.errs.join(" "), 
-          buttons: [{text: this.appData.getPopup().defaultConfirmButtonText}]
+          title: AppViewData.getPopup().defaultSuccessTitle, 
+          message: doChecks.errs.join(" "), 
+          buttons: [{text: AppViewData.getPopup().defaultConfirmButtonText}]
         });
     } else {
       this.checkoutStore.editOrder(this.index, this.purchaseItem); 

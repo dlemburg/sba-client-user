@@ -9,6 +9,7 @@ import { File } from '@ionic-native/file';
 import { Geolocation } from '@ionic-native/geolocation';
 import { SocialSharing } from '@ionic-native/social-sharing';
 import { GoogleMaps } from '@ionic-native/google-maps';
+import { QRCodeModule } from 'angular2-qrcode';
 
 
 // MyApp
@@ -17,12 +18,6 @@ import { MyApp } from './app.component';
 // my providers
 import { Authentication } from '../global/authentication';
 import { API } from '../global/api';
-import { Validation } from '../utils/validation-utils';
-import { AsyncValidation } from '../utils/validation-async-utils';
-import { Utils } from '../utils/utils';
-import { AppUtils } from '../utils/app-utils';
-import { DateUtils } from '../utils/date-utils';
-import { AppData } from '../global/app-data.service';
 import { CheckoutStore } from '../global/checkout-store.service';
 import { SocketIO } from '../global/socket-io';
 
@@ -42,19 +37,21 @@ import { BaseViewController } from '../pages/base-view-controller/base-view-cont
     // components
     SearchComponent,
     MyJsonComponent,
-    BaseViewController
+    BaseViewController,
   ],
   imports: [   
     BrowserModule,
     HttpModule,
+    QRCodeModule,
     IonicModule.forRoot(MyApp),    // for angular and ionic modules... i.e. HTTP
     //TextMaskModule     // for credit cards, phone numbers, etc
+
   ],
   bootstrap: [IonicApp],
-  entryComponents: [    // are these for the root?
+  entryComponents: [
     MyApp
   ],
-  providers: [{provide: ErrorHandler, useClass: IonicErrorHandler},  // services
+  providers: [{provide: ErrorHandler, useClass: IonicErrorHandler}, 
     StatusBar,
     SplashScreen,
     Transfer,
@@ -62,15 +59,11 @@ import { BaseViewController } from '../pages/base-view-controller/base-view-cont
     Geolocation,
     GoogleMaps,
     SocialSharing,
+
+    // my providers
     Authentication,
     API,
-    AppData,
     CheckoutStore,
-    Utils,
-    AppUtils,
-    DateUtils,
-    AsyncValidation,
-    Validation,
     SocketIO
   ]   
 })

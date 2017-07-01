@@ -4,7 +4,7 @@ import { CheckoutStore } from '../../global/checkout-store.service';
 import { API, ROUTES } from '../../global/api';
 import { Authentication } from '../../global/authentication';
 import { BaseViewController } from '../base-view-controller/base-view-controller';
-import { AppData } from '../../global/app-data.service';
+import { AppViewData } from '../../global/app-data.service';
 
 @IonicPage()
 @Component({
@@ -19,8 +19,18 @@ export class CategoriesPage extends BaseViewController {
   };
   auth: any;
   canLeave: boolean = false;
-  constructor(public navCtrl: NavController, public navParams: NavParams, public appData: AppData, public API: API, public authentication: Authentication, public modalCtrl: ModalController, public alertCtrl: AlertController, public toastCtrl: ToastController, public loadingCtrl: LoadingController, public checkoutStore: CheckoutStore) {
-    super(appData, modalCtrl, alertCtrl, toastCtrl, loadingCtrl);
+  
+  constructor(
+    public navCtrl: NavController, 
+    public navParams: NavParams, 
+    public API: API, 
+    public authentication: Authentication, 
+    public modalCtrl: ModalController, 
+    public alertCtrl: AlertController, 
+    public toastCtrl: ToastController, 
+    public loadingCtrl: LoadingController, 
+    public checkoutStore: CheckoutStore) {
+    super(alertCtrl, toastCtrl, loadingCtrl);
   }
 
   ionViewDidEnter() {
@@ -39,12 +49,9 @@ export class CategoriesPage extends BaseViewController {
             this.categories = response.data.categories;
 
             this.categories.forEach((x) => {
-              x.imgSrc = this.appData.getDisplayImgSrc(x.img);
+              x.imgSrc = AppViewData.getDisplayImgSrc(x.img);
             });
-          }, (err) => {
-            const shouldPopView = false;
-            this.errorHandler.call(this, err, shouldPopView)
-          });
+          }, this.errorHandler(this.ERROR_TYPES.API));
     
   }
 

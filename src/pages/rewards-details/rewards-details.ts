@@ -1,5 +1,6 @@
 import { Component } from '@angular/core';
 import { IonicPage, NavController, NavParams } from 'ionic-angular';
+import { CONST_REWARDS_TYPES, CONST_REWARDS_PROCESSING_TYPE } from '../../global/global';
 
 @IonicPage()
 @Component({
@@ -9,14 +10,9 @@ import { IonicPage, NavController, NavParams } from 'ionic-angular';
 export class RewardsDetailsPage {
   reward: any;
   rewardOid: any;
-  REWARDS_TYPE = {
-    REWARDS_INDIVIDUAL: "rewards_individual",
-    REWARDS_ALL: "rewards_all"
-  };
-  REWARDS_PROCESSING_TYPE = {
-    AUTOMATIC: "Automatic",
-    MANUAL: "Manual"
-  };
+  REWARDS_TYPE = CONST_REWARDS_TYPES
+  REWARDS_PROCESSING_TYPE = CONST_REWARDS_PROCESSING_TYPE;
+  
   constructor(public navCtrl: NavController, public navParams: NavParams) {
     this.reward = {
       name: '',
@@ -24,7 +20,10 @@ export class RewardsDetailsPage {
       expiryDate: null,
       description: '',
       img: '',
-      exclusions: ''
+      exclusions: '',
+      processingType: null,
+      oid: null,
+      isFreePurchaseItem: null
     }
   }
 
@@ -35,13 +34,8 @@ export class RewardsDetailsPage {
   }
 
 
-  /* gonna have to think about this: if automatic, won't need this.
-
-    if manual, scan
-
-    i think this is correct
-   */
   navBarcodeReward() {
+    if (this.reward.processingType === this.REWARDS_PROCESSING_TYPE.MANUAL || this.reward.rewardType === this.REWARDS_TYPE.REWARDS_INDIVIDUAL)
     this.navCtrl.push('BarcodeRewardPage', {reward: this.reward});
   }
 

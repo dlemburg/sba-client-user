@@ -1,5 +1,6 @@
 page-locations {
-    ion-item {
+
+    .location-container {
         position: relative;
         border-bottom: 1px solid map-get($colors, light) !important;
        // border-top: 1px solid map-get($colors, light) !important;
@@ -27,19 +28,19 @@ page-locations {
 
     .hours-btn {
         position: absolute;
-        top: 10px;
+        top: 18px;
         right:30px;
-    }
-
-    .item-highlight {
-        background-color: map-get($colors , light) !important;
     }
 
     .map-btn {
         position: absolute;
-        top: -3px;
+        top: 5px;
         right: 100px;
         background-color: white
+    }
+
+    .item-highlight {
+        background-color: map-get($colors , light) !important;
     }
 
     .map-icon {

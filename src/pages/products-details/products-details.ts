@@ -4,7 +4,7 @@ import { CheckoutStore } from '../../global/checkout-store.service';
 import { API, ROUTES } from '../../global/api';
 import { Authentication } from '../../global/authentication';
 import { IonicPage, NavController, NavParams, AlertController, ToastController, LoadingController, ModalController } from 'ionic-angular';
-import { AppData } from '../../global/app-data.service';
+import { AppViewData } from '../../global/app-data.service';
 import { IPopup, ProductDetailsToClient, IPurchaseItem, IErrChecks } from '../../models/models';
 import { BaseViewController } from '../base-view-controller/base-view-controller';
 
@@ -33,8 +33,8 @@ export class ProductsDetailsPage extends BaseViewController {
     numberOfFreeAddonsUntilCharged: null,
     addonsPriceAboveLimit: null
   };
-  quantities: Array<number> = this.utils.getNumbersList();
-  dairyQuantities: Array<number> = this.utils.getNumbersList(5);
+  quantities: Array<number> = Utils.getNumbersList();
+  dairyQuantities: Array<number> = Utils.getNumbersList(5);
   productOid: any;
   purchaseItem: IPurchaseItem = {
     selectedProduct: {oid: null, name: null},
@@ -51,14 +51,24 @@ export class ProductsDetailsPage extends BaseViewController {
   order: any = {};
   auth: any;
   isOrderInProgress: boolean;
-  constructor(public navCtrl: NavController, public navParams: NavParams, public appData: AppData, public utils: Utils, public API: API, public authentication: Authentication, public modalCtrl: ModalController, public alertCtrl: AlertController, public toastCtrl: ToastController, public loadingCtrl: LoadingController, private checkoutStore: CheckoutStore) {
-    super(appData, modalCtrl, alertCtrl, toastCtrl, loadingCtrl);
+  
+  constructor(
+    public navCtrl: NavController, 
+    public navParams: NavParams, 
+    public API: API, 
+    public authentication: Authentication, 
+    public modalCtrl: ModalController, 
+    public alertCtrl: AlertController, 
+    public toastCtrl: ToastController, 
+    public loadingCtrl: LoadingController, 
+    private checkoutStore: CheckoutStore) {
+    super(alertCtrl, toastCtrl, loadingCtrl);
   }
 
 // this page uses checkoutStore
   ionViewDidLoad() {
     this.auth = this.authentication.getCurrentUser();
-    this.productImgSrc = this.appData.getDisplayImgSrc(this.navParams.data.product.img);
+    this.productImgSrc = AppViewData.getDisplayImgSrc(this.navParams.data.product.img);
     this.productOid = this.navParams.data.product.oid;
     this.purchaseItem.selectedProduct.oid = this.navParams.data.product.oid;
     this.isOrderInProgress = this.checkoutStore.isOrderInProgress;
@@ -87,16 +97,30 @@ export class ProductsDetailsPage extends BaseViewController {
   }
 
   addToOrder(): void {
-    let checks = this.doChecksPurchaseItem(this.purchaseItem);
+    let doChecks = this.doChecksPurchaseItem(this.purchaseItem);
     
-    if (!checks.isValid) {
-       this.presentToast(false, {message: checks.errs.join(" "), position: "bottom", duration: 5000})
+    if (!doChecks.isValid) {
+       this.presentToast(false, doChecks.errs.join(". "), "bottom", 5000);
     } else {
       this.checkoutStore.addToOrder(this.purchaseItem, this.productDetails);
 
 
       // change this to listen for on dismiss and change route from here
-      this.presentModal('AddedToCartPage', {purchaseItem: this.purchaseItem, productImg: this.productDetails.img, categoryOid: this.productDetails.categoryOid}, {enableBackdropDismiss: false, showBackdrop: false});
+      let modal = this.modalCtrl.create('AddedToCartPage', {
+        purchaseItem: this.purchaseItem, 
+        productImg: this.productDetails.img, 
+        categoryOid: this.productDetails.categoryOid}, 
+        {enableBackdropDismiss: false, showBackdrop: false});
+        modal.present();
+
+        modal.onDidDismiss((data) => {
+          if (data.checkout) this.navCtrl.push("CheckoutPage");
+          else if (data.continueOrer) {
+             this.navCtrl.pop();
+          } else {
+            //do nothing
+          }
+        })
     }
   }
 
