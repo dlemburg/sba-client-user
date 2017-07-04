@@ -28,9 +28,11 @@ export class Validation {
             isPhoneNumber: `Please enter a valid phone number`,
             isStreetAddress: `Please enter a valid street address. Hint: special characters like  "."  and "#"  are not needed.`,
             isCreditCard: `Please enter a valid credit card`,
-            isCreditCardCVV: `Please enter a valid credit card CVV`,
+            isCreditCardCVC: `Please enter a valid credit card cvc`,
             isCreditCardExpiryDate: `Please enter a valid credit card expiration date`,
             isEmail: `Please enter a valid email`,
+            isYear: `Please enter a valid year`,
+            isMonth: `Please enter a valid month`,
 
             // group
             isDiscountAmountInvalid: `This amount is invalid. Make sure your discount type aligns with the value you are entering. `,
@@ -65,11 +67,14 @@ export class Validation {
             isEmail: /^(([^<>()\[\]\.,;:\s@\"]+(\.[^<>()\[\]\.,;:\s@\"]+)*)|(\".+\"))@(([^<>()[\]\.,;:\s@\"]+\.)+[^<>()[\]\.,;:\s@\"]{2,})$/,
             isPhoneNumber: /^(([0-9]{1})*[- .(]*([0-9]{3})[- .)]*[0-9]{3}[- .]*[0-9]{4})+$/,
             isMoney: /^\d+(?:\.\d{0,2})?$/g,
-            isCreditCardCvv: /^[0-9]{3,4}$/,
+            isCreditCardCVC: /^[0-9]{3,4}$/,
             isCreditCardExpiryDate: /^(0[1-9]|1[0-2])\/?(([0-9]{4}|[0-9]{2})$)/,
             isState: /^(?:A[KLRZ]|C[AOT]|D[CE]|FL|GA|HI|I[ADLN]|K[SY]|LA|M[ADEINOST]|N[CDEHJMVY]|O[HKR]|PA|RI|S[CD]|T[NX]|UT|V[AT]|W[AIVY])*$/,
             isZipcode: /^[0-9]{5}(?:-[0-9]{4})?$/,
-            isCity: /^[a-zA-Z]+(?:[\s-][a-zA-Z]+)*$/
+            isCity: /^[a-zA-Z]+(?:[\s-][a-zA-Z]+)*$/,
+            isMonth: /^(0?[1-9]|1[0-2])$/,
+            isYear: /\d{4}/
+
         }
     }
 

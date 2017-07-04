@@ -32,7 +32,7 @@ export class MyCardPage extends BaseViewController {
     
     this.auth = this.authentication.getCurrentUser();
     this.items = [
-      {component: 'AddCardPage', name: 'Create Mobile Card'},
+      {component: 'EditPaymentDetailsPage', name: 'Create Mobile Card'},
       {component: 'AddCardValuePage', name: 'Add Value to Mobile Card'},
       {component: 'TransactionHistoryPage', name: 'Transaction History'},
       {component: 'MyCardMorePage', name: 'More...'},
@@ -60,8 +60,8 @@ export class MyCardPage extends BaseViewController {
           },this.errorHandler(this.ERROR_TYPES.API));
   }
 
-  nav(item) {
-    this.navCtrl.push(item.component);
+  nav(page) {
+    this.navCtrl.push(page.component);
   }
 
   navBarcodePayPage() {

@@ -9,6 +9,7 @@ import { File } from '@ionic-native/file';
 import { Geolocation } from '@ionic-native/geolocation';
 import { SocialSharing } from '@ionic-native/social-sharing';
 import { GoogleMaps } from '@ionic-native/google-maps';
+import { Stripe } from '@ionic-native/stripe';
 import { QRCodeModule } from 'angular2-qrcode';
 
 
@@ -59,7 +60,7 @@ import { BaseViewController } from '../pages/base-view-controller/base-view-cont
     Geolocation,
     GoogleMaps,
     SocialSharing,
-
+    Stripe,
     // my providers
     Authentication,
     API,

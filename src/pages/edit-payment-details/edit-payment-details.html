@@ -26,34 +26,32 @@
           </ion-item>
           <control-messages [isSubmitted]="isSubmitted" [controlInstance]="myForm.controls.cardNumber"></control-messages>
 
+          <ion-row classa="align-center width-60">
+            <ion-col col-6>
+              <ion-item>
+                <ion-label stacked>Card Expiration Month (mm)</ion-label>
+                <ion-input type="tel" formControlName="expMonth"></ion-input>
+              </ion-item> 
+              <control-messages [isSubmitted]="isSubmitted" [controlInstance]="myForm.controls.expMonth"></control-messages>
+            </ion-col>
+            <ion-col col-6>
+              <ion-item>
+                <ion-label stacked>Card Expiration Year (yyyy)</ion-label>
+                <ion-input type="tel" formControlName="expYear"></ion-input>
+              </ion-item> 
+              <control-messages [isSubmitted]="isSubmitted" [controlInstance]="myForm.controls.expYear"></control-messages> 
+            </ion-col>
+          </ion-row>
           <ion-item>
-            <ion-label stacked>Expiration Date</ion-label>
-            <ion-input type="tel" formControlName="cardExpiry"></ion-input>
-          </ion-item> 
-          <control-messages [isSubmitted]="isSubmitted" [controlInstance]="myForm.controls.cardExpiry"></control-messages>
-
-          <ion-item>
-            <ion-label stacked>CVV <span class="what-is-this">What is this?</span></ion-label>
-            <ion-input type="tel" formControlName="cardCVV"></ion-input>
+            <ion-label stacked>CVC <span class="what-is-this">What is this?</span></ion-label>
+            <ion-input type="tel" formControlName="cardCVC"></ion-input>
           </ion-item>
-          <control-messages [isSubmitted]="isSubmitted" [controlInstance]="myForm.controls.cardCVV"></control-messages>
- 
+          <control-messages [isSubmitted]="isSubmitted" [controlInstance]="myForm.controls.cardCVC"></control-messages> 
         </ion-list>
       </div>
       <!-- Billing -->
       <div margin-top> <ion-icon ios="ios-home" md="md-home"></ion-icon> &nbsp; Billing Information</div>
       <ion-list>
-        <ion-item>
-          <ion-label stacked>First Name</ion-label>
-          <ion-input type="text" formControlName="firstName" ></ion-input>
-        </ion-item>
-        <control-messages [isSubmitted]="isSubmitted" [controlInstance]="myForm.controls.firstName"></control-messages>
-
-        <ion-item>
-          <ion-label stacked>Last Name</ion-label>
-          <ion-input type="text" formControlName="lastName" ></ion-input>
-        </ion-item>
-        <control-messages [isSubmitted]="isSubmitted" [controlInstance]="myForm.controls.lastName"></control-messages>
 
         <ion-item>
           <ion-label stacked>Address</ion-label>
@@ -73,15 +71,10 @@
         </ion-item> 
         <ion-item>
           <ion-label stacked>Zip Code</ion-label>
-          <ion-input type="text" formControlName="zipCode" ></ion-input>
+          <ion-input type="text" formControlName="zipcode" ></ion-input>
         </ion-item>
-        <control-messages [isSubmitted]="isSubmitted" [controlInstance]="myForm.controls.zipCode"></control-messages>
+        <control-messages [isSubmitted]="isSubmitted" [controlInstance]="myForm.controls.zipcode"></control-messages>
  
-        <ion-item>
-          <ion-label stacked>Phone Number</ion-label>
-          <ion-input type="tel" formControlName="phoneNumber"></ion-input>
-        </ion-item>
-        <control-messages [isSubmitted]="isSubmitted" [controlInstance]="myForm.controls.phoneNumber"></control-messages>      
       </ion-list>
       <div text-center margin-top><button color="primary" [disabled]="!myForm.valid" ion-button block margin-top>Submit</button></div>
     </form>

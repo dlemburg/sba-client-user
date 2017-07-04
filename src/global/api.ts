@@ -102,12 +102,19 @@ export const ROUTES = {
 
 
     // stripe
-    deleteCard: '/api/cs/stripe/deleteCard',
-    submitPaymentDetails: '/api/node/stripe/submitPaymentDetails',
-    addCard: '/api/node/stripe/addCard',
-    addCardValue: '/api/node/stripe/addCardValue',
-    getCardNumberLastFourDigits : '/api/node/stripe/getCardNumberLastFourDigits',
-    deleteCreditCard: '/api/node/stripe/deleteCreditCard',
+    getStripePublishableKey: `/api/node/financial/getStripePublishableKey`,
+    createCustomer: `/api/node/financial/createCustomer`,
+
+
+    // todo stripe
+    deleteCard: '/api/cs/financial/deleteCard',
+    submitPaymentDetails: '/api/node/financial/submitPaymentDetails',
+    addCard: '/api/node/financial/addCard',
+    addCardValue: '/api/node/financial/addCardValue',
+    getCardNumberLastFourDigits : '/api/node/financial/getCardNumberLastFourDigits',
+    deleteCreditCard: '/api/node/financial/deleteCreditCard',
+
+
     
 
 }

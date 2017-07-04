@@ -79,6 +79,9 @@ export class LocationsPage extends BaseViewController {
             console.log('response: ', response);
             this.locations = response.data.locations;
             if (!this.locations.length) this.zero = true;
+            this.locations.forEach((x) => {
+              x.imgSrc = AppViewData.getDisplayImgSrc(x.img);
+            });
             this.dismissLoading();
           }, this.errorHandler(this.ERROR_TYPES.API));
   }

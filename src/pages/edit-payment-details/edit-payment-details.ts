@@ -8,6 +8,7 @@ import { IonicPage, NavController, NavParams, ModalController, AlertController, 
 import { AppViewData } from '../../global/app-data.service';
 import { IPopup } from '../../models/models';
 import { BaseViewController } from '../base-view-controller/base-view-controller';
+import { Stripe } from '@ionic-native/stripe';
 
 @IonicPage()
 @Component({
@@ -20,6 +21,8 @@ export class EditPaymentDetailsPage extends BaseViewController {
   isSubmitted: boolean = false;
   myForm: FormGroup;
   dollarValues: any = AppUtils.getDollarValues();
+  stripePublishableKey: string;
+
   constructor(
     public navCtrl: NavController, 
     public navParams: NavParams, 
@@ -29,47 +32,80 @@ export class EditPaymentDetailsPage extends BaseViewController {
     public alertCtrl: AlertController, 
     public toastCtrl: ToastController, 
     public loadingCtrl: LoadingController, 
-    private formBuilder: FormBuilder) {
+    private formBuilder: FormBuilder,
+    public stripe: Stripe) {
     super(alertCtrl, toastCtrl, loadingCtrl);
 
     this.myForm = this.formBuilder.group({
-      dollarValue: [10, Validators.required],
+      amount: [10, Validators.required],
       cardNumber: [null, Validators.compose([Validators.required, Validation.test('isCreditCard')])],
-      cardExpiry: [null, Validators.compose([Validators.required, Validation.test('isCreditCardExpiryDate')])],
-      cardCVV: [null, Validators.compose([Validators.required, Validation.test('isCreditCardCVV')]) ],
-      firstName: [null, Validators.compose([Validators.required])],
-      lastName: [null, Validators.compose([Validators.required])],
+      expMonth: [null, Validators.compose([Validators.required, Validation.test('isMonth')])],
+      expYear: [null, Validators.compose([Validators.required, Validation.test('isYear')])],
+      cardCVC: [null, Validators.compose([Validators.required, Validation.test('isCreditCardCVC')]) ],
       address: [null, Validators.compose([Validators.required, Validation.test('isStreetAddress')])],
       city: [null, Validators.compose([Validators.required, Validation.test('isCity')])],
       state: [null, Validators.compose([Validators.required, Validation.test('isState')])],
-      zipCode: [null, Validators.compose([Validators.required, Validation.test('isZipCode')])],
-      phoneNumber: [null, Validators.compose([Validators.required, Validation.test('isPhoneNumber')])]
+      zipcode: [null, Validators.compose([Validators.required, Validation.test('isZipcode')])],
     });
   }
 
-  ionViewDidLoad() {
+
+ionViewDidLoad() {
+    this.presentLoading();
     this.auth = this.authentication.getCurrentUser();
-  }
 
-  selectDollarValue(amount) {
-    this.myForm.patchValue({dollarValue: amount});
-  }
-
-  submit(myForm, isValid) {
-    this.isSubmitted = true;
-    
-    const onConfirmFn = () => {
-      this.navCtrl.setRoot('HomePage');
-    }
-
-     /*** Package for submit ***/
-    this.presentLoading(AppViewData.getLoading().saving);
-    const toData = {toData: myForm, userOid: this.auth.userOid, isEdit: false};
-    this.API.stack(ROUTES.submitPaymentDetails, "POST", toData)
+    this.API.stack(ROUTES.getStripePublishableKey, "GET",)
       .subscribe(
           (response) => {
             console.log('response: ', response);
-            this.dismissLoading(AppViewData.getLoading().saved);
+            this.stripePublishableKey = response.data.key;
+
           }, this.errorHandler(this.ERROR_TYPES.API));
+  }
+  selectDollarValue(amount) {
+    this.myForm.patchValue({amount});
+  }
+
+  createStripeToken(myForm) {
+    return new Promise((resolve, reject) => {
+      this.stripe.setPublishableKey(this.stripePublishableKey);
+
+      let card = {
+        number: myForm.cardNumber,
+        expMonth: myForm.expMonth,
+        expYear: myForm.expYear,
+        cvc: myForm.cardCVC
+      };
+
+      this.stripe.createCardToken(card).then((token) => {
+        console.log(token);
+        resolve({token});
+      })
+      .catch((err) => {
+        console.log("err: ", err);
+        reject(err);
+      });
+    });
+  }
+
+  submit(myForm, isValid) {
+
+    this.createStripeToken(myForm).then(() => {
+      const onConfirmFn = () => {
+        this.navCtrl.setRoot('HomePage');
+      };
+
+      /*** Package for submit ***/
+      this.presentLoading(AppViewData.getLoading().saving);
+      const { address, city, state, zipcode } = myForm;
+      const toData = {toData: {address, city, state, zipcode}, userOid: this.auth.userOid, email: this.auth.email, amount: myForm.amount};
+      
+      this.API.stack(ROUTES.createCustomer, "POST", toData)
+        .subscribe(
+            (response) => {
+              console.log('response: ', response);
+              this.dismissLoading(AppViewData.getLoading().saved);
+            }, this.errorHandler(this.ERROR_TYPES.API));
+      })
   }
 }
