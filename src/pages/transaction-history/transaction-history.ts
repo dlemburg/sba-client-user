@@ -13,7 +13,9 @@ import { BaseViewController } from '../base-view-controller/base-view-controller
 })
 export class TransactionHistoryPage extends BaseViewController {
   transactions: Array<{productsArray: Array<string>, purchaseDate: string|Date, total: number}> = [];
-  auth: any;
+  auth: any = this.authentication.getCurrentUser();
+  appHeaderBarLogo: string = AppViewData.getImg().logoImgSrc;
+  companyName: string = this.auth.companyName;
 
   constructor(
     public navCtrl: NavController, 
@@ -29,7 +31,6 @@ export class TransactionHistoryPage extends BaseViewController {
   // transactions: purchaseDate, productsArray, total
   ionViewDidLoad() {
     this.presentLoading();
-    this.auth = this.authentication.getCurrentUser();
     this.API.stack(ROUTES.getUserTransactionHistory, "POST", {userOid: this.auth.userOid})
       .subscribe(
           (response) => {

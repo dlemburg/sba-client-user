@@ -15,7 +15,7 @@ export class AddedToCartPage {
   purchaseItem: IPurchaseItem;
   categoryOid: number;
   img: string = `img/computer.png`;
-  title: string = "Boooo YAHHH!";
+  title: string = ""; //"Boooo YAHHH!";
   subtitle: string = "Added to your cart!"
   productName: string;
   productImg: string = null;
@@ -61,7 +61,6 @@ export class AddedToCartPage {
     this.viewCtrl.dismiss({
       checkout: true
     });
-    //this.appCtrl.getRootNav().push('CheckoutPage');
   }
 
   navCategories() {

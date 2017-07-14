@@ -1,3 +1,4 @@
+<!--
 <ion-header>
   <ion-navbar>
     <button ion-button menuToggle>
@@ -6,33 +7,39 @@
     <ion-title>Locations</ion-title>
   </ion-navbar>
 </ion-header>
+-->
+<ion-header>
+  <AppHeaderBar appHeaderBarLogo="{{appHeaderBarLogo}}" [companyName]="companyName"></AppHeaderBar>
+</ion-header>
+
 
 <ion-content>
   <div>
-    <EmptyMessage *ngIf="zero" message="locations"></EmptyMessage>
+    <EmptyMessage *ngIf="!locations.length && isLoading" longMessage="Optimizing for locations near you..."></EmptyMessage>
+    <EmptyMessage *ngIf="!locations.length && !isLoading" message="locations"></EmptyMessage>
     <ion-list>
       <ion-item class="location-container" tappable (click)="updateActive(i)" *ngFor="let x of locations; let i = index" [ngClass]="{'item-highlight': isActive === i}">
         <div>
           <ion-item no-lines>
             <ion-thumbnail item-start>
-              <img [src]="x.img">
+              <img [src]="x.imgSrc">
             </ion-thumbnail>
             <div class="address">{{ x.address }}</div>
             <div class="address">{{ x.city }}, {{ x.state }} {{ x.zipcode }}</div>
             <div>
-              <span *ngIf="x.distanceTo" class="miles-away"> {{ x.distanceTo }} miles away</span>
+              <span *ngIf="x.distanceTo > 0.3" class="miles-away"><span class="bold">{{ x.distanceTo }}</span> miles away (approx)</span>
+              <span *ngIf="x.distanceTo < 0.3" class="miles-away"> This location is really close!</span>
             </div>
           </ion-item>
-          <div margin-top *ngIf="!isOpen(x)" text-center class="closed">{{ closedMessage }}</div>
-          <div margin-top *ngIf="isOpen(x)" text-center class="open">Open</div>
-          <button *ngIf="isOpen(x)" (click)="proceedToOrder(x)" ion-button outline block detail-push>Proceed to Order</button>
-
-          <!-- positioned absolutely -->
-          <button class="hours-btn" (click)="viewHours(x)" ion-button>Hours</button>
-          <button class="map-btn" mini (click)="navLocationMap(x)" ion-fab>
+           <button class="map-btn" mini (click)="navLocationMap(x)" ion-fab>
             <ion-icon class="map-icon" ios="ios-pin" md="md-pin"></ion-icon>
           </button>
-          
+          <div margin-top *ngIf="!x.isOpen" text-center class="closed">{{ x.closedMessage }}</div>
+          <div margin-top *ngIf="x.isOpen" text-center class="open">Open</div>
+          <button *ngIf="x.isOpen" (click)="proceedToOrder(x)" ion-button outline block detail-push>Proceed to Order</button>
+
+          <!-- positioned absolutely -->
+          <button class="hours-btn" (click)="viewHours(x)" ion-button>Hours</button>  
         </div>
       </ion-item>
     </ion-list>

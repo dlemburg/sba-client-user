@@ -16,7 +16,7 @@ constructor() { }
         return hours;
     }
     
-    // i.e.:  "09:20am" -> 20
+    // i.e.:  "09:30am" -> 30
     public static convertTimeStringToMinutes(timeString: string): number {
         return DateUtils.getMinutes(timeString);
     }
@@ -31,7 +31,7 @@ constructor() { }
         return `${normalHours}:${minutes}${amOrPm}`
     }
 
-    // i.e.: "09:00am" ->  
+    // i.e.: "09:00am" ->  Date ['2017-07-10T09:00:00.000Z']
     public static convertTimeStringToJavascriptDate(timeString: string): Date {
         let hours = DateUtils.convertTimeStringToHours(timeString);
         let minutes = DateUtils.getMinutes(timeString);
@@ -45,7 +45,6 @@ constructor() { }
         let hours = DateUtils.getHours(time);
         let minutes = DateUtils.getMinutes(time);
         let dateStr = DateUtils.toLocalIsoString(new Date(new Date().setHours(hours, minutes, 0)).toString());
-
         return dateStr;
     }
 
@@ -107,12 +106,10 @@ constructor() { }
         if (time.indexOf("0") === 0) {
             time = time.slice(1, time.length);
         }
-
         return time;
     }
 
     public static prependZero(time: number): string {
-
         if (time < 10) return "0" + time;
         else return time.toString();
     }
@@ -145,22 +142,18 @@ constructor() { }
     }
 
 
-    ///////////////////////// private static methods /////////////////////////////////
-
     // converts timeString   "09:00" ->  9
-    private static getHours(time:string): number {
+    public static getHours(time:string): number {
         let index = time.indexOf(":");
         let isPm = time.indexOf("a") < 0 ? true : false;
 
-        //debugger;
-        //let hours = Dates.to24Hour(time.slice(0, index), isPm);
         let hours = time.slice(0, index);
     
         return +hours;
     }
 
     // gets minutes from timeString   i.e.  "09:30"  ->  30
-    private static getMinutes(time:string): number {
+    public static getMinutes(time:string): number {
         let start = time.indexOf(":") + 1;
         //let amOrPm = time.indexOf("m");
         let minutes = time.slice(start, -2);

@@ -1,3 +1,4 @@
+<!--
 <ion-header>
   <ion-navbar>
     <button ion-button menuToggle>
@@ -6,13 +7,15 @@
     <ion-title>Account Details</ion-title>
   </ion-navbar>
 </ion-header>
+-->
+<ion-header>
+  <AppHeaderBar appHeaderBarLogo="{{appHeaderBarLogo}}" [companyName]="companyName"></AppHeaderBar>
+</ion-header>
 
 <ion-content padding>
-  <ion-list no-lines>
-    <ion-item>
-      <div text-center>Logo</div>
-    </ion-item>
-  </ion-list>
+  <div class=" logo-container logo-page-specific-container">
+    <CompanyLogo  [logo]="logoImgSrc"></CompanyLogo>
+  </div>
   <form [formGroup]="myForm" (ngSubmit)="submit(myForm.value, myForm.valid)">
     <ion-list>
       <ion-item>

@@ -4,8 +4,8 @@ import * as global from './global';
 import { Observable } from 'rxjs/Observable';
 import 'rxjs/add/operator/catch';
 import 'rxjs/add/operator/map';
-import { Authentication } from '../global/auth.service';
-import { Ihttp } from '../models/models';
+import { Authentication } from '../global/authentication';
+import { Ihttp, AuthUserInfo } from '../models/models';
 
 @Injectable()
 export class API {
@@ -16,11 +16,14 @@ export class API {
             // this.headers.append( 'Content-Type', 'application/json' )
 
     */
-
-    headers = new Headers({ 'Content-Type': 'application/json' }); 
+    auth: AuthUserInfo = this.authentication.getCurrentUser();
+    token: string = this.authentication.getToken();
+    headers = new Headers({ 'Content-Type': 'application/json', 'Authorization': `Bearer ${this.token}`}); 
     options = new RequestOptions({ headers: this.headers });
     
-    constructor(private http: Http) {}
+    constructor(private http: Http, private authentication: Authentication) {
+       // console.log("this.token: ", this.token);
+    }
 
   
     public stack(route: string, verb: string, body: any = {}): Observable<any> {
@@ -34,11 +37,6 @@ export class API {
                     .map((response: Response) => response.json())
                     .catch(this.errorHandler);
         } else if (httpVerb === "get") {
-
-            // do something with Auth: bearer token here
-            // contentHeaders.append("Authorization", "Bearer " + token));
-
-
             return this.http[httpVerb](url, options)
                     .map((response: Response) => response.json())
                     .catch(this.errorHandler);
@@ -64,6 +62,7 @@ export const ROUTES = {
     loginUser: '/api/cs/auth/loginUser',
     registerUser: '/api/cs/auth/registerUser',
     confirmPassword: '/api/cs/auth/confirmPassword',
+    confirmEmailAndPassword: '/api/cs/auth/confirmEmailAndPasswordUser',
     savePassword: '/api/cs/auth/savePassword',
     getUserTransactionHistory: '/api/cs/user/getUserTransactionHistory',
     getMyCardImg: '/api/cs/user/getMyCardImg',
@@ -88,31 +87,26 @@ export const ROUTES = {
     reportIssue: '/api/node/users/reportIssue',
     contactCompany: '/api/node/emails/contactCompany',
     getCompanyDetailsAndSocialMediaLkps: '/api/cs/user/getCompanyDetailsAndSocialMediaLkps',
-
+    editPassword: '/api/cs/auth/editPassword',
 
 
     // check these 
     generateRewardOnFirstMobileCardUpload: '/api/cs/user/generateRewardOnFirstMobileCardUpload',
-    getUserPaymentID: '/api/cs/user/getUserPaymentID',
+    getUserMobileCardId: '/api/cs/user/getUserMobileCardId',
+    getMobileCardIdLastFourDigits : '/api/cs/user/getMobileCardIdLastFourDigits',
     getHomePageImgs: '/api/cs/user/getHomePageImgs',
     downloadImg: `${global.SERVER_URL_NODE}/api/node/download/img`,
     getImgName: `/api/cs/shared/getImgName`,
     getImgsOnAppStartup: `/api/cs/shared/getImgsOnAppStartup`,
     getLocationsFilterByGps: `/api/cs/shared/getLocationsFilterByGps`,
+    getBalanceAndHasMobileCard: `/api/cs/user/getBalanceAndHasMobileCard`,
 
 
     // stripe
     getStripePublishableKey: `/api/node/financial/getStripePublishableKey`,
-    createCustomer: `/api/node/financial/createCustomer`,
-
-
-    // todo stripe
-    deleteCard: '/api/cs/financial/deleteCard',
-    submitPaymentDetails: '/api/node/financial/submitPaymentDetails',
-    addCard: '/api/node/financial/addCard',
-    addCardValue: '/api/node/financial/addCardValue',
-    getCardNumberLastFourDigits : '/api/node/financial/getCardNumberLastFourDigits',
-    deleteCreditCard: '/api/node/financial/deleteCreditCard',
+    addCreditCard: '/api/node/financial/addCreditCard',
+    deleteCard: '/api/node/financial/deleteCard',
+    addMobileCardValue: '/api/node/financial/addMobileCardValue',
 
 
     

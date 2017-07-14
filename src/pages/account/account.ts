@@ -15,7 +15,10 @@ import { AppViewData } from '../../global/app-data.service';
 export class AccountPage {
   public items: Array<{component: Component, name: string}>;
   public logoImgSrc: string = AppViewData.getImg().logoImgSrc; 
-  public auth: AuthUserInfo;
+  
+  auth: any = this.authentication.getCurrentUser();
+  appHeaderBarLogo: string = AppViewData.getImg().logoImgSrc;
+  companyName: string = this.auth.companyName;
 
   constructor(
     public navCtrl: NavController, 
@@ -24,11 +27,12 @@ export class AccountPage {
     private authentication: Authentication, 
     private formBuilder: FormBuilder, 
     private alertCtrl: AlertController) {
-    this.auth = this.authentication.getCurrentUser();
   }
 
   ionViewDidLoad() {
-    const img = CONST_APP_IMGS[0];
+    /*
+        const img = CONST_APP_IMGS[0];
+
     this.API.stack(ROUTES.getImgName + `/${this.auth.companyOid}/${img}`, "GET")
       .subscribe(
         (response) => {
@@ -37,11 +41,12 @@ export class AccountPage {
         }, (err) => {
          // this.logoImgSrc = AppViewData.getDisplayImgSrc(null);
         });
+        */
 
     this.items = [
       {name: "My Details", component: 'AccountDetailsPage'},
       {name: "Passwords", component: 'AccountPasswordsPage'},
-      {name: "Edit Payment Details", component: 'EditPaymentDetailsPage'},
+     // {name: "Edit Payment Details", component: 'EditPaymentDetailsPage'},
       {name: "Sign Out", component: null}
     ]
   }

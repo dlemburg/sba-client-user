@@ -1,3 +1,4 @@
+<!--
 <ion-header>
   <ion-navbar>
     <button ion-button menuToggle>
@@ -5,6 +6,10 @@
     </button>
     <ion-title>Checkout</ion-title>
   </ion-navbar>
+</ion-header>
+-->
+<ion-header>
+  <AppHeaderBar appHeaderBarLogo="{{appHeaderBarLogo}}" [companyName]="companyName"></AppHeaderBar>
 </ion-header>
 
 
@@ -35,7 +40,7 @@
                 </div>
 
                 <!-- dairy -->
-                <div *ngFor="let a of x.dairy; let i = index;"> {{ a.name }}
+                <div *ngFor="let a of x.dairy; let i = index;"> {{ a.name }} <span *ngIf="a.quantity">({{a.quantity}})</span>
                     <span *ngIf="i !== x.dairy.length - 1">,</span> 
                 </div>
 
@@ -58,6 +63,7 @@
         <ion-item-options side="right">
          <!-- <button ion-button color="primary" (click)="editPurchaseItem(x, i)">Edit</button> -->
           <button ion-button color="danger" (click)="deletePurchaseItem(x, i)">Delete</button>
+          <button ion-button color="primary" (click)="editPurchaseItem(x, i)">Edit</button>
         </ion-item-options>
       </ion-item-sliding>
     </div>
@@ -103,6 +109,15 @@
         <span *ngIf="order.transactionDetails.subtotal"> {{ order.transactionDetails.subtotal | currency:symbolDisplay:true }}</span>   
         <span *ngIf="!order.transactionDetails.subtotal"> $0.00 </span>   
     </div>
+    </ion-item>
+
+    <!-- discounts -->
+    <ion-item>
+      <span>Discounts:</span> 
+      <div text-right>
+        <span class="discounts" *ngIf="order.transactionDetails.rewardsSavings"> - {{ order.transactionDetails.rewardsSavings | currency:symbolDisplay:true }} </span>
+        <span *ngIf="!order.transactionDetails.rewardsSavings"> $0.00 </span>   
+      </div>
     </ion-item>
 
     <!-- tax -->

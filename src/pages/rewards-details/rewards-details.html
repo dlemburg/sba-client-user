@@ -1,3 +1,4 @@
+<!--
 <ion-header>
   <ion-navbar>
     <button ion-button menuToggle>
@@ -5,6 +6,11 @@
     </button>
     <ion-title>{{ reward.name }}</ion-title>
   </ion-navbar>
+</ion-header>
+-->
+
+<ion-header>
+  <AppHeaderBar appHeaderBarLogo="{{appHeaderBarLogo}}" [companyName]="companyName"></AppHeaderBar>
 </ion-header>
 
 <ion-content padding>
@@ -21,14 +27,15 @@
   <!--
   <ion-item text-center text-wrap class="exclusions-container" no-lines>
     </ion-item> -->
-
-  <ion-item class="exclusions-container" no-lines>
-    <div class="exclusions"><span class="bold">Exclusions: </span> {{ reward.exclusions }}</div>
-  </ion-item>
-
 </ion-content>
-<ion-footer *ngIf="reward.processingType === REWARDS_PROCESSING_TYPE.MANUAL || reward.rewardType === REWARDS_TYPE.REWARDS_INDIVIDUAL">
-  <ion-toolbar>
-        <button class="scan-barcode-btn" (click)="navBarcodeReward()" ion-button block detail-push>Scan Barcode  <ion-icon class="arrow-right" ios="ios-arrow-forward" md="ios-arrow-forward"></ion-icon></button>
+
+<ion-footer >
+  <ion-toolbar *ngIf="reward.exclusions">
+    <ion-item class="exclusions-container" no-lines>
+      <div class="exclusions"><span class="bold">Exclusions: </span> {{ reward.exclusions }}</div>
+    </ion-item>
+  </ion-toolbar>
+  <ion-toolbar *ngIf="reward.processingType === REWARDS_PROCESSING_TYPE.MANUAL || reward.rewardType === REWARDS_TYPE.REWARDS_INDIVIDUAL">
+      <button class="scan-barcode-btn" (click)="navBarcodeReward()" ion-button block detail-push>Scan Barcode  <ion-icon class="arrow-right" ios="ios-arrow-forward" md="ios-arrow-forward"></ion-icon></button>
   </ion-toolbar>
 </ion-footer>

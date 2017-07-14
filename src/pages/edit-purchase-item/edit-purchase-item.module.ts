@@ -1,7 +1,10 @@
 import { NgModule } from '@angular/core';
 import { IonicPageModule } from 'ionic-angular';
 import { EditPurchaseItemPage } from './edit-purchase-item';
+
 import { ControlMessagesComponentModule } from '../../components/control-messages/control-messages.component.module';
+import { AppHeaderBarComponentModule } from '../../components/app-header-bar/app-header-bar.component.module';
+
  
 @NgModule({
   declarations: [
@@ -9,7 +12,8 @@ import { ControlMessagesComponentModule } from '../../components/control-message
   ],
   imports: [
     IonicPageModule.forChild(EditPurchaseItemPage),
-    ControlMessagesComponentModule
+    ControlMessagesComponentModule,
+    AppHeaderBarComponentModule
   ],
   exports: [
     EditPurchaseItemPage

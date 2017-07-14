@@ -1,3 +1,4 @@
+<!--
 <ion-header>
   <ion-navbar>
     <button ion-button menuToggle>
@@ -6,17 +7,19 @@
     <ion-title>Contact</ion-title>
   </ion-navbar>
 </ion-header>
+-->
+<ion-header>
+  <AppHeaderBar appHeaderBarLogo="{{appHeaderBarLogo}}" [companyName]="companyName"></AppHeaderBar>
+</ion-header>
+
 
 <ion-content padding>
-  <!-- logo -->
-  <ion-list no-lines>
-    <ion-item>
-      <div text-center>Logo</div>
-    </ion-item>
-  </ion-list>
-  <button ion-item detail-none (click)="getContactInfo()">Contact Info <ion-icon item-right ios="ios-arrow-down" md="ios-arrow-down"></ion-icon></button>
+  <div class="logo-container">
+    <CompanyLogo  [logo]="logoImgSrc"></CompanyLogo>
+  </div>
+  <button ion-item detail-none (click)="getContactInfo()">Company Contact Info <ion-icon item-right ios="ios-arrow-down" md="ios-arrow-down"></ion-icon></button>
   <div class="width-80 align-center">
-    <ion-item class="align-center" *ngIf="showContactInfo">
+    <ion-item class="align-center bold" *ngIf="showContactInfo">
       <div>{{contactInfo.address}}</div>
       <div>{{contactInfo.city}} {{contactInfo.state}}, {{contactInfo.zipcode}}</div>
       <div>{{contactInfo.phoneNumber}}</div>
@@ -36,9 +39,5 @@
       </div>
     </form>
   </div>
-
-
- <!-- social media -->
-
 </ion-content>
 

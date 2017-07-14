@@ -1,3 +1,4 @@
+<!--
 <ion-header>
   <ion-navbar>
     <button ion-button menuToggle>
@@ -6,14 +7,20 @@
     <ion-title>Rewards</ion-title>
   </ion-navbar>
 </ion-header>
+-->
+
+<ion-header>
+  <AppHeaderBar appHeaderBarLogo="{{appHeaderBarLogo}}" [companyName]="companyName"></AppHeaderBar>
+</ion-header>
 
 <ion-content no-padding>
   <div class="rewards-top" text-center>
-
-      <!-- top -->
+    <!-- top -->
      <ion-card class="hover ion-card-top" no-padding no-margin>
         <img [src]="rewardImgSrc" onError="this.src='img/default.png';"/>
-        <CompanyLogo [logo]="logoImgSrc"></CompanyLogo>
+        <div class=" logo-container logo-page-specific-container">
+          <CompanyLogo  [logo]="logoImgSrc"></CompanyLogo>
+        </div>
         <ion-grid class="top-card-footer">
             <ion-row>
               <ion-col class="border-right" col-6><span class="points-number">{{ points }}</span></ion-col>
@@ -27,11 +34,7 @@
       </ion-card>
 
       <div class="reward-card-container" text-center>
-        <div *ngIf="!rewards_all.length && !rewards_individual.length">
-          <ion-card>
-            <ion-card-content text-center>No rewards available at this time.</ion-card-content>
-          </ion-card>
-        </div>
+        <EmptyMessage *ngIf="!rewards_all.length && !rewards_individual.length" message="Rewards"></EmptyMessage>
         <ion-card tappable class="reward-card" (click)="navRewardsDetails(x)" *ngFor="let x of rewards_individual; let i = index;" no-padding no-margin>
           <img [src]="x.imgSrc" onError="this.src='img/default.png';"/>
           <div class="reward-card-title">{{x.name}}</div>

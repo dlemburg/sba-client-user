@@ -1,3 +1,4 @@
+<!--
 <ion-header>
   <ion-navbar>
     <button ion-button menuToggle>
@@ -6,10 +7,14 @@
     <ion-title>My Account</ion-title>
   </ion-navbar>
 </ion-header>
+-->
+<ion-header>
+  <AppHeaderBar appHeaderBarLogo="{{appHeaderBarLogo}}" [companyName]="companyName"></AppHeaderBar>
+</ion-header>
+
 
 <ion-content padding>
   <CompanyLogo [logo]="logoImgSrc"></CompanyLogo>
-
   <ion-list margin-top>
       <button ion-item detail-push (click)="nav(x)" *ngFor="let x of items; let i = index;">{{ x.name}}</button>
   </ion-list>

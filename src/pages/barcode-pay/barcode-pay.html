@@ -1,3 +1,4 @@
+<!--
 <ion-header>
   <ion-navbar>
     <button ion-button menuToggle>
@@ -6,10 +7,14 @@
     <ion-title>Pay</ion-title>
   </ion-navbar>
 </ion-header>
-<ion-content padding>
+  -->
+<ion-header>
+  <AppHeaderBar appHeaderBarLogo="{{appHeaderBarLogo}}" [companyName]="companyName"></AppHeaderBar>
+</ion-header>
 
+<ion-content padding>
   <div class="backup-code">
-    <div no-lines>Use code: {{ paymentID }}</div>
+    <div no-lines>Use code: {{ mobileCardId }}</div>
   </div>
   <div class="barcode-content-container">
     <div class="barcode-container">
@@ -35,6 +40,6 @@
     <ion-icon tappable *ngIf="companyDetails.hasInstagram" (click)="onShare(SOCIAL_MEDIA_TYPES.INSTAGRAM)" class="icon-instagram" ios="logo-instagram" md="logo-instagram" padding-horizontal></ion-icon>
   </ion-toolbar>
   <ion-toolbar>
-    <button [disabled]="!paymentID" class="scan-barcode-btn" (click)="submit()" ion-button block detail-push>Finish  <ion-icon class="arrow-right" ios="ios-arrow-forward" md="ios-arrow-forward"></ion-icon></button>
+    <button [disabled]="!paymentId" class="scan-barcode-btn" (click)="submit()" ion-button block detail-push>Finish  <ion-icon class="arrow-right" ios="ios-arrow-forward" md="ios-arrow-forward"></ion-icon></button>
   </ion-toolbar>
 </ion-footer>

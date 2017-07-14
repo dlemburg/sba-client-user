@@ -14,7 +14,9 @@ import { Authentication } from '../../global/authentication';
   templateUrl: 'edit-purchase-item.html'
 })
 export class EditPurchaseItemPage extends BaseViewController {
-  auth: AuthUserInfo;
+  auth: any = this.authentication.getCurrentUser();
+  appHeaderBarLogo: string = AppViewData.getImg().logoImgSrc;
+  companyName: string = this.auth.companyName;
   productOid: number;
   productImg: string = '';
   productDetails: ProductDetailsToClient = {
@@ -63,7 +65,6 @@ export class EditPurchaseItemPage extends BaseViewController {
 
   ionViewDidLoad() {
     this.presentLoading();
-    this.auth = this.authentication.getCurrentUser();
     this.productOid = this.navParams.data.purchaseItem.selectedProduct.oid;
     this.purchaseItem = this.navParams.data.purchaseItem;
 
@@ -97,6 +98,12 @@ export class EditPurchaseItemPage extends BaseViewController {
       this.navCtrl.pop();
     }
   }
+
+  // [compareWith]="compareFn"
+  compareFn(c1, c2): boolean {
+      return c1 && c2 ? c1.oid === c2.oid : c1 === c2;
+  }
+
 
   doChecksPurchaseItem(purchaseItem): IErrChecks {
     let errs = [];

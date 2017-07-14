@@ -15,6 +15,35 @@ export class Utils {
         return arr;
     }
 
+    public static getMonths(): Array<{num: number, displayNum: string, str: string}> {
+        return [
+            {num: 0, displayNum: "01", str: "January"},
+            {num: 1, displayNum: "02", str: "February"},
+            {num: 2, displayNum: "03", str: "March"},
+            {num: 3, displayNum: "04", str: "April"},
+            {num: 4, displayNum: "05", str: "May"},
+            {num: 5, displayNum: "06", str: "June"},
+            {num: 6, displayNum: "07", str: "July"},
+            {num: 7, displayNum: "08", str: "August"},
+            {num: 8, displayNum: "09", str: "September"},
+            {num: 9, displayNum: "10", str: "October"},
+            {num: 10, displayNum: "11", str: "November"},
+            {num: 11, displayNum: "12", str: "December"},
+        ];
+    }
+
+    public static getYears(start?: number, end?: number): Array<number> {
+        start = start || new Date().getFullYear();
+        end = end || start + 10;
+        let arr = [];
+
+        for (let x = start; x < end; x++) {
+            arr = [...arr, x];
+        }
+
+        return arr;
+    }
+
 
     public static toArray(str: string): Array<any> {
         let arr = str.split(",");

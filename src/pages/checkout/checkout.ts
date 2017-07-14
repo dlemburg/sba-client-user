@@ -47,7 +47,9 @@ export class CheckoutPage extends BaseViewController {
   eta: number = 15;
   comments: string = null;
   exclusions: string = 'Note: Some rewards are not redeemable when using Order-Ahead';
-  auth: AuthUserInfo;
+  auth: any = this.authentication.getCurrentUser();
+  appHeaderBarLogo: string = AppViewData.getImg().logoImgSrc;
+  companyName: string = this.auth.companyName;
   showRewards: boolean = false;
   minutesUntilClose: number = 0;
 
@@ -96,7 +98,7 @@ export class CheckoutPage extends BaseViewController {
             
             // get order and rewards
             this.order =  Object.assign({}, this.checkoutStore.getOrder());
-            this.getEligibleRewardsAPI();
+            this.getEligibleRewardsAPI(this.order);
             this.dismissLoading();
             console.log('response: ', response);
           },  this.errorHandler(this.ERROR_TYPES.API, undefined, {shouldDismissLoading: false}));   
@@ -138,16 +140,16 @@ export class CheckoutPage extends BaseViewController {
     this.eta = x;
   }
 
-  getEligibleRewardsAPI() {
-
+  getEligibleRewardsAPI(order: IOrder) {
     const dateInfo = DateUtils.getCurrentDateInfo();
     const toData = {
       date: DateUtils.toLocalIsoString(dateInfo.date.toString()), // get all rewards where expiry date < date
       day: dateInfo.day, 
       hours: dateInfo.hours,
       mins: dateInfo.mins, 
-      purchaseItems: this.order.purchaseItems,
+      purchaseItems: order.purchaseItems,
       companyOid: this.auth.companyOid,
+      taxRate: this.companyDetails.taxRate
     };
 
     console.log("toData: ", toData);
@@ -158,29 +160,28 @@ export class CheckoutPage extends BaseViewController {
             console.log('response.data: ' , response.data);
 
             this.order = this.checkoutStore.setPurchaseItemsAndTransactionDetails(response.data.purchaseItems, response.data.transactionDetails);
-            this.order = this.checkoutStore.calculateTaxesSubtotalTotalAndReturnOrder(this.order, this.order.transactionDetails.subtotal, this.companyDetails.taxRate);
-
+            //this.order = this.checkoutStore.calculateTaxesSubtotalTotalAndReturnOrder(this.order, this.order.transactionDetails.subtotal, this.companyDetails.taxRate);
+            this.order = this.checkoutStore.roundAllTransactionDetails(this.order.transactionDetails);
             this.dismissLoading();
           }, this.errorHandler(this.ERROR_TYPES.API));
   }
 
   deletePurchaseItem(purchaseItem: IPurchaseItem, index: number) {
-    this.order = this.checkoutStore.deletePurchaseItemAndReturnOrder(this.order, purchaseItem, index, this.companyDetails.taxRate);
-    this.order = this.checkoutStore.clearDiscountsAndRewardsAndReturnOrder(this.order);
+    this.order = this.checkoutStore.deletePurchaseItem(this.order, purchaseItem, index);
+    this.order = this.checkoutStore.clearDiscountsAndRewards(this.order);
 
+    if (this.order.purchaseItems.length === 0) this.checkoutStore.deleteOrder();
+    this.getEligibleRewardsAPI(this.order)
 
-    if (this.order.transactionDetails.rewards.length) {
-      this.getEligibleRewardsAPI();
-    } else {
-      this.order = this.checkoutStore.deleteOrder();
+    console.log("this.order", this.order);
+    //this.navCtrl.pop();
+  }
 
-      console.log("this.order", this.order);
-      //this.navCtrl.pop();
-    }
+  editPurchaseItem(purchaseItem: IPurchaseItem, index: number) {
+    this.navCtrl.push("EditPurchaseItemPage", {purchaseItem});
   }
 
   submit() {
-
     this.presentLoading(AppViewData.getLoading().processing);
     let toData = { 
       companyOid: this.auth.companyOid, 

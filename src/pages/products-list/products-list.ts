@@ -18,7 +18,9 @@ export class ProductsListPage extends BaseViewController {
     title: '',
     img: ''
   };
-  auth: any;
+  auth: any = this.authentication.getCurrentUser();
+  appHeaderBarLogo: string = AppViewData.getImg().logoImgSrc;
+  companyName: string = this.auth.companyName;
   categoryOid: number = 0;
   categoryName: string = "";
   isOrderInProgress: boolean = this.checkoutStore.isOrderInProgress;
@@ -40,7 +42,7 @@ export class ProductsListPage extends BaseViewController {
    // this.isOrderInProgress = this.checkoutStore
     this.auth = this.authentication.getCurrentUser();
     this.categoryOid = this.navParams.data.category.oid;
-    this.categoryName = this.navParams.data.category.categoryName;
+    this.categoryName = this.navParams.data.category.name;
     this.presentLoading();
 
     this.API.stack(ROUTES.getProducts + `/${this.auth.companyOid}/${this.categoryOid}`, "GET")

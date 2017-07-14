@@ -25,10 +25,12 @@ export class HomePage extends BaseViewController {
     headline: ''  // on home page
   };
   points: number|string = "Unavailable";
-  auth: any;
   unavailable: "Unavailable";
   defaultImgSrc: string = AppViewData.getImg().defaultImgSrc;
-
+  auth: any = this.authentication.getCurrentUser();
+  appHeaderBarLogo: string = AppViewData.getImg().logoImgSrc;
+  companyName: string = this.auth.companyName;
+  blur: boolean = false;
 
   constructor(
     public navCtrl: NavController, 
@@ -51,7 +53,7 @@ export class HomePage extends BaseViewController {
             imgSrc: this.defaultImgSrc,
             name: CONST_APP_IMGS[0],
             title: 'My Mobile Card',
-            subtitle: 'View card details and Pay',
+            subtitle: 'view card details and pay',
             component: 'MyCardPage',
             id: 0
         },
@@ -60,7 +62,7 @@ export class HomePage extends BaseViewController {
             imgSrc: this.defaultImgSrc,
             name: CONST_APP_IMGS[1],
             title: 'Rewards',
-            subtitle: 'Discounts and specials you don\'t want to miss out on!',
+            subtitle: 'discounts and specials you don\'t want to miss out on!',
             component: 'RewardsPage',
             id: 1
         },
@@ -68,8 +70,8 @@ export class HomePage extends BaseViewController {
             img: null,
             imgSrc: this.defaultImgSrc,
             name: CONST_APP_IMGS[2],
-            title: 'Order Ahead',
-            subtitle: 'Skip the line!',
+            title: 'Order-Ahead',
+            subtitle: 'skip the line!',
             component: 'LocationsPage',
             id: 2
         },
@@ -78,7 +80,7 @@ export class HomePage extends BaseViewController {
             imgSrc: this.defaultImgSrc,
             name: CONST_APP_IMGS[3],
             title: 'Menu',
-            subtitle: 'See what we have to offer!',
+            subtitle: 'see what we have to offer!',
             component: 'CategoriesPage',
             id: 3
         }
@@ -89,12 +91,11 @@ export class HomePage extends BaseViewController {
   ionViewDidLoad() {  
     // get owner alert and imgs 
     //this.presentLoading(); 
-    this.auth = this.authentication.getCurrentUser();
     this.getPointsAndPointsNeeded();
     this.getHomePageImgs();
   }
 
-/*
+
   ionViewDidEnter() {
     if (this.initHasRun) {
       console.log("ionViewDidEnter run...")
@@ -102,7 +103,7 @@ export class HomePage extends BaseViewController {
       this.getHomePageImgs();
     } else this.initHasRun = true;
   }
-  */
+
 
   getHomePageImgs() {
     this.API.stack(ROUTES.getHomePageImgs + `/${this.auth.companyOid}`, "GET")
@@ -124,6 +125,7 @@ export class HomePage extends BaseViewController {
       .subscribe(
         (response) => {
          // this.dismissLoading();
+         console.log("response.data: ", response.data); 
           this.points = response.data.points;
         }, this.errorHandler(this.ERROR_TYPES.API, undefined, {shouldDismissLoading: false}));
   }

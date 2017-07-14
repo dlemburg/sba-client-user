@@ -14,11 +14,14 @@ import { AppViewData } from '../../global/app-data.service';
 })
 export class AccountDetailsPage extends BaseViewController {
   myForm: FormGroup;
-  auth: any;
+  logoImgSrc: string = AppViewData.getImg().logoImgSrc;
+  auth: any = this.authentication.getCurrentUser();
+  appHeaderBarLogo: string = AppViewData.getImg().logoImgSrc;
+  companyName: string = this.auth.companyName;
+
     constructor(
       public navCtrl: NavController, 
       public navParams: NavParams, 
-      private validation: Validation, 
       public API: API, 
       public authentication: Authentication, 
       public modalCtrl: ModalController, 
@@ -28,6 +31,7 @@ export class AccountDetailsPage extends BaseViewController {
       private formBuilder: FormBuilder ) {
 
       super(alertCtrl, toastCtrl, loadingCtrl);
+
       this.myForm = this.formBuilder.group({
         firstName: [null, Validators.required],
         lastName: [null, Validators.required],
@@ -38,7 +42,6 @@ export class AccountDetailsPage extends BaseViewController {
   }
 
   ionViewDidLoad() {
-    this.auth = this.authentication.getCurrentUser();
     this.presentLoading();
 
     this.API.stack(ROUTES.getUserAccountDetails, "POST", {userOid: this.auth.userOid})
@@ -46,8 +49,8 @@ export class AccountDetailsPage extends BaseViewController {
           (response) => {
             console.log('response: ', response);
             this.dismissLoading();
-            let {firstName, lastName, email, zipcode, pushNotifications} = response.data.accountDetails;
-            this.myForm.patchValue({firstName, lastName, email, zipcode, pushNotifications });
+            let {firstName, lastName, email, zipcode, hasPushNotifications} = response.data.accountDetails;
+            this.myForm.patchValue({firstName, lastName, email, zipcode, hasPushNotifications });
           }, this.errorHandler(this.ERROR_TYPES.API));
   } 
 
@@ -57,7 +60,10 @@ export class AccountDetailsPage extends BaseViewController {
     this.API.stack(ROUTES.editUserAccountDetails, "POST", toData)
       .subscribe(
           (response) => {
-            this.dismissLoading(AppViewData.getLoading().saved)
+            this.dismissLoading(AppViewData.getLoading().saved);
+            setTimeout(() => {
+              this.navCtrl.setRoot("HomePage");
+            }, 1000);
             console.log('response: ', response);
           },  this.errorHandler(this.ERROR_TYPES.API));
   }

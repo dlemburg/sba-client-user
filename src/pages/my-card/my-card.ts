@@ -14,9 +14,13 @@ import { CONST_APP_IMGS } from '../../global/global';
 export class MyCardPage extends BaseViewController {
   balance: number|string = 0;
   mobileCardImgSrc: string = "";
-  items: Array<{component: Component, name: string}>;
-  auth: any;
+  items: Array<{component: Component|null, name: string, showOnInit: boolean, itemDoesNeedMobileCardToShow: boolean, visible: boolean}> = [];
+  auth: any = this.authentication.getCurrentUser();
+  appHeaderBarLogo: string = AppViewData.getImg().logoImgSrc;
+  companyName: string = this.auth.companyName;
   unavailable: string = "Unavailable";
+  hasMobileCard: boolean = false;
+  hasReturnedMobileCardData: boolean = false;
 
   constructor(
     public navCtrl: NavController, 
@@ -30,23 +34,30 @@ export class MyCardPage extends BaseViewController {
 
     super(alertCtrl, toastCtrl, loadingCtrl);
     
-    this.auth = this.authentication.getCurrentUser();
     this.items = [
-      {component: 'EditPaymentDetailsPage', name: 'Create Mobile Card'},
-      {component: 'AddCardValuePage', name: 'Add Value to Mobile Card'},
-      {component: 'TransactionHistoryPage', name: 'Transaction History'},
-      {component: 'MyCardMorePage', name: 'More...'},
+      {component: 'AddCreditCardPage', name: 'Create Mobile Card', showOnInit: false, itemDoesNeedMobileCardToShow: false, visible: false},
+      {component: 'AddCardValuePage', name: 'Add Value to Mobile Card', showOnInit: false, itemDoesNeedMobileCardToShow: true, visible: false},
+      {component: 'TransactionHistoryPage', name: 'Transaction History', showOnInit: true, itemDoesNeedMobileCardToShow: false, visible: true},
+      {component: 'MyCardMorePage', name: 'More...', showOnInit: false, itemDoesNeedMobileCardToShow: true, visible: false},
     ]
   }
 
   ionViewDidLoad() {
     this.presentLoading();
-    this.API.stack(ROUTES.getBalance, "POST", {userOid: this.auth.userOid})
+    this.API.stack(ROUTES.getBalanceAndHasMobileCard, "POST", {userOid: this.auth.userOid})
       .subscribe(
           (response) => {
             this.dismissLoading();
             console.log('response: ', response);
-            this.balance = response.data.balance;
+            this.balance = response.data.mobileCardData.balance;
+            this.hasMobileCard = response.data.mobileCardData.hasMobileCard;
+
+            this.items.forEach((x) => {
+              if (x.itemDoesNeedMobileCardToShow && this.hasMobileCard) x.visible = true;
+              else if (!x.itemDoesNeedMobileCardToShow && !this.hasMobileCard) x.visible = true;
+            });
+            this.hasReturnedMobileCardData = true;
+
           }, this.errorHandler(this.ERROR_TYPES.API));
 
     // get myCardImg, doesn't need to be async
@@ -57,7 +68,7 @@ export class MyCardPage extends BaseViewController {
             console.log('response: ', response);
             const img = response.data.img;
             this.mobileCardImgSrc = AppViewData.getDisplayImgSrc(img);
-          },this.errorHandler(this.ERROR_TYPES.API));
+          },this.errorHandler(this.ERROR_TYPES.API, undefined, {shouldDismissLoading: false}));
   }
 
   nav(page) {

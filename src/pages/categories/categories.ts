@@ -17,7 +17,9 @@ export class CategoriesPage extends BaseViewController {
   store: any = {
     isOrderInProgress: null
   };
-  auth: any;
+  auth: any = this.authentication.getCurrentUser();
+  appHeaderBarLogo: string = AppViewData.getImg().logoImgSrc;
+  companyName: string = this.auth.companyName;
   canLeave: boolean = false;
   
   constructor(

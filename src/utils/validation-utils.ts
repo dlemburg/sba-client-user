@@ -3,7 +3,7 @@ import { IValidatorInfo } from '../models/models';
 
 export class Validation {
 
-    // control error messages
+    /* CONTROL MESSAGES IN VIEW */
     public static getValidatorErrorMessage(args: IValidatorInfo) {
 
         let len = args.validatorValue ? args.validatorValue.requiredLength : '';
@@ -28,7 +28,7 @@ export class Validation {
             isPhoneNumber: `Please enter a valid phone number`,
             isStreetAddress: `Please enter a valid street address. Hint: special characters like  "."  and "#"  are not needed.`,
             isCreditCard: `Please enter a valid credit card`,
-            isCreditCardCVC: `Please enter a valid credit card cvc`,
+            isCreditCardCVC: `Invalid`,
             isCreditCardExpiryDate: `Please enter a valid credit card expiration date`,
             isEmail: `Please enter a valid email`,
             isYear: `Please enter a valid year`,
@@ -58,7 +58,7 @@ export class Validation {
         }
     } 
 
-    // checks for custom-validator
+    /* REGEX FOR VALIDATION.TEST() */
     private static regex(): any {
         return {
             isNumbersOnly: /^[0-9]+$/,
@@ -74,12 +74,18 @@ export class Validation {
             isCity: /^[a-zA-Z]+(?:[\s-][a-zA-Z]+)*$/,
             isMonth: /^(0?[1-9]|1[0-2])$/,
             isYear: /\d{4}/
-
         }
     }
 
+    /* EXTRA VALIDATION CONTROL FOR DISPLAYING IN VIEW, BUT NOT SETTING ERRORS */
+    public static doDisplayErrorsInView: any = {
+        isCreditCardCVC: (value) => {
+            if (value.length > 2 || isNaN(value)) return true;
+            else return false;
+        }
+    }
 
-    // Validation.test("numbersOnly") inline
+    /* SOURCE OF TRUTH FOR ALMOST ALL VALIDATION */
     public static test(testType): any {
         return (control: FormControl) => {
             if (!control.value) return null;
@@ -93,7 +99,12 @@ export class Validation {
     }
 
 
-    // specialized validators
+    /*************************
+     *                        *
+     * SPECIALIZED VALIDATORS *
+     *                        *
+     *                        *
+     ******************** *****/
 
     public static aboveZero(control: FormControl):any {
         if (control.value === 0 || control.value === "0") return {aboveZero: true};
@@ -132,7 +143,12 @@ export class Validation {
     }
 
 
-    // group validators
+    /********************
+     *                  *
+     * GROUP VALIDATORS *
+     *                  *
+     *                  *
+     ********************/
 
     // control1 === control2
     public static isMismatch(control1, control2): any {
@@ -202,88 +218,3 @@ export class Validation {
         }
     }
 }
-
-
-
-   /*
-
-    public static isEmail(control: FormControl): any {
-        if (!control.value) return null;
-
-        if (control.value.match(/^(([^<>()\[\]\.,;:\s@\"]+(\.[^<>()\[\]\.,;:\s@\"]+)*)|(\".+\"))@(([^<>()[\]\.,;:\s@\"]+\.)+[^<>()[\]\.,;:\s@\"]{2,})$/)) return null;
-        else return { isEmail: true };
-    }
-
-    public static isCreditCardCVV(control: FormControl): any {
-        if (!control.value) return null;
-
-        if (control.value.match(/^[0-9]{3,4}$/)) return null;
-        else return { isCreditCardCVV: true };
-    }
-
-    public static isCreditCardExpiryDate(control: FormControl): any {
-        if (!control.value) return null;
-
-        if (control.value.match(/^(0[1-9]|1[0-2])\/?(([0-9]{4}|[0-9]{2})$)/)) return null;
-        else return { isCreditCardExpiryDate: true };
-    }
-
-    public static isCreditCard(control: FormControl): any {
-        if (!control.value) return null;
-
-        if (control.value.match(/^(?:4[0-9]{12}(?:[0-9]{3})?|5[1-5][0-9]{14}|6(?:011|5[0-9][0-9])[0-9]{12}|3[47][0-9]{13}|3(?:0[0-5]|[68][0-9])[0-9]{11}|(?:2131|1800|35\d{3})\d{11})$/)) return null;
-        else return { isCreditCard: true };
-    }
-
-    public static isStreetAddress(control: FormControl): any {
-        if (!control.value) return null;
-
-        if (control.value.match(/^[a-zA-Z\s\d\/]*\d[a-zA-Z\s\d\/]*$/)) return null;
-        else return { isStreetAddress: true };
-    }
-
-    public static isPhoneNumber(control: FormControl): any {
-        if (!control.value) return null;
-
-        if (control.value.match(/^(([0-9]{1})*[- .(]*([0-9]{3})[- .)]*[0-9]{3}[- .]*[0-9]{4})+$/)) return null;
-        else return { isPhoneNumber: true };
-    }
-
-    public static isState(control: FormControl): any {
-        if (!control.value) return null;
-        if (control.value.match(/^(?:A[KLRZ]|C[AOT]|D[CE]|FL|GA|HI|I[ADLN]|K[SY]|LA|M[ADEINOST]|N[CDEHJMVY]|O[HKR]|PA|RI|S[CD]|T[NX]|UT|V[AT]|W[AIVY])*$/)) return null;
-        else return { isState: true };
-    }
-
-    public static isZipCode(control: FormControl): any {
-        if (!control.value) return null;
-        if (control.value.toString().match(/^[0-9]{5}(?:-[0-9]{4})?$/)) return null;
-        else return { isZipCode: true };
-    }
-
-    public static isCity(control: FormControl):any {
-        if (!control.value) return null;
-        if (control.value.match(/^[a-zA-Z]+(?:[\s-][a-zA-Z]+)*$/)) return null;
-        else return { isCity: true };
-    }
-    // checks for control-messages
-    public static isNumbersOnly(control: FormControl):any {
-        if (!control.value) return null;
-        if (Number.isInteger(control.value)) return null;
-        else return { numbersOnly: true };
-    }
-    
-    
-
-    public static money(control: FormControl):any {
-        if (!control.value) return null;
-
-        let str = control.value.toString();
-        if (str.match(/^\d+(?:\.\d{0,2})?$/)) return null;
-        else return { money: true };
-    }
-
-    public static isAgeAllowed(control: FormControl): any {
-        return null;
-    }
-    */

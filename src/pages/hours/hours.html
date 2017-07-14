@@ -13,9 +13,9 @@
       <ion-row>
         <div *ngIf="x.hours !== 'closed'">
           <ion-col *ngFor="let y of x.hours; let j = index;" col-6> 
-            <span *ngIf="j === 0">Open: </span> 
-            <span *ngIf="j === 1">Close: </span>
-            <span class="bold">{{ y }}</span> </ion-col>
+            <span *ngIf="j === 0">{{ y }} &nbsp; - </span><span *ngIf="j === 1">{{ y }} </span>
+           <!-- <span class="bold">{{ y }}</span> -->
+           </ion-col>
         </div>
         <div *ngIf="x.hours === 'closed'">
           <ion-col class="closed">CLOSED</ion-col>

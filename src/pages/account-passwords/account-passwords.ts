@@ -15,9 +15,12 @@ import { BaseViewController } from '../base-view-controller/base-view-controller
 })
 export class AccountPasswordsPage extends BaseViewController {
   myForm: FormGroup;
-  auth: any;
   isSubmitted: boolean = false;
   logoImgSrc: string = AppViewData.getImg().logoImgSrc; 
+  auth: any = this.authentication.getCurrentUser();
+  appHeaderBarLogo: string = AppViewData.getImg().logoImgSrc;
+  companyName: string = this.auth.companyName;
+
 
   constructor(
     public navCtrl: NavController, 
@@ -33,13 +36,12 @@ export class AccountPasswordsPage extends BaseViewController {
 
     this.myForm = this.formBuilder.group({
       currentPassword: [null, Validators.compose([Validators.required])],
-      password1:  [null, Validators.compose([Validators.required])],
+      password:  [null, Validators.compose([Validators.required])],
       password2:  [null, Validators.compose([Validators.required])]
-    }, { validator: Validation.isMismatch('password1', 'password2')})
+    }, { validator: Validation.isMismatch('password', 'password2')})
   }
 
   ionViewDidLoad() {
-    this.auth = this.authentication.getCurrentUser();
   }
 
   submit(myForm, isValid) {
@@ -51,16 +53,20 @@ export class AccountPasswordsPage extends BaseViewController {
 
      /*** Package for submit ***/
     this.presentLoading(AppViewData.getLoading().saving)
-    const toData = {toData: myForm, userOid: this.auth.userOid, isEdit: false};
-    this.API.stack(ROUTES.savePassword, "POST", toData)
+    const toData = {toData: myForm, userOid: this.auth.userOid};
+
+    console.log("toData: ", toData);
+    this.API.stack(ROUTES.editPassword, "POST", toData)
       .subscribe(
           (response) => {
             console.log('response: ', response);
+            this.dismissLoading();
             this.showPopup({
               title: AppViewData.getPopup().defaultSuccessTitle, 
-              message: response.data.message || AppViewData.getPopup().defaultEditSuccessMessage, 
+              message: "Password changed successfully!", 
               buttons: [{text: AppViewData.getPopup().defaultConfirmButtonText, handler: onConfirmFn}]
             });
+
 
           }, this.errorHandler(this.ERROR_TYPES.API));
     }

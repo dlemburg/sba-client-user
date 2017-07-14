@@ -17,7 +17,9 @@ export class RewardsPage extends BaseViewController {
   rewards_individual: Array<any> = [];
   points: number|string = 0;
   pointsNeeded: number|string = 0;
-  auth: any;
+  auth: any = this.authentication.getCurrentUser();
+  appHeaderBarLogo: string = AppViewData.getImg().logoImgSrc;
+  companyName: string = this.auth.companyName;
   rewardTypeIndividualMessage: string = AppViewData.getRewards().rewardTypeIndividualMessage;
   REWARDS_TYPE = {
     REWARDS_INDIVIDUAL: "rewards_individual",
@@ -40,7 +42,6 @@ export class RewardsPage extends BaseViewController {
 
 // rewards: img, rewardOid, description, name, startDate, expiryDate, exclusions
   ionViewDidLoad() {
-    this.auth = this.authentication.getCurrentUser();
     this.presentLoading();
     this.API.stack(ROUTES.getPointsAndPointsNeeded + `/${this.auth.companyOid}/${this.auth.userOid}`, "GET")
       .subscribe(

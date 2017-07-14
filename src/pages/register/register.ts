@@ -17,7 +17,9 @@ import { CONST_APP_IMGS } from '../../global/global';
 })
 export class RegisterPage extends BaseViewController {
   myForm: FormGroup;
-  auth: any;
+  auth: any = this.authentication.getCurrentUser();
+  appHeaderBarLogo: string = AppViewData.getImg().logoImgSrc;
+  companyName: string = this.auth.companyName;
   logoImgSrc: string = AppViewData.getImg().logoImgSrc; 
 
   constructor(
@@ -44,7 +46,6 @@ export class RegisterPage extends BaseViewController {
   }
 
   ionViewDidLoad() {
-    this.auth = this.authentication.getCurrentUser();
   }
 
   navLogin() {

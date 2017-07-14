@@ -36,6 +36,8 @@ export const CONST_SOCIAL_MEDIA_TYPES = {
     INSTAGRAM: "INSTAGRAM"
 };
 
+
+// should use enum for this
 export const CONST_APP_IMGS = {
     0: 'homeMyCardImg',
     1: 'homeRewardsImg',

@@ -141,14 +141,15 @@ $danger : map-get($colors, danger);
 }
 
 .exclusions-container {
-    position: fixed;
+   // position: fixed;
     width: 100%;
-    bottom: 100px;
-    right: 0;
-    left: 0;
+    //bottom: 100px;
+   // bottom: 0;
+   // right: 0;
+   // left: 0;
     padding: 10px;
-    font-size: 10px;
-    line-height: 1.5;
+    font-size: 12px;
+   // line-height: 1.5;
     background-color: map-get($colors, light );
     color: map-get($colors, primary);
 }
@@ -172,6 +173,72 @@ $danger : map-get($colors, danger);
     background-color: map-get($colors, primary) !important;
     color: white !important;
 }
+
+ .logo-container {
+    text-align: center !important;
+    margin: auto !important;
+    font-weight: bold !important;
+    color: #fff !important;
+}
+
+.title-img {
+    margin-top: 8px !important;
+    height: 27px !important;
+}
+
+
+.header-bar-logo {
+    //position: relative;
+    //right: 33px;
+   //padding-right: 44px !important;
+}
+
+ion-title {
+   position: absolute;
+   top: 0;
+   left: 0;
+   padding: 0 90px 1px;
+   width: 100%;
+   height: 100%;
+   text-align: center;
+}
+.back-button.show-back-button {
+    z-index: 9999;
+    display: inline-block;
+}
+
+
+
+/* background toolbar img 
+.toolbar-background {
+    background: url(../../../img/logo.jpg) !important;
+    width: 100% !important;
+    -webkit-filter: blur(5px);
+    -moz-filter: blur(5px);
+    -o-filter: blur(5px);
+    -ms-filter: blur(5px);
+    filter: blur(5px);
+    color: white !important;
+}
+*/
+
+/* set menu/navbar style here */
+
+// use inline like: 
+//  [ngClass]="{'default-header-bar': !hasHeaderBarBackgroundImg, 
+//              'has-header-bar-background-img': hasHeaderBarBackgroundImg }"
+/*
+
+.default-header-bar {
+    // set normal colors here
+ }
+.has-header-bar-background-img {
+    // set white colors here
+}
+
+
+
+*/
 
 
 

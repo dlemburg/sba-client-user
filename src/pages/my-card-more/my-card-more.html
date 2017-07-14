@@ -1,13 +1,17 @@
+<!--
 <ion-header>
-
   <ion-navbar>
     <ion-title>More</ion-title>
   </ion-navbar>
-
+</ion-header>
+-->
+<ion-header>
+  <AppHeaderBar appHeaderBarLogo="{{appHeaderBarLogo}}" [companyName]="companyName"></AppHeaderBar>
 </ion-header>
 
 
 <ion-content padding text-center>
-    <div>By deleting this card, you will lose all value on the card. Are you sure you want to delete? </div>
-    <button ion-button color="danger" (click)="delete()" outline margin-top>Delete Card</button>
+  <div>By deleting this card, you will lose all value on the card. If you want to create another mobile card,
+      you will need to enter new credit card information. Are you sure you want to delete? </div>
+  <button ion-button color="danger" (click)="delete()" outline margin-top>Delete Card</button>
 </ion-content>

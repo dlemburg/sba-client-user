@@ -1,0 +1,10 @@
+<ion-navbar color="dl-white">
+  <button ion-button menuToggle>
+    <ion-icon name="menu"></ion-icon>
+  </button>
+  <ng-content></ng-content>
+  <ion-title class="align-center header-bar-logo">                
+    <img *ngIf="appHeaderBarLogo && !err" alt="logo" height="44" [src]="appHeaderBarLogo" (error)="onAppHeaderBarLogoSrcErr()" /> 
+    <span *ngIf="!appHeaderBarLogo && companyName"> {{ companyName }} </span>
+  </ion-title>
+</ion-navbar>

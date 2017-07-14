@@ -1,9 +1,14 @@
+<!--
 <ion-header>
   <ion-navbar>
     <button ion-button menuToggle>
       <ion-icon name="menu">Back to Checkout</ion-icon>
     </button>
   </ion-navbar>
+</ion-header>
+-->
+<ion-header>
+  <AppHeaderBar appHeaderBarLogo="{{appHeaderBarLogo}}" [companyName]="companyName"></AppHeaderBar>
 </ion-header>
 
 
@@ -19,19 +24,19 @@
     <div padding>
        <ion-item *ngIf="productDetails.sizesAndPrices && productDetails.sizesAndPrices.length">
           <ion-label>Size</ion-label>
-          <ion-select [(ngModel)]="purchaseItem.sizeAndOrPrice" >
+          <ion-select  [compareWith]="compareFn" [(ngModel)]="purchaseItem.sizeAndOrPrice" >
             <ion-option *ngFor="let x of productDetails.sizesAndPrices;" [value]="x">{{ x.name }}</ion-option>
           </ion-select>
         </ion-item>
         <ion-item>
           <ion-label>Add-ons</ion-label>
-          <ion-select [(ngModel)]="purchaseItem.addons" multiple="true">
+          <ion-select  [compareWith]="compareFn" [(ngModel)]="purchaseItem.addons" multiple="true">
             <ion-option *ngFor="let x of productDetails.addonsToClient; let i = index;" [value]="x">{{ x.name }}</ion-option>
           </ion-select>
         </ion-item>
         <ion-item>
           <ion-label>Flavors</ion-label>
-          <ion-select [(ngModel)]="purchaseItem.flavors" multiple="true">
+          <ion-select  [compareWith]="compareFn" [(ngModel)]="purchaseItem.flavors" multiple="true">
             <ion-option *ngFor="let x of productDetails.flavorsToClient; let i = index;" [value]="x">{{ x.name }}</ion-option>
           </ion-select>
         </ion-item>

@@ -33,19 +33,19 @@ page-locations {
     }
 
     .map-btn {
-        position: absolute;
-        top: 5px;
-        right: 100px;
-        background-color: white
-    }
-
-    .item-highlight {
-        background-color: map-get($colors , light) !important;
+       position: absolute;
+       top: 55px;
+       right: 20px;
+       background-color: white
     }
 
     .map-icon {
         color: map-get($colors, danger);
         background-color: transparent;
+    }
+
+    .item-highlight {
+        background-color: map-get($colors , light) !important;
     }
 
 

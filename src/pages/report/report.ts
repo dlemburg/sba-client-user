@@ -17,7 +17,9 @@ import { DateUtils } from '../../utils/date-utils';
 export class ReportPage extends BaseViewController {
   myForm: FormGroup;
   isSubmitted: boolean = false;
-  auth: any;
+  auth: any = this.authentication.getCurrentUser();
+  appHeaderBarLogo: string = AppViewData.getImg().logoImgSrc;
+  companyName: string = this.auth.companyName;
   logoImgSrc: string = AppViewData.getImg().logoImgSrc; 
 
   constructor(
@@ -37,7 +39,6 @@ export class ReportPage extends BaseViewController {
   }
 
   ionViewDidLoad() {
-    this.auth = this.authentication.getCurrentUser();
   }
 
   submit(myForm, isValid) {

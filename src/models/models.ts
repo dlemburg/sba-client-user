@@ -192,7 +192,9 @@ export interface ICompanyDetails {
     hasTwitter?: boolean;
     hasInstagram?: boolean;
     socialMediaPointsBonus?: boolean;
-    socialMediaMessage?: string;
+    socialMediaMessageFacebook?: string;
+    socialMediaMessageTwitter?: string;
+    socialMediaMessageInstagram?: string;
     socialMediaImg?: string;
     allowsCommentsOnOrderAhead?: boolean;
     

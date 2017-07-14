@@ -145,12 +145,15 @@ export class CheckoutStore {
     }
 
 
-    public deletePurchaseItemAndReturnOrder(order: IOrder, purchaseItem: IPurchaseItem, indexToDelete: number, TAX_RATE: number): IOrder {        
+    public deletePurchaseItem(order: IOrder, purchaseItem: IPurchaseItem, indexToDelete: number): IOrder {        
         order.purchaseItems = order.purchaseItems.filter((x, index) => {
             return index !== indexToDelete; 
         });
-        let subtotal = this.calculateSubtotal(this.order);
-        return this.calculateTaxesSubtotalTotalAndReturnOrder(order, subtotal, TAX_RATE);
+        //let subtotal = this.calculateSubtotal(this.order);
+        //return this.calculateTaxesSubtotalTotalAndReturnOrder(order, subtotal, TAX_RATE);
+        this.order = Object.assign({}, order);
+        
+        return order;
     }
 
     public clearOrderInProgress(): void {
@@ -158,7 +161,7 @@ export class CheckoutStore {
         this.deleteOrder();
     }
 
-    public clearDiscountsAndRewardsAndReturnOrder(order: IOrder): IOrder {
+    public clearDiscountsAndRewards(order: IOrder): IOrder {
         if (order && order.purchaseItems.length) {
             order.purchaseItems.forEach((x, index) => {
                 x.discounts = 0;
@@ -168,6 +171,17 @@ export class CheckoutStore {
         order.transactionDetails.rewardsSavings = 0;
 
         return order;
+    }
+
+    public roundAllTransactionDetails(transactionDetails: ITransactionDetails) {
+        transactionDetails.subtotal = Utils.round(transactionDetails.subtotal);
+        transactionDetails.rewardsSavings = Utils.round(transactionDetails.rewardsSavings);
+        transactionDetails.taxes = Utils.round(transactionDetails.taxes);
+        transactionDetails.total = Utils.round(transactionDetails.total);
+
+        this.order.transactionDetails = transactionDetails;
+
+        return this.order;
     }
 
     clearDiscountsAndRewardsAndLeave(order: IOrder): void {
@@ -203,8 +217,11 @@ export class CheckoutStore {
 
     public calculateTaxesSubtotalTotalAndReturnOrder(order: IOrder, subtotal: number, TAX_RATE: number): IOrder {
         order.transactionDetails.subtotal = Utils.round(subtotal);
-        order.transactionDetails.taxes = Utils.round(this.calculateTaxes(order.transactionDetails.subtotal, TAX_RATE));
-        order.transactionDetails.total = Utils.round(this.calculateTotal(order.transactionDetails.subtotal, order.transactionDetails.taxes));
+
+        const subtotalAfterDiscounts = order.transactionDetails.subtotal - order.transactionDetails.rewardsSavings;
+
+        order.transactionDetails.taxes = Utils.round(this.calculateTaxes(subtotalAfterDiscounts, TAX_RATE));
+        order.transactionDetails.total = Utils.round(this.calculateTotal(subtotalAfterDiscounts, order.transactionDetails.taxes));
 
         return order;
     }

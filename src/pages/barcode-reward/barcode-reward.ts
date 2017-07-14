@@ -2,6 +2,7 @@ import { Component } from '@angular/core';
 import { IonicPage, NavController, NavParams } from 'ionic-angular';
 import { AuthUserInfo } from '../../models/models';
 import { Authentication } from '../../global/authentication';
+import { AppViewData } from '../../global/app-data.service';
 
 @IonicPage()
 @Component({
@@ -10,7 +11,9 @@ import { Authentication } from '../../global/authentication';
 })
 export class BarcodeRewardPage {
   reward: any;
-  auth: AuthUserInfo = this.authentication.getCurrentUser();
+  auth: any = this.authentication.getCurrentUser();
+  appHeaderBarLogo: string = AppViewData.getImg().logoImgSrc;
+  companyName: string = this.auth.companyName;
   barcodeData: string = null;
   isFreePurchaseItem: number = 1;
   constructor(public navCtrl: NavController, public navParams: NavParams, public authentication: Authentication) {

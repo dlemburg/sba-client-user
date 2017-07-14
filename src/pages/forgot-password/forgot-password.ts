@@ -16,6 +16,9 @@ import { COMPANY_OID } from '../../global/companyOid';
 })
 export class ForgotPasswordPage extends BaseViewController {
   myForm: FormGroup;
+  auth: any = this.authentication.getCurrentUser();
+  appHeaderBarLogo: string = AppViewData.getImg().logoImgSrc;
+  companyName: string = this.auth.companyName;
 
   constructor(
     public navCtrl: NavController, 

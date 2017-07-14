@@ -1,5 +1,7 @@
 import { Component } from '@angular/core';
 import { Platform, IonicPage, NavController, NavParams } from 'ionic-angular';
+import { Authentication } from '../../global/authentication';
+import { AppViewData } from '../../global/app-data.service';
 import {
  GoogleMaps,
  GoogleMap,
@@ -10,7 +12,6 @@ import {
  Marker
 } from '@ionic-native/google-maps';
 
-
 @IonicPage()
 @Component({
   selector: 'page-locations-map',
@@ -19,12 +20,17 @@ import {
 export class LocationsMapPage {
   selectedLocation: any;
   locations: Array<any>;
+  auth: any = this.authentication.getCurrentUser();
+  appHeaderBarLogo: string = AppViewData.getImg().logoImgSrc;
+  companyName: string = this.auth.companyName;
+
 
   constructor(
     public navCtrl: NavController, 
     public navParams: NavParams,
     public platform: Platform,     
-    public googleMaps: GoogleMaps) {
+    public googleMaps: GoogleMaps,
+    public authentication: Authentication) {
   }
 
   ionViewDidLoad() {
@@ -59,8 +65,7 @@ export class LocationsMapPage {
           tilt: 30
         };
         map.moveCamera(position);
-
-
+        
         this.locations.forEach((x) => {
           let locationLatAndLong: LatLng = new LatLng(x.coordsLat, x.coordsLong);
 

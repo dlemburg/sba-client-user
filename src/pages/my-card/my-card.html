@@ -1,11 +1,8 @@
 <ion-header>
-  <ion-navbar>
-    <button ion-button menuToggle>
-      <ion-icon name="menu"></ion-icon>
-    </button>
-    <ion-title>My Card</ion-title>
-  </ion-navbar>
+  <AppHeaderBar appHeaderBarLogo="{{appHeaderBarLogo}}" [companyName]="companyName"></AppHeaderBar>
 </ion-header>
+
+
 <ion-content padding>
   <div class="my-card-img-container">
     <img alt="Mobile Card Image" [src]="mobileCardImgSrc" onError="this.src='img/default.png';" />
@@ -15,9 +12,15 @@
       <div *ngIf="balance !== unavailable" text-center>Balance: {{ balance | currency:symbolDisplay:true }}</div>
       <div *ngIf="balance === unavailable" text-center>Balance: {{ balance }}</div>
     </div>
-    <button (click)="navBarcodePayPage()" class="pay-now-btn" ion-button>Pay Now!</button>
+    <button *ngIf="hasMobileCard" (click)="navBarcodePayPage()" class="pay-now-btn" ion-button>Pay Now!</button>
     <ion-list inset>
-      <button ion-item *ngFor="let x of items; let i = index;" (click)="nav(x)">{{x.name}}</button>
+      <div *ngFor="let x of items; let i = index;">
+        <div *ngIf="hasReturnedMobileCardData">
+          <div *ngIf="x.showOnInit || x.visible">
+            <button ion-item (click)="nav(x)">{{x.name}}</button>
+            </div>
+        </div>
+      </div>
     </ion-list>
   </div>
 </ion-content>

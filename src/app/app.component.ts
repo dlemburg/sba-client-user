@@ -55,7 +55,7 @@ export class MyApp {
       
       this.pages = [
         { title: 'Home', component: 'HomePage' },      
-        { title: 'My Card', component: 'MyCardPage' },
+        { title: 'My Mobile Card', component: 'MyCardPage' },
         { title: 'Locations', component: 'LocationsPage' },
         { title: 'Menu', component: 'CategoriesPage' },
       // { title: 'New Products', component: ProductsNewPage },

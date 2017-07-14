@@ -22,24 +22,25 @@ export class ControlMessagesComponent implements OnInit {
  
 
   ngOnInit() {
+
      //console.log('inside onInit. this.control: ', this.controlInstance);   
   }
 
   get message() {
     if (this.controlInstance && this.controlInstance.errors) {
-     // if (this.controlInstance.value === "" || this.controlInstance.value === undefined) return null;
-    //  if (this.controlInstance.value === "" && !this.controlInstance.errors.hasOwnProperty('required') ) return false;
       for (let prop in this.controlInstance.errors) {
         if (this.controlInstance.errors.hasOwnProperty(prop) && prop !== 'options' && (this.controlInstance.touched || this.isSubmitted)) {
-          let validatorOptions = this.controlInstance.errors['options'] || null;
-          let args = {
-            validatorProp: prop, 
-            validatorValue: this.controlInstance.errors[prop],  // for min and max length
-            validatorOptions
-          }
-          let message = Validation.getValidatorErrorMessage(args);
+          if (Validation.doDisplayErrorsInView[prop] === undefined || Validation.doDisplayErrorsInView[prop](this.controlInstance.value)) {
+            let validatorOptions = this.controlInstance.errors['options'] || null;
+            let args = {
+              validatorProp: prop, 
+              validatorValue: this.controlInstance.errors[prop],  // for min and max length
+              validatorOptions
+            }
+            let message = Validation.getValidatorErrorMessage(args);
 
-          return message;
+            return message;
+          }
         }
       }
     }

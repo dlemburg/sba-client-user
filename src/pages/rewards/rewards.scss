@@ -6,27 +6,25 @@ page-rewards {
         position: relative;
         text-align: center;
         width: 100% !important;
-        border-bottom: 8px solid $primary;
-        border-top: 8px solid $primary;
+        border-bottom: 4px solid $primary;
+        border-top: 4px solid $primary;
     }
 
     .top-card-footer {
         position: absolute;
         top: 60%;
-        font-size: 1.3em;
+        font-size: 14px;
         width: 100%;
         font-weight: bold;
-        color: #fff;
+        color: white;
     }
     .border-right { border-right: 3px solid white;}
 
-    .logo {
+    .logo-page-specific-container {
         position: absolute;
-        top: 20%;
-        font-size: 1.3em;
-        width: 100%;
-        font-weight: bold;
-        color: #fff;
+        top: 5%;
+        margin-left: 25% !important;
+        width: 50%;
     }
 
     .points-number {
@@ -47,7 +45,7 @@ page-rewards {
 
     .reward-card-title {
         position: absolute;
-        top: 40%;
+        top: 20%;
         font-size: 36px;
         width: 100%;
         font-weight: bold;
@@ -57,7 +55,7 @@ page-rewards {
     .reward-card-expiry {
         font-size: 16px;
         position: absolute;
-        top: 90%;
+        top: 80%;
         width: 100%;
         color: #fff;
     }

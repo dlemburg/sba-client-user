@@ -1,3 +1,4 @@
+<!--
 <ion-header>
   <ion-navbar>
     <button ion-button menuToggle>
@@ -6,32 +7,28 @@
     <ion-title>Add Card Value</ion-title>
   </ion-navbar>
 </ion-header>
-
+-->
+<ion-header>
+  <AppHeaderBar appHeaderBarLogo="{{appHeaderBarLogo}}" [companyName]="companyName"></AppHeaderBar>
+</ion-header>
 
 <ion-content padding text-center>
-  <form [formGroup]="myForm" (ngSubmit)="submit(myForm.value, myForm.valid)">
-
-    <ion-item margin>
-      <ion-row>
-        <ion-col col-4>
-          Card:
-        </ion-col>
-        <ion-col>
-          **** **** **** {{ cardNumberLastFourDigits }}
-        </ion-col>
-      </ion-row>
-    </ion-item>
-    <ion-item margin>
-        <ion-label stacked>Security Code <!--<span class="what-is-this">What is this?</span> --></ion-label>
-        <ion-input type="tel" formControlName="cardCVV"></ion-input>
-    </ion-item>
-    <div margin-top>  <ion-icon ios="ios-cash" md="md-cash"></ion-icon> &nbsp; Select a Value</div>
-    <ion-row margin>
+  <ion-item text-wrap margin>
+    <ion-row>
       <ion-col>
-        <button [ngClass]="{'dollar-value-selected': myForm.controls.dollarValue.value === x }"  *ngFor="let x of dollarValues; let i = index;" ion-button outline margin-left (click)="selectDollarValue(x)">{{ x |currency:symbolDisplay:true}}</button>
+        Add to Mobile Card ending in: **** **** **** <span class="bold">{{ paymentIdLastFourDigits }}</span>
       </ion-col>
     </ion-row>
-    <div text-center margin-top><button color="primary" [disabled]="!myForm.valid" ion-button block margin-top>Submit</button></div>
-  </form>
-
+  </ion-item>
+  <div class="dollar-values-container margin-top">
+    <div margin-top>  <ion-icon ios="ios-cash" md="md-cash"></ion-icon>&nbsp; Select an amount to add to your mobile card!</div>
+    <ion-row margin>
+      <ion-col>
+        <button [ngClass]="{'dollar-value-selected': amount === x }"  *ngFor="let x of dollarValues; let i = index;" ion-button outline margin-left (click)="selectAmount(x)">{{ x }}</button>
+      </ion-col>
+    </ion-row>
+  </div>
+  <div text-center margin-top>
+    <button type="button" color="primary" ion-button block (click)="submit()">Submit</button>
+  </div>
 </ion-content>

@@ -16,7 +16,9 @@ import { DateUtils } from '../../utils/date-utils';
 })
 export class ContactPage extends BaseViewController {
   myForm: FormGroup;
-  auth: any;
+  auth: any = this.authentication.getCurrentUser();
+  appHeaderBarLogo: string = AppViewData.getImg().logoImgSrc;
+  companyName: string = this.auth.companyName;
   contactInfo: IContactInfo = {phoneNumber: "", email: "", address: "", city: "", state: "", zipcode: null};
   showContactInfo: boolean = false;
   doCallGetCompanyContactInfo: boolean = true;

@@ -6,23 +6,28 @@ page-home {
 
         .card-title {
             position: absolute;
-            top: 30%;
-            font-size: 36px;
+            top: 20%;
+            font-size: 38px;
             width: 100%;
             font-weight: bold;
             color: #fff;
+            letter-spacing: 1px;
         }
 
+
         .card-subtitle {
-            font-size: 16px;
+            font-size: 19px;
             position: absolute;
-            top: 58%;
+            top: 55%;
             width: 100%;
+            padding-left: 50px;
+            padding-right: 50px;
             color: #fff;
+            font-variant: small-caps;
         }
 
         .card-points {
-            font-size: 16px;
+            font-size: 13px;
             position: absolute;
             top: 85%;
             width: 100%;
@@ -30,7 +35,15 @@ page-home {
         }
 
         .card-points-number {
-            font-size: 1.5em;
+            font-size: 15px;
             font-weight: bold;
+        }
+
+        .blur {
+            -webkit-filter: blur(5px);
+           -moz-filter: blur(5px);
+            -o-filter: blur(5px);
+            -ms-filter: blur(5px);
+            filter: blur(5px); 
         }
 }

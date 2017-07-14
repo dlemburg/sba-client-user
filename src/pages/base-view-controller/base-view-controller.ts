@@ -5,7 +5,7 @@ import { Utils } from '../../global/utils/utils';
 import { Authentication } from '../../global/authentication';
 import { IErrorHandlerOpts } from '../../models/models';
 
-import { NavController, NavParams, AlertController, ToastController, LoadingController, ModalController } from 'ionic-angular';
+import { NavController, NavParams, AlertController, ToastController, LoadingController, ModalController, AlertOptions } from 'ionic-angular';
 import { AppViewData } from '../../global/app-data.service';
 import { IPopup } from '../../models/models';
 
@@ -28,7 +28,7 @@ export class BaseViewController {
     API: "API",
     UNHANDLED_EXCEPTION: "UNHANDLED EXCEPTION"
   }
-  public APPEND_DEFAULT: "We will work hard to ensure that this is not a problem on our end."
+  public APPEND_DEFAULT: string = "We will work hard to ensure that this is not a problem on our end."
 
   public ERROR_MESSAGES = {
     CAMERA: `Sorry, there was an error retrieving your photo.  ${this.APPEND_DEFAULT}`,
@@ -37,7 +37,7 @@ export class BaseViewController {
     SOCIAL_MEDIA: `Sorry, there was an error posting. ${this.APPEND_DEFAULT}`,
     GEOLOCATION: `Sorry, there was an error calculating your position. ${this.APPEND_DEFAULT}`
   }
-  constructor(public alertCtrl: AlertController, public toastCtrl: ToastController, public loadingCtrl: LoadingController ) {
+  constructor(public alertCtrl: AlertController, public toastCtrl: ToastController, public loadingCtrl: LoadingController) {
   }
 
   // app-wide error-handler
@@ -52,7 +52,7 @@ export class BaseViewController {
           message = message;
           break;
         default: 
-          message = this.ERROR_TYPES.PLUGIN[errorType];
+          message = this.ERROR_MESSAGES[errorType];
       }
       this.presentToast(opts.shouldPopView, message);
       opts.shouldDismissLoading && this.dismissLoading();
@@ -70,8 +70,8 @@ export class BaseViewController {
     }
   }
 
-  presentErrorAlert(title = "ERROR!", subTitle = "ERROR!", message = "No stack trace given.") {
-    const alert = this.alertCtrl.create({title, subTitle, message});
+  presentErrorAlert(title = "ERROR!", subTitle = "ERROR!", err = {_body: "No stacktrace given"}) {
+    const alert = this.alertCtrl.create({title, subTitle, message: err._body});
     alert.present();
   }
 
@@ -81,13 +81,13 @@ export class BaseViewController {
   public presentToast(shouldPopView: Boolean, message = AppViewData.getToast().defaultErrorMessage, position = AppViewData.getToast().defaultToastPosition, duration = AppViewData.getToast().defaultToastDuration) {
     let toast = this.toastCtrl.create({
       message: message,
-      duration: duration || 1500,
+      duration: duration || 2500,
       position: position || "bottom"
     });
 
     toast.onDidDismiss(() => {
       if (shouldPopView) {
-        //this.navCtrl.pop();
+       // this.navCtrl.pop();
       } else {
         // do nothing
       }
@@ -105,7 +105,7 @@ export class BaseViewController {
   */
 
   // app-wide popup
-  public showPopup(args) {
+  public showPopup(args: AlertOptions) {
     const alert = this.alertCtrl.create(args);
     alert.present();
   }

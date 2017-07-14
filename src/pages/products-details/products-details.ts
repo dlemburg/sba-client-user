@@ -49,7 +49,9 @@ export class ProductsDetailsPage extends BaseViewController {
     discounts: 0
   };
   order: any = {};
-  auth: any;
+  auth: any = this.authentication.getCurrentUser();
+  appHeaderBarLogo: string = AppViewData.getImg().logoImgSrc;
+  companyName: string = this.auth.companyName;
   isOrderInProgress: boolean;
   
   constructor(
@@ -124,6 +126,11 @@ export class ProductsDetailsPage extends BaseViewController {
     }
   }
 
+  onSelectCheckQuantityDefault(arr, field) {
+    this.purchaseItem[field].forEach((x) => {
+      if (x.hasQuantity && !x.quantity) x.quantity = x.defaultQuantity || 3;
+    });
+  }
   // name, oid, price, quantity, hasQuantity
 
   selectDairyQuantity(index, quantity) {

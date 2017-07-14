@@ -1,3 +1,4 @@
+<!--
 <ion-header>
   <ion-navbar>
     <button ion-button menuToggle>
@@ -6,11 +7,15 @@
     <ion-title>Transaction History</ion-title>
   </ion-navbar>
 </ion-header>
+-->
 
+<ion-header>
+  <AppHeaderBar appHeaderBarLogo="{{appHeaderBarLogo}}" [companyName]="companyName"></AppHeaderBar>
+</ion-header>
 <ion-content padding>
   <!-- example of list with multiple columns- 3 fields -->
   <ion-list>
-    <ion-item *ngIf="!transactions.length">No transactions to display.</ion-item>
+    <EmptyMessage *ngIf="!transactions.length" message="transactions"></EmptyMessage>
     <ion-item *ngFor="let x of transactions">
       <ion-row no-padding>
         <ion-col  class="" col-4 text-left>{{ x.purchaseDate | date }}</ion-col>

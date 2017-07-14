@@ -19,12 +19,14 @@ export class BarcodePayPage extends BaseViewController {
   socialMediaDiscountString: string;
   socialMediaType: string = "";
   isSocialMediaUsed: boolean = false;
-  paymentID: string = null;
-  auth: AuthUserInfo = this.authentication.getCurrentUser();
+  auth: any = this.authentication.getCurrentUser();
+  appHeaderBarLogo: string = AppViewData.getImg().logoImgSrc;
+  companyName: string = this.auth.companyName;
+  mobileCardId: string = null;
   barcodeData: string = `${this.auth.userOid}$${this.auth.companyOid}$0$0`;
   shareVia = {
     TWITTER: () => {
-      this.twitter();
+      this.twitter();   // avoided having to use .bind()
     },
     FACEBOOK: () => {
       this.facebook();
@@ -34,6 +36,7 @@ export class BarcodePayPage extends BaseViewController {
     }
   };
   SOCIAL_MEDIA_TYPES = CONST_SOCIAL_MEDIA_TYPES;
+
   constructor(
     public navCtrl: NavController, 
     public navParams: NavParams, 
@@ -49,7 +52,6 @@ export class BarcodePayPage extends BaseViewController {
 
   ionViewDidLoad() {
     this.presentLoading();
-    this.auth = this.authentication.getCurrentUser();
     this.API.stack(ROUTES.getCompanyDetails, "POST", {companyOid: this.auth.companyOid})
       .subscribe(
           (response) => {
@@ -58,17 +60,17 @@ export class BarcodePayPage extends BaseViewController {
             this.companyDetails.socialMediaImg = `${ROUTES.downloadImg}?img=${response.data.companyDetails.socialMediaImg}`;
 
             console.log("this.companyDetails: ", this.companyDetails);   
-            this.getUserPaymentID();
+            this.getUserMobileCardId();
             
           }, this.errorHandler(this.ERROR_TYPES.API, undefined, {shouldDismissLoading: false}));
   }
 
-  getUserPaymentID() {
-     this.API.stack(ROUTES.getUserPaymentID, "POST", {userOid: this.auth.userOid, companyOid: this.auth.companyOid})
+  getUserMobileCardId() {
+     this.API.stack(ROUTES.getUserMobileCardId, "POST", {userOid: this.auth.userOid, companyOid: this.auth.companyOid})
       .subscribe(
           (response) => {
             console.log('response: ', response);
-            this.paymentID = response.data.paymentID;
+            this.mobileCardId = response.data.mobileCardId;
             this.dismissLoading();
           }, this.errorHandler(this.ERROR_TYPES.API));
   }
@@ -92,14 +94,14 @@ export class BarcodePayPage extends BaseViewController {
   }
 
   twitter() {
-    this.socialSharing.shareViaTwitter(this.companyDetails.socialMediaMessage, this.companyDetails.socialMediaImg).then(() => {
+    this.socialSharing.shareViaTwitter(this.companyDetails.socialMediaMessageTwitter, this.companyDetails.socialMediaImg).then(() => {
       this.finishProcessSocialMedia(this.SOCIAL_MEDIA_TYPES.TWITTER);
     })
     .catch(this.errorHandler(this.ERROR_TYPES.PLUGIN.SOCIAL_MEDIA))
   }
 
   facebook() {
-    this.socialSharing.shareViaFacebook(this.companyDetails.socialMediaMessage, this.companyDetails.socialMediaImg).then(() => {
+    this.socialSharing.shareViaFacebook(this.companyDetails.socialMediaMessageFacebook, this.companyDetails.socialMediaImg).then(() => {
       this.finishProcessSocialMedia(this.SOCIAL_MEDIA_TYPES.FACEBOOK);
 
     })
@@ -107,7 +109,7 @@ export class BarcodePayPage extends BaseViewController {
   }
 
   instagram() {
-    this.socialSharing.shareViaInstagram(this.companyDetails.socialMediaMessage, this.companyDetails.socialMediaImg).then(() => {
+    this.socialSharing.shareViaInstagram(this.companyDetails.socialMediaMessageInstagram, this.companyDetails.socialMediaImg).then(() => {
       this.finishProcessSocialMedia(this.SOCIAL_MEDIA_TYPES.INSTAGRAM);
     })
     .catch(this.errorHandler(this.ERROR_TYPES.PLUGIN.SOCIAL_MEDIA))
