@@ -102,13 +102,14 @@ export const ROUTES = {
     getBalanceAndHasMobileCard: `/api/cs/user/getBalanceAndHasMobileCard`,
 
 
-    // stripe
+    // node stripe
     getStripePublishableKey: `/api/node/financial/getStripePublishableKey`,
     addCreditCard: '/api/node/financial/addCreditCard',
     deleteCard: '/api/node/financial/deleteCard',
     addMobileCardValue: '/api/node/financial/addMobileCardValue',
 
 
-    
+    logError: '/api/node/appAnalytics/logError'
+
 
 }

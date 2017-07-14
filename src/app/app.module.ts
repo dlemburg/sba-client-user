@@ -32,6 +32,9 @@ import { BaseViewController } from '../pages/base-view-controller/base-view-cont
 // plugins
 //import { TextMaskModule } from 'angular2-text-mask';
 
+// classes
+import { CustomErrorHandler } from '../global/custom-error-handler';
+
 @NgModule({
   declarations: [
     MyApp,
@@ -52,7 +55,9 @@ import { BaseViewController } from '../pages/base-view-controller/base-view-cont
   entryComponents: [
     MyApp
   ],
-  providers: [{provide: ErrorHandler, useClass: IonicErrorHandler}, 
+  providers: [
+    //{provide: ErrorHandler, useClass: IonicErrorHandler}, 
+    {provide: ErrorHandler, useClass: CustomErrorHandler}, 
     StatusBar,
     SplashScreen,
     Transfer,
