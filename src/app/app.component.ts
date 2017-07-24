@@ -6,6 +6,8 @@ import { Authentication } from '../global/authentication';
 import { AppViewData } from '../global/app-data.service';
 import { API, ROUTES } from '../global/api';
 import { COMPANY_OID } from '../global/companyOid';
+import { AuthUserInfo } from '../models/models';
+import { AppVersion } from '@ionic-native/app-version';
 
 declare var cordova: any;
 
@@ -17,56 +19,110 @@ export class MyApp {
 
   rootPage: any; 
   pages: Array<{title: string, component: any}>;
+  auth: AuthUserInfo;
+  pauseSubscription;
+  resumeSubscription;
 
   constructor(
     public platform: Platform, 
     public API: API, 
     private authentication: Authentication, 
     public statusBar: StatusBar, 
-    public splashScreen: SplashScreen) {
+    public splashScreen: SplashScreen,
+    private appVersion: AppVersion) {
+
 
       this.platform.ready().then(() => {
-        this.initializeApp();
+        this.getAppStartupInfo().then((data: IClientUserAppStartupInfoResponse) => {
+          this.initializeApp(data);
+        });
       });
   }
 
-  initializeApp() {
-    this.API.stack(ROUTES.getImgsOnAppStartup + `/${COMPANY_OID}`, "GET")
-      .subscribe(
-        (response) => {
-          const defaultImg = response.data.imgs.defaultImg;
-          AppViewData.setImgs({
-            logoImgSrc: `${ROUTES.downloadImg}?img=${response.data.imgs.logoImg}`,
-            defaultImgSrc: defaultImg ? `${ROUTES.downloadImg}?img=${defaultImg}` : "img/default.png"
-          });
-          this.finishInitialization();
-        }, (err) => {
-          this.finishInitialization();
-          console.log("Problem downloading images on app startup");
-        });
 
+  // change this to getAppStartupInfo() // get version number from api
+  /*
+      this.appVersion.getVersionNumber().then((versionNumber) => {
+        console.log("versionNumber: ", versionNumber);
+      });
+  */
+  getAppStartupInfo() {
+    return new Promise((resolve, reject) => {
+      this.API.stack(ROUTES.getClientUserAppStartupInfo + `/${COMPANY_OID}`, "GET")
+        .subscribe(
+          (response) => {
+            const res: IClientUserAppStartupInfoResponse = response.data.appStartupInfo;
+            const defaultImg = res.defaultImg;
+            const logoImg = res.logoImg;
+            const clientUserVersionNumber = res.currentClientUserVersionNumber;
+            const minClientUserVersionNumber = res.minClientUserVersionNumber;
+            const mustUpdateClientUserApp = res.mustUpdateClientUserApp;
+
+            console.log("response.data: ", response.data);
+
+            resolve({
+              defaultImg, 
+              logoImg, 
+              clientUserVersionNumber, 
+              minClientUserVersionNumber,
+              mustUpdateClientUserApp,
+            });
+          }, (err) => {
+            resolve();
+            console.log("Problem downloading images on app startup");
+          });
+    });
   }
 
-  finishInitialization() {
-      this.statusBar.styleDefault();
-      this.splashScreen.hide();
-
-      this.authentication.isLoggedIn() ? this.rootPage = 'HomePage' : this.rootPage = 'LoginPage';
-      
-      this.pages = [
-        { title: 'Home', component: 'HomePage' },      
-        { title: 'My Mobile Card', component: 'MyCardPage' },
-        { title: 'Locations', component: 'LocationsPage' },
-        { title: 'Menu', component: 'CategoriesPage' },
+  initializeApp(data: IClientUserAppStartupInfoResponse) {
+    AppViewData.setImgs({
+      logoImgSrc: `${ROUTES.downloadImg}?img=${data.logoImg}`,
+      defaultImgSrc: data.defaultImg ? `${ROUTES.downloadImg}?img=${data.defaultImg}` : "img/default.png"
+    });
+    this.doNativeThingsOnAppStartup(data.currentClientUserVersionNumber, data.minClientUserVersionNumber, data.mustUpdateClientUserApp);
+    
+    this.pages = [
+      { title: 'Home', component: 'HomePage' },      
+      { title: 'My Mobile Card', component: 'MyCardPage' },
+      { title: 'Locations', component: 'LocationsPage' },
+      { title: 'Menu', component: 'CategoriesPage' },
+      { title: 'Contact Us', component: 'ContactPage' },
+      { title: 'Report Issue', component: 'ReportPage' },
+      { title: 'My Account', component: 'AccountPage' },
       // { title: 'New Products', component: ProductsNewPage },
-      // { title: 'About Order Ahead', component: AboutOrderAheadPage },
-        { title: 'Contact Us', component: 'ContactPage' },
-        { title: 'Report Issue', component: 'ReportPage' },
-        { title: 'My Account', component: 'AccountPage' },
+      // { title: 'About Order Ahead', component: AboutOrderAheadPage },  
       // { title: 'FAQs', component: FAQPage },
-      // { title: 'Login', component: LoginPage},      // this won't be here
-        // { title: 'Register', component: RegisterPage}  // this won't be here
-      ];
+    ];
+    this.authentication.isLoggedIn() ? this.rootPage = 'HomePage' : this.rootPage = 'LoginPage';
+  }
+
+  doNativeThingsOnAppStartup(currentClientUserVersionNumber = 0, minClientUserVersionNumber = 0, mustUpdateClientUserVersion = false) {
+    this.invokePlatformListeners();
+    this.statusBar.styleDefault();
+    this.splashScreen.hide();
+
+    // TODO version check popups here
+    this.appVersion.getVersionNumber().then((appVersion) => {
+      console.log("appVersion: ", appVersion);
+      if (appVersion < minClientUserVersionNumber) {
+        // FORCE update modal or popup
+      }
+      else if (currentClientUserVersionNumber < appVersion) {
+        // OPTIONAL update modal or popup
+      }
+    });
+  }
+
+  invokePlatformListeners() {
+    this.platform.pause.subscribe(() => {
+      
+    });
+
+    this.platform.resume.subscribe(() => {
+      if (!this.authentication.isLoggedIn()) {
+        this.nav.setRoot("LoginPage");
+      }
+    });
   }
 
   openPage(page) {
@@ -75,6 +131,15 @@ export class MyApp {
     this.nav.setRoot(page.component);
   } 
 }
+
+interface IClientUserAppStartupInfoResponse {
+  logoImg: string;
+  defaultImg: string;
+  currentClientUserVersionNumber: number;
+  minClientUserVersionNumber: number;
+  mustUpdateClientUserApp: boolean;
+}
+
 
 
 

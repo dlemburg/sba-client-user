@@ -4,7 +4,8 @@
   </button>
   <ng-content></ng-content>
   <ion-title class="align-center header-bar-logo">                
-    <img *ngIf="appHeaderBarLogo && !err" alt="logo" height="44" [src]="appHeaderBarLogo" (error)="onAppHeaderBarLogoSrcErr()" /> 
+    <img *ngIf="appHeaderBarLogo && !err && !placeholder" alt="logo" height="44" [src]="appHeaderBarLogo" (error)="onAppHeaderBarLogoSrcErr()" /> 
     <span *ngIf="!appHeaderBarLogo && companyName"> {{ companyName }} </span>
+    <span *ngIf="placeholder">{{ placeholder }}</span>
   </ion-title>
 </ion-navbar>

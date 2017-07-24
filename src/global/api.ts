@@ -1,51 +1,119 @@
-import { Injectable } from '@angular/core';
+import { Injectable, ErrorHandler } from '@angular/core';
 import { Http, Headers, RequestOptions, Response } from '@angular/http';
 import * as global from './global';
 import { Observable } from 'rxjs/Observable';
 import 'rxjs/add/operator/catch';
 import 'rxjs/add/operator/map';
+import 'rxjs/add/observable/throw';
 import { Authentication } from '../global/authentication';
-import { Ihttp, AuthUserInfo } from '../models/models';
+import { Ihttp, AuthUserInfo, ILogError } from '../models/models';
+import { DateUtils } from '../utils/date-utils';
 
 @Injectable()
-export class API {
-    /*  might need this for c# auth???
-    contentHeaders.append('Accept', 'application/json');
-    contentHeaders.append("Authorization", "Bearer " + token));
-    contentHeaders.append('X-Requested-With',	'XMLHttpRequest');
-            // this.headers.append( 'Content-Type', 'application/json' )
-
-    */
+export class API implements ErrorHandler {
     auth: AuthUserInfo = this.authentication.getCurrentUser();
-    token: string = this.authentication.getToken();
-    headers = new Headers({ 'Content-Type': 'application/json', 'Authorization': `Bearer ${this.token}`}); 
-    options = new RequestOptions({ headers: this.headers });
-    
-    constructor(private http: Http, private authentication: Authentication) {
-       // console.log("this.token: ", this.token);
-    }
+    token;
+    headers;
+    options;
+    logErrorAttempts: number = 0;
 
+    constructor(private http: Http, private authentication: Authentication) {
+
+    }
   
     public stack(route: string, verb: string, body: any = {}): Observable<any> {
+        this.auth =  this.authentication.getCurrentUser();
+        this.token = this.authentication.getToken();
+        let headers = new Headers();
+        headers.append('Content-Type', 'application/json');
+        headers.append('Authorization', `Bearer ${this.token}`);
+        let options = new RequestOptions({ headers: headers });
 
+
+        /*
+            .NET server is fine with Authorization being set as a header on GET requests,
+            Node.js server is not. So anytime I need to verify token on GET request for node 
+            server, i'll have to send it as a query param, and access it on server side as req.query (or params?).
+            this means i'll have to add one more layer of abstraction here to account for it, as well as 
+            auth middleware on server side to account for GET -> req.query (or params?)  vs  POST req.headers
+
+        */
+        let isOnline = window.navigator.onLine;
+        debugger;
         let url: string = route.indexOf('/api/node/') > -1 ? global.SERVER_URL_NODE + route : global.SERVER_URL_CSHARP + route;
         const httpVerb = verb.toLowerCase();
-        const options = this.options;
 
         if (httpVerb === "post") {
             return this.http[httpVerb](url, body, options)
                     .map((response: Response) => response.json())
-                    .catch(this.errorHandler);
+                    .catch((err) => {
+                        if (!isOnline) return Observable.throw("NOT_ONLINE")
+                        else {
+                            this.logError({err, url, httpVerb, type: "API"});
+                            return Observable.throw(err);
+                        }
+                    });
         } else if (httpVerb === "get") {
             return this.http[httpVerb](url, options)
                     .map((response: Response) => response.json())
-                    .catch(this.errorHandler);
+                    .catch((err) => {
+                        if (!isOnline) return Observable.throw("NOT_ONLINE")
+                         else {
+                             this.logError({err, url, httpVerb, type: "API"});
+                             return Observable.throw(err);
+                         }
+                    });
         }
     }
 
-    private errorHandler(err = 'ERROR! No stack trace given'): any {        
-        //console.error('Documenting the error from the http service!');
-        throw err;
+    public isTokenCredentialsRevoked(err) {
+        if (err && err.status && (err.status === 401 || err.status === 403)) {
+            return true;
+        } else return false;
+    }
+
+
+    /* these error handlers don't interact with the view. when they are done, they forward error to view-error-handler
+        in BaseViewController
+    */
+
+    public handleError(err: any) {
+            console.log(" %c err (logger): "  + err, "color: red;");
+
+            if (!global.ENV.development) {
+                this.logError({type: "Javascript runtime error!", err})
+            }
+        }
+
+    public logError(args?): any {  
+
+        if (!global.ENV.development) {
+            if (this.logErrorAttempts === 1 && args.type === "API") {
+                this.logErrorAttempts = 0;
+                return;
+            }
+            else this.logErrorAttempts++;
+
+            const toData: ILogError = {
+                err: args.err || null,
+                url: args.url || null,
+                httpVerb: args.httpVerb || null,
+                date: DateUtils.toLocalIsoString(new Date().toString()),
+                timezoneOffset: new Date().getTimezoneOffset() / 60,
+                app: "Client-User",
+                type: args.type || null,
+                companyOid: this.authentication.isLoggedIn() ? this.auth.companyOid : null,
+                userOid: this.authentication.isLoggedIn() ? this.auth.userOid : null
+            }      
+
+            this.stack(ROUTES.logClientError, "POST", toData).subscribe((response) => {
+                console.log("response: ", response);
+                if (args.type === "API") return;
+            }, (err) => {
+                console.log("error sending client err to server");
+            });
+        }
+
     }
 }
 
@@ -108,8 +176,10 @@ export const ROUTES = {
     deleteCard: '/api/node/financial/deleteCard',
     addMobileCardValue: '/api/node/financial/addMobileCardValue',
 
-
-    logError: '/api/node/appAnalytics/logError'
-
+    // error logging
+    logClientError: '/api/node/errorHandler/logClientError', // cs call built too
+    getHomePageInfo: '/api/cs/user/getHomePageInfo',
+    getClientUserVersionNumber: '/api/cs/appData/getClientUserVersionNumber',
+    getClientUserAppStartupInfo: '/api/cs/user/getClientUserAppStartupInfo'
 
 }

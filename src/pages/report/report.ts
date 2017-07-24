@@ -32,7 +32,7 @@ export class ReportPage extends BaseViewController {
     public loadingCtrl: LoadingController, 
     private formBuilder: FormBuilder) {
 
-    super(alertCtrl, toastCtrl, loadingCtrl);
+    super(alertCtrl, toastCtrl, loadingCtrl, navCtrl);
     this.myForm = this.formBuilder.group({
       message: [null, Validators.compose([Validators.required, Validators.maxLength(200)])]
     });

@@ -1,32 +1,35 @@
 <ion-content [ngStyle]="{background: loginBackgroundImgSrc}" class="background-img">
+  <!--
   <div class="logo-container" text-center>
     <CompanyLogo [logo]="logoImgSrc"></CompanyLogo>
   </div>
-  <form [formGroup]="myForm" (ngSubmit)="submit(myForm.value, myForm.valid)">
-    <ion-list>
+  -->
+  <div class="login-container">
+    <form [formGroup]="myForm" (ngSubmit)="submit(myForm.value, myForm.valid)">
+      <ion-list>
+        <!-- email -->
+        <ion-item>
+          <ion-label floating>Email</ion-label>
+          <ion-input type="text" formControlName="email"></ion-input>
+        </ion-item>
+        <control-messages [isSubmitted]="isSubmitted" [controlInstance]="myForm.controls.email"></control-messages>
 
-      <!-- email -->
-      <ion-item>
-        <ion-label floating>Email</ion-label>
-        <ion-input type="text" formControlName="email"></ion-input>
-      </ion-item>
-      <control-messages [isSubmitted]="isSubmitted" [controlInstance]="myForm.controls.email"></control-messages>
-
-      <!-- password -->
-      <ion-item>
-        <ion-label floating>Password</ion-label>
-        <ion-input type="password" formControlName="password"></ion-input>
-      </ion-item>
-      <control-messages [isSubmitted]="isSubmitted" [controlInstance]="myForm.controls.password"></control-messages> 
-    </ion-list>
-    
-    <div class="login-bottom-container" text-center>
-      <div>
-        <span tappable (click)="navRegister()">Not a member? &nbsp; &nbsp;</span> 
-        <span class="divider">|</span>  &nbsp; &nbsp;  
-        <span tappable (click)="navForgotPassword()">Forgot password?</span>
+        <!-- password -->
+        <ion-item>
+          <ion-label floating>Password</ion-label>
+          <ion-input type="password" formControlName="password"></ion-input>
+        </ion-item>
+        <control-messages [isSubmitted]="isSubmitted" [controlInstance]="myForm.controls.password"></control-messages> 
+      </ion-list>
+      
+      <div class="login-bottom-container" text-center>
+        <div>
+          <span tappable (click)="navRegister()">Not a member? &nbsp; &nbsp;</span> 
+          <span class="divider">|</span>  &nbsp; &nbsp;  
+          <span tappable (click)="navForgotPassword()">Forgot password?</span>
+        </div>
       </div>
-    </div>
-    <div text-center ><button class="login-btn" [disabled]="!myForm.valid" ion-button outline>Login</button></div>
-  </form>
+      <div text-center ><button class="login-btn" [disabled]="!myForm.valid" ion-button outline>Login</button></div>
+    </form>
+  </div>
 </ion-content>

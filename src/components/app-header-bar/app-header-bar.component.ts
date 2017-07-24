@@ -8,18 +8,23 @@ import { Component, OnInit, Input } from '@angular/core';
 export class AppHeaderBarComponent implements OnInit {
   @Input() appHeaderBarLogo: string;
   @Input() companyName: string;
+  @Input() placeholder: string;
   err: boolean = false;
+
+  /*
+  precedence: 1.) placeholder, 2.) appHeaderBarLogo, 3.) companyName
+
+  */
 
   constructor() { }
 
   ngOnInit() {
+    this.companyName = this.companyName;
     this.err = false;
-    console.log("this.appHeaderBarLogo: ", this.appHeaderBarLogo);
   }
 
 
   onAppHeaderBarLogoSrcErr() {
-    console.log("app header bar logo src error");
     this.err = true;
   }
 

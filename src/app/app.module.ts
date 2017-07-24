@@ -11,6 +11,7 @@ import { SocialSharing } from '@ionic-native/social-sharing';
 import { GoogleMaps } from '@ionic-native/google-maps';
 import { Stripe } from '@ionic-native/stripe';
 import { QRCodeModule } from 'angular2-qrcode';
+import { AppVersion } from '@ionic-native/app-version';
 
 
 // MyApp
@@ -33,7 +34,6 @@ import { BaseViewController } from '../pages/base-view-controller/base-view-cont
 //import { TextMaskModule } from 'angular2-text-mask';
 
 // classes
-import { CustomErrorHandler } from '../global/custom-error-handler';
 
 @NgModule({
   declarations: [
@@ -57,7 +57,7 @@ import { CustomErrorHandler } from '../global/custom-error-handler';
   ],
   providers: [
     //{provide: ErrorHandler, useClass: IonicErrorHandler}, 
-    {provide: ErrorHandler, useClass: CustomErrorHandler}, 
+    {provide: ErrorHandler, useClass: API}, 
     StatusBar,
     SplashScreen,
     Transfer,
@@ -66,6 +66,7 @@ import { CustomErrorHandler } from '../global/custom-error-handler';
     GoogleMaps,
     SocialSharing,
     Stripe,
+    AppVersion,
     // my providers
     Authentication,
     API,

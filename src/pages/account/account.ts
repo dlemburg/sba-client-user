@@ -13,7 +13,7 @@ import { AppViewData } from '../../global/app-data.service';
   templateUrl: 'account.html'
 })
 export class AccountPage {
-  public items: Array<{component: Component, name: string}>;
+  public items: Array<any>;
   public logoImgSrc: string = AppViewData.getImg().logoImgSrc; 
   
   auth: any = this.authentication.getCurrentUser();

@@ -32,7 +32,7 @@ export class RegisterPage extends BaseViewController {
     public toastCtrl: ToastController, 
     public loadingCtrl: LoadingController, 
     private formBuilder: FormBuilder) {
-    super(alertCtrl, toastCtrl, loadingCtrl);
+    super(alertCtrl, toastCtrl, loadingCtrl, navCtrl);
 
     this.myForm = this.formBuilder.group({
       firstName: [null, Validators.required],

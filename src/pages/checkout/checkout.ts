@@ -78,7 +78,8 @@ export class CheckoutPage extends BaseViewController {
     public checkoutStore: CheckoutStore, 
     public events: Events, 
     public socketIO: SocketIO) {
-    super(alertCtrl, toastCtrl, loadingCtrl);
+      super(alertCtrl, toastCtrl, loadingCtrl, navCtrl);
+
     this.auth = this.authentication.getCurrentUser();
     this.room = this.auth.companyOid + this.checkoutStore.getLocationOid;
   }

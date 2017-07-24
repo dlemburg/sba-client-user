@@ -202,10 +202,19 @@ ion-title {
    height: 100%;
    text-align: center;
 }
+
+// this hack made back-button work after centering logo in header bar bug
 .back-button.show-back-button {
     z-index: 9999;
     display: inline-block;
 }
+
+.dl-custom-toast-container {
+   > div {
+        background-color: map-get($colors, danger) !important;
+   }
+}
+
 
 
 

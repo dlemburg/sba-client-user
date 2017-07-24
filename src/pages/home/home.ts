@@ -7,7 +7,7 @@ import { AppViewData } from '../../global/app-data.service';
 import { BaseViewController } from '../base-view-controller/base-view-controller';
 import { Transfer, FileUploadOptions, TransferObject } from '@ionic-native/transfer';
 import { File } from '@ionic-native/file';
-import { CONST_APP_IMGS } from '../../global/global';
+import { CONST_APP_IMGS, CONST_APP_HOME_IMGS, CONST_APP_HOME_SUBTITLES} from '../../global/global';
 
 declare var cordova: any;
 @IonicPage()
@@ -45,13 +45,13 @@ export class HomePage extends BaseViewController {
     private file: File,
     private platform: Platform,
     ) {
-    super(alertCtrl, toastCtrl, loadingCtrl);
+    super(alertCtrl, toastCtrl, loadingCtrl, navCtrl);
 
     this.cards = [
         {
             img: null,
             imgSrc: this.defaultImgSrc,
-            name: CONST_APP_IMGS[0],
+            name: CONST_APP_HOME_IMGS[0],
             title: 'My Mobile Card',
             subtitle: 'view card details and pay',
             component: 'MyCardPage',
@@ -60,7 +60,7 @@ export class HomePage extends BaseViewController {
         {
             img: null,
             imgSrc: this.defaultImgSrc,
-            name: CONST_APP_IMGS[1],
+            name: CONST_APP_HOME_IMGS[1],
             title: 'Rewards',
             subtitle: 'discounts and specials you don\'t want to miss out on!',
             component: 'RewardsPage',
@@ -69,18 +69,18 @@ export class HomePage extends BaseViewController {
         {
             img: null,
             imgSrc: this.defaultImgSrc,
-            name: CONST_APP_IMGS[2],
+            name: CONST_APP_HOME_IMGS[2],
             title: 'Order-Ahead',
-            subtitle: 'skip the line!',
+            subtitle: 'order-ahead and skip the line!',
             component: 'LocationsPage',
             id: 2
         },
         {
             img: null,
             imgSrc: this.defaultImgSrc,
-            name: CONST_APP_IMGS[3],
+            name: CONST_APP_HOME_IMGS[3],
             title: 'Menu',
-            subtitle: 'see what we have to offer!',
+            subtitle: 'See what we have to offer!',
             component: 'CategoriesPage',
             id: 3
         }
@@ -89,22 +89,50 @@ export class HomePage extends BaseViewController {
   }
 
   ionViewDidLoad() {  
-    // get owner alert and imgs 
-    //this.presentLoading(); 
-    this.getPointsAndPointsNeeded();
-    this.getHomePageImgs();
+    this.getHomePageInfo();
+    //this.getPointsAndPointsNeeded();
+    //this.getHomePageImgs();
   }
 
 
   ionViewDidEnter() {
     if (this.initHasRun) {
-      console.log("ionViewDidEnter run...")
-      this.getPointsAndPointsNeeded();
-      this.getHomePageImgs();
+      console.log("ionViewDidEnter run...");
+      this.getHomePageInfo();
+      //this.getPointsAndPointsNeeded();
+      //this.getHomePageImgs();
     } else this.initHasRun = true;
   }
 
 
+  /* TODO need to make server call */
+  getHomePageInfo() {
+    this.presentLoading(); 
+
+    this.API.stack(ROUTES.getHomePageInfo + `/${this.auth.companyOid}/${this.auth.userOid}`, "GET")
+      .subscribe(
+        (response) => {
+         this.dismissLoading();
+         console.log("response.data: ", response.data); 
+          this.points = response.data.homePageInfo.points;
+
+          this.cards.forEach((x) => {
+            x.img = response.data.homePageInfo[CONST_APP_HOME_IMGS[x.id]];
+            x.subtitle = response.data.homePageInfo[CONST_APP_HOME_SUBTITLES[x.id]] || x.subtitle;
+            x.imgSrc = AppViewData.getDisplayImgSrc(x.img);
+          });
+        }, this.errorHandler(this.ERROR_TYPES.API));
+  }
+
+  nav(page) {
+    this.navCtrl.push(page.component);
+  }
+}
+
+
+
+
+/*
   getHomePageImgs() {
     this.API.stack(ROUTES.getHomePageImgs + `/${this.auth.companyOid}`, "GET")
       .subscribe(
@@ -113,8 +141,6 @@ export class HomePage extends BaseViewController {
           this.cards.forEach((x) => {
             x.img = response.data.homePageImgs[x.name];
             x.imgSrc = AppViewData.getDisplayImgSrc(x.img);
-
-            console.log("x.imgSrc: ", x.imgSrc);
           });
         }, this.errorHandler(this.ERROR_TYPES.API, undefined, {shouldDismissLoading: false}));
   }
@@ -129,8 +155,4 @@ export class HomePage extends BaseViewController {
           this.points = response.data.points;
         }, this.errorHandler(this.ERROR_TYPES.API, undefined, {shouldDismissLoading: false}));
   }
-
-  nav(page) {
-    this.navCtrl.push(page.component);
-  }
-}
+  */

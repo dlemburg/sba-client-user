@@ -54,3 +54,18 @@ export const CONST_APP_IMGS = {
     12: 'addedToCartBackgroundImg'
 }
 
+
+export const CONST_APP_HOME_SUBTITLES = {
+    0: "homeScreenMyMobileCardSubtitle",
+    1: "homeScreenRewardsSubtitle",
+    2: "homeScreenOrderAheadSubtitle",
+    3: "homeScreenMenuSubtitle"
+}
+
+export const CONST_APP_HOME_IMGS = {
+    0: 'homeMyCardImg',
+    1: 'homeRewardsImg',
+    2: 'homeOrderAheadImg',
+    3: 'homeMenuImg',
+}
+

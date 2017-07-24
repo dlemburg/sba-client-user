@@ -33,7 +33,7 @@ export class LoginPage extends BaseViewController {
     public toastCtrl: ToastController, 
     public loadingCtrl: LoadingController, 
     private formBuilder: FormBuilder) {
-    super(alertCtrl, toastCtrl, loadingCtrl);
+    super(alertCtrl, toastCtrl, loadingCtrl, navCtrl);
 
     this.auth = this.authentication.getCurrentUser();
     this.myForm = this.formBuilder.group({
@@ -44,6 +44,7 @@ export class LoginPage extends BaseViewController {
     console.log("logoImgSrc: ", this.logoImgSrc);
   }
   ionViewDidLoad() {
+    this.authentication.deleteToken();
     const imgName = CONST_APP_IMGS[8];
     this.API.stack(ROUTES.getImgName + `/${COMPANY_OID}/${imgName}`, "GET")
       .subscribe(
@@ -79,7 +80,6 @@ export class LoginPage extends BaseViewController {
     this.API.stack(ROUTES.loginUser, 'POST', toData)
         .subscribe((response) => {
             console.log('response: ', response);
-            this.dismissLoading();
 
             if (response.code === 2) {
               this.showPopup({
@@ -90,7 +90,17 @@ export class LoginPage extends BaseViewController {
             } else {
               let {token} = response.data;
               this.authentication.saveToken(token);
-              this.navCtrl.setRoot('HomePage');
+              this.navCtrl.setRoot("HomePage");
+              this.dismissLoading();
+              /*
+              this.authentication.saveToken(token).then(() => {
+                this.navCtrl.setRoot('HomePage');
+                this.dismissLoading();
+              }).catch((err) => {
+                console.log('save token err: ', err);
+              })
+              */
+
             }
           }, this.errorHandler(this.ERROR_TYPES.API));
   }

@@ -22,7 +22,12 @@ export class OrderCompletePage {
   productName: string;
   productImg: string;
   auth: AuthUserInfo;
-  constructor(public navCtrl: NavController, public navParams: NavParams, public API: API, public viewCtrl: ViewController, public appCtrl: App) {
+  constructor(
+    public navCtrl: NavController, 
+    public navParams: NavParams, 
+    public API: API, 
+    public viewCtrl: ViewController, 
+    public appCtrl: App) {
 
   }
 

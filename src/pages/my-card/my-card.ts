@@ -14,7 +14,7 @@ import { CONST_APP_IMGS } from '../../global/global';
 export class MyCardPage extends BaseViewController {
   balance: number|string = 0;
   mobileCardImgSrc: string = "";
-  items: Array<{component: Component|null, name: string, showOnInit: boolean, itemDoesNeedMobileCardToShow: boolean, visible: boolean}> = [];
+  items: Array<{component: string, name: string, showOnInit: boolean, itemDoesNeedMobileCardToShow: boolean, visible: boolean}> = [];
   auth: any = this.authentication.getCurrentUser();
   appHeaderBarLogo: string = AppViewData.getImg().logoImgSrc;
   companyName: string = this.auth.companyName;
@@ -32,7 +32,7 @@ export class MyCardPage extends BaseViewController {
     public toastCtrl: ToastController, 
     public loadingCtrl: LoadingController) {
 
-    super(alertCtrl, toastCtrl, loadingCtrl);
+    super(alertCtrl, toastCtrl, loadingCtrl, navCtrl);
     
     this.items = [
       {component: 'AddCreditCardPage', name: 'Create Mobile Card', showOnInit: false, itemDoesNeedMobileCardToShow: false, visible: false},

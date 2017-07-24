@@ -38,7 +38,7 @@ export class AddCardValuePage extends BaseViewController {
     public toastCtrl: ToastController, 
     public loadingCtrl: LoadingController, 
     private formBuilder: FormBuilder ) {
-    super(alertCtrl, toastCtrl, loadingCtrl);
+    super(alertCtrl, toastCtrl, loadingCtrl, navCtrl);
 
   }
 
@@ -68,7 +68,7 @@ export class AddCardValuePage extends BaseViewController {
           }).catch((err) => {
             reject(err);
           })
-        } else resolve({code: 999});
+        } else resolve({code: 999, message: ""});
       });
 
       confirmEmailAndPassword.present();

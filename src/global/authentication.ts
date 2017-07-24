@@ -10,10 +10,8 @@ export class Authentication {
     getCurrentUser(): AuthUserInfo {
         if (this.isLoggedIn()) {
             let token: any = this.getToken();
-            let payload: any = token.split('.')[1];
-            payload = window.atob(payload);
-            payload = JSON.parse(payload);
-
+            let payload: AuthUserInfo = this.decodeToken(token);
+           
             return {
                 userOid: payload.userOid,
                 pushToken: payload.pushToken || null,
@@ -28,11 +26,19 @@ export class Authentication {
         };
     }
 
-    saveToken(token): void {
+    decodeToken(token): AuthUserInfo {
+        let payload: any = token.split('.')[1];
+        payload = window.atob(payload);
+        payload = JSON.parse(payload);
+
+        return payload;
+    }
+
+    saveToken(token) {
         window.localStorage[CONST_TOKEN_NAME] = token;
     };
 
-    getToken(): any {
+    getToken(): string {
         return window.localStorage[CONST_TOKEN_NAME];
     };
 
@@ -42,20 +48,32 @@ export class Authentication {
     };
 
     deleteToken(): void {
-        window.localStorage.removeItem(CONST_TOKEN_NAME);
+        if (this.getToken()) window.localStorage.removeItem(CONST_TOKEN_NAME);
     };
 
     logout(): void {
         this.deleteToken();
     }
 
+    isTokenValid(decodedToken) {
+        if (decodedToken.expiry) {
+            let now: number = new Date().getMilliseconds();
+            let expiry: number = new Date(decodedToken.expiry).getMilliseconds();
+            let nowSkew = now + 36000000;  // 60 mins
+
+            if (nowSkew > expiry) return false;
+            else return true;
+        } else return true;
+    }
+
     isLoggedIn() {
         let token: any = this.getToken();
 
-        // if token is true, user is logged in -> then check date
         if (token) {
             // check expiry date
-            return true;
+            let decodedToken = this.decodeToken(token);
+            if (this.isTokenValid(decodedToken)) return true;
+            else return false;
         }
         else return false;
     };

@@ -42,7 +42,7 @@ export class AddCreditCardPage extends BaseViewController {
     public loadingCtrl: LoadingController, 
     private formBuilder: FormBuilder,
     public stripe: Stripe) {
-    super(alertCtrl, toastCtrl, loadingCtrl);
+    super(alertCtrl, toastCtrl, loadingCtrl, navCtrl);
 
     this.cardDetailsForm = this.formBuilder.group({
       amount: [10, Validators.required],
@@ -65,7 +65,7 @@ export class AddCreditCardPage extends BaseViewController {
 ionViewDidLoad() {
     this.presentLoading();
 
-    this.API.stack(ROUTES.getStripePublishableKey, "GET")
+    this.API.stack(ROUTES.getStripePublishableKey, "POST")
       .subscribe(
           (response) => {
             this.dismissLoading();

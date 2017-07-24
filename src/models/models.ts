@@ -94,7 +94,7 @@ export interface IPurchaseItem {
 }
 
 export interface AuthUserInfo {
-    userOid: string;
+    userOid: number;
     pushToken?: string;
     role: string;
     firstName: string;
@@ -196,6 +196,18 @@ export interface ICompanyDetails {
     socialMediaMessageTwitter?: string;
     socialMediaMessageInstagram?: string;
     socialMediaImg?: string;
-    allowsCommentsOnOrderAhead?: boolean;
-    
+    allowsCommentsOnOrderAhead?: boolean; 
+}
+
+
+export interface ILogError {
+    date: string;
+    timezoneOffset: number;
+    app: string;
+    type: string;
+    companyOid: number;
+    userOid: number;
+    err: string;
+    url: string;
+    httpVerb: string;
 }
