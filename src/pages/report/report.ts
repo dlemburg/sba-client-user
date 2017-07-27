@@ -59,7 +59,9 @@ export class ReportPage extends BaseViewController {
             (response) => {
               console.log('response: ', response);
               this.dismissLoading("Sent!");
-              this.navCtrl.setRoot('HomePage');
-            },this.errorHandler(this.ERROR_TYPES.API));
+              setTimeout(() => {
+                this.navCtrl.setRoot('HomePage');
+              }, 1000)
+            }, this.errorHandler(this.ERROR_TYPES.API));
     }
 }

@@ -31,27 +31,19 @@ export class MyApp {
     public splashScreen: SplashScreen,
     private appVersion: AppVersion) {
 
-
-      this.platform.ready().then(() => {
-        this.getAppStartupInfo().then((data: IClientUserAppStartupInfoResponse) => {
-          this.initializeApp(data);
-        });
+    this.platform.ready().then(() => {
+      this.getAppStartupInfo().then((data: IClientUserAppStartupInfoResponse) => {
+        this.initializeApp(data);
       });
+    });
   }
 
-
-  // change this to getAppStartupInfo() // get version number from api
-  /*
-      this.appVersion.getVersionNumber().then((versionNumber) => {
-        console.log("versionNumber: ", versionNumber);
-      });
-  */
   getAppStartupInfo() {
     return new Promise((resolve, reject) => {
       this.API.stack(ROUTES.getClientUserAppStartupInfo + `/${COMPANY_OID}`, "GET")
         .subscribe(
           (response) => {
-            const res: IClientUserAppStartupInfoResponse = response.data.appStartupInfo;
+            const res: IClientUserAppStartupInfoResponse = response.data.clientUserAppStartupInfo;
             const defaultImg = res.defaultImg;
             const logoImg = res.logoImg;
             const clientUserVersionNumber = res.currentClientUserVersionNumber;
@@ -68,18 +60,25 @@ export class MyApp {
               mustUpdateClientUserApp,
             });
           }, (err) => {
-            resolve();
+            resolve({
+              defaultImg: null,
+              logoImg: null,
+              clientUserVersionNumber: null,
+              minClientUserVersionNumber: null,
+              mustUpdateClientUserApp: null
+            });
             console.log("Problem downloading images on app startup");
           });
     });
   }
 
   initializeApp(data: IClientUserAppStartupInfoResponse) {
+    const { currentClientUserVersionNumber, minClientUserVersionNumber, mustUpdateClientUserApp, logoImg, defaultImg } = data;
     AppViewData.setImgs({
-      logoImgSrc: `${ROUTES.downloadImg}?img=${data.logoImg}`,
-      defaultImgSrc: data.defaultImg ? `${ROUTES.downloadImg}?img=${data.defaultImg}` : "img/default.png"
+      logoImgSrc: logoImg ? `${ROUTES.downloadImg}?img=${logoImg}` : "img/default.png",
+      defaultImgSrc: defaultImg ? `${ROUTES.downloadImg}?img=${defaultImg}` : "img/default.png"
     });
-    this.doNativeThingsOnAppStartup(data.currentClientUserVersionNumber, data.minClientUserVersionNumber, data.mustUpdateClientUserApp);
+    this.doNativeThingsOnAppStartup(currentClientUserVersionNumber, minClientUserVersionNumber, mustUpdateClientUserApp);
     
     this.pages = [
       { title: 'Home', component: 'HomePage' },      

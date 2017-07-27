@@ -25,15 +25,14 @@ export class BarcodeRewardPage {
     }
     this.reward = this.navParams.data.reward;
     this.isFreePurchaseItem = this.isFreePurchaseItem ? 1 : 0;
-    this.barcodeData = `${this.reward.oid}$${this.isFreePurchaseItem}$${this.auth.companyOid}`;
+    this.barcodeData = `${this.reward.oid}$${this.isFreePurchaseItem}$${this.auth.userOid}`;
 
   }
 
       // barcode data will only have rewardOid, isFreePurchaseItem, userOid
       // i.e.: 139$1$28
 
-  ionViewDidLoad() {
-  }
+  ionViewDidLoad() {}
 
   submit() {
     this.navCtrl.pop();

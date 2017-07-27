@@ -90,8 +90,6 @@ export class HomePage extends BaseViewController {
 
   ionViewDidLoad() {  
     this.getHomePageInfo();
-    //this.getPointsAndPointsNeeded();
-    //this.getHomePageImgs();
   }
 
 
@@ -99,13 +97,11 @@ export class HomePage extends BaseViewController {
     if (this.initHasRun) {
       console.log("ionViewDidEnter run...");
       this.getHomePageInfo();
-      //this.getPointsAndPointsNeeded();
-      //this.getHomePageImgs();
     } else this.initHasRun = true;
   }
 
 
-  /* TODO need to make server call */
+  /* TODO need to refactor... handling it with ids is terrible  */
   getHomePageInfo() {
     this.presentLoading(); 
 
@@ -128,31 +124,3 @@ export class HomePage extends BaseViewController {
     this.navCtrl.push(page.component);
   }
 }
-
-
-
-
-/*
-  getHomePageImgs() {
-    this.API.stack(ROUTES.getHomePageImgs + `/${this.auth.companyOid}`, "GET")
-      .subscribe(
-        (response) => {
-          console.log("response.data: ", response.data);
-          this.cards.forEach((x) => {
-            x.img = response.data.homePageImgs[x.name];
-            x.imgSrc = AppViewData.getDisplayImgSrc(x.img);
-          });
-        }, this.errorHandler(this.ERROR_TYPES.API, undefined, {shouldDismissLoading: false}));
-  }
-  
-  getPointsAndPointsNeeded() {
-     //this.presentLoading();
-     this.API.stack(ROUTES.getPointsAndPointsNeeded + `/${this.auth.companyOid}/${this.auth.userOid}`, "GET")
-      .subscribe(
-        (response) => {
-         // this.dismissLoading();
-         console.log("response.data: ", response.data); 
-          this.points = response.data.points;
-        }, this.errorHandler(this.ERROR_TYPES.API, undefined, {shouldDismissLoading: false}));
-  }
-  */

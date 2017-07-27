@@ -39,7 +39,6 @@ export class API implements ErrorHandler {
 
         */
         let isOnline = window.navigator.onLine;
-        debugger;
         let url: string = route.indexOf('/api/node/') > -1 ? global.SERVER_URL_NODE + route : global.SERVER_URL_CSHARP + route;
         const httpVerb = verb.toLowerCase();
 
@@ -78,7 +77,7 @@ export class API implements ErrorHandler {
     */
 
     public handleError(err: any) {
-            console.log(" %c err (logger): "  + err, "color: red;");
+            console.log(" %c ERROR (app-wide logger): "  + err, "color: red;");
 
             if (!global.ENV.development) {
                 this.logError({type: "Javascript runtime error!", err})
@@ -86,8 +85,13 @@ export class API implements ErrorHandler {
         }
 
     public logError(args?): any {  
+        let err = args.err;
+        if (args.type === "API") console.log("%c ERROR (api): " + args.err._body, "color: red;");
 
-        if (!global.ENV.development) {
+        //if (!global.ENV.development) {
+        if ((args.err.status === 0 && args.type === "API") || args.type !== "API") {
+            err = "ERR_CONNECTION_REFUSED";
+            // escape guard
             if (this.logErrorAttempts === 1 && args.type === "API") {
                 this.logErrorAttempts = 0;
                 return;
@@ -95,7 +99,7 @@ export class API implements ErrorHandler {
             else this.logErrorAttempts++;
 
             const toData: ILogError = {
-                err: args.err || null,
+                err: err || null,
                 url: args.url || null,
                 httpVerb: args.httpVerb || null,
                 date: DateUtils.toLocalIsoString(new Date().toString()),

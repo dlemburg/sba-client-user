@@ -25,7 +25,7 @@ export class TransactionHistoryPage extends BaseViewController {
     public alertCtrl: AlertController, 
     public toastCtrl: ToastController, 
     public loadingCtrl: LoadingController) {
-    super(alertCtrl, toastCtrl, loadingCtrl, navCtrl);
+      super(alertCtrl, toastCtrl, loadingCtrl, navCtrl);
   }
 
   // transactions: purchaseDate, productsArray, total

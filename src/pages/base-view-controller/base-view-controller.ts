@@ -80,14 +80,10 @@ export class BaseViewController {
 
       console.log("err: ", err);
 
-      if (ENV.development) {
-        let url = err.url !== undefined ? err.url === null ? "ERR_CONNECTION_REFUSED" : err.url : "No url given"; 
-        const title = `Error type: ${errorType}`;
-        const subTitle = `Route: ${url}`;
-        this.presentErrorAlert(title, subTitle, err);
-      } else {
-          // http analytics call here
-      }
+      let url = err.url !== undefined ? err.url === null ? "ERR_CONNECTION_REFUSED" : err.url : "No url given"; 
+      const title = `Error type: ${errorType}`;
+      const subTitle = `Route: ${url}`;
+      this.presentErrorAlert(title, subTitle, err);
     }
   }
 

@@ -10,9 +10,10 @@ export class AppHeaderBarComponent implements OnInit {
   @Input() companyName: string;
   @Input() placeholder: string;
   err: boolean = false;
+  default: boolean =  false;
 
   /*
-  precedence: 1.) placeholder, 2.) appHeaderBarLogo, 3.) companyName
+  precedence: 1.) placeholder, 2.) appHeaderBarLogo (not default), 3.) companyName
 
   */
 
@@ -21,6 +22,7 @@ export class AppHeaderBarComponent implements OnInit {
   ngOnInit() {
     this.companyName = this.companyName;
     this.err = false;
+    this.default = this.appHeaderBarLogo.indexOf("default") > -1 ? true : false;
   }
 
 

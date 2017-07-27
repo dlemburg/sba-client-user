@@ -77,6 +77,7 @@ ionViewDidLoad() {
             this.navCtrl.pop();
           });
   }
+
   selectAmount(amount) {
     this.cardDetailsForm.patchValue({amount});
   }
@@ -119,9 +120,10 @@ ionViewDidLoad() {
     debugger;
 
     this.stripeCardValidators(cardDetailsForm).then(() => {
-      this.createStripeToken(cardDetailsForm).then(() => {
-
-        /*** Package for submit ***/
+      return this.createStripeToken(cardDetailsForm);
+    })
+    .then(() => {
+      /*** Package for submit ***/
         this.presentLoading(AppViewData.getLoading().saving);
         const toData = {toData: extraInformationForm, userOid: this.auth.userOid, email: this.auth.email, amount: cardDetailsForm.amount};
         
@@ -131,8 +133,8 @@ ionViewDidLoad() {
                 console.log('response: ', response);
                 this.dismissLoading(AppViewData.getLoading().saved);
               }, this.errorHandler(this.ERROR_TYPES.API));
-        });
-    }).catch((err) => {
+    })
+    .catch((err) => {
       console.log("err: ", err);
       this.presentToast(
         false, 

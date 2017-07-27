@@ -10,8 +10,7 @@
     "lint": "ionic-app-scripts lint",
     "ionic:build": "ionic-app-scripts build",
     "ionic:serve": "ionic-app-scripts serve",
-    "test": "mocha -r ts-node/register src/**/date-utils.test.ts",
-    "test one": "mocha -r ts-node/register src/**/test.ts",
+    "test": "mocha -r ts-node/register src/**/checkout.test.ts",
     "test all": "mocha -r ts-node/register src/**/*.test.ts"
   },
   "dependencies": {

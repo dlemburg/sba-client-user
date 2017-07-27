@@ -51,12 +51,15 @@ export class ProductsListPage extends BaseViewController {
             this.dismissLoading();
             console.log('response: ', response);
             this.products = response.data.products;
+            this.products = this.getImgs(this.products);
 
-            this.products.forEach((x) => {
-              x.imgSrc = AppViewData.getDisplayImgSrc(x.img);
-            });
+          }, this.errorHandler(this.ERROR_TYPES.API));
+  }
 
-          },this.errorHandler(this.ERROR_TYPES.API));
+  getImgs(arr) {
+    return arr.forEach((x) => {
+      x.imgSrc = AppViewData.getDisplayImgSrc(x.img);
+    })
   }
 
   navToProductDetails(product) {

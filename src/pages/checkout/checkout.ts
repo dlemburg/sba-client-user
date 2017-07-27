@@ -161,7 +161,6 @@ export class CheckoutPage extends BaseViewController {
             console.log('response.data: ' , response.data);
 
             this.order = this.checkoutStore.setPurchaseItemsAndTransactionDetails(response.data.purchaseItems, response.data.transactionDetails);
-            //this.order = this.checkoutStore.calculateTaxesSubtotalTotalAndReturnOrder(this.order, this.order.transactionDetails.subtotal, this.companyDetails.taxRate);
             this.order = this.checkoutStore.roundAllTransactionDetails(this.order.transactionDetails);
             this.dismissLoading();
           }, this.errorHandler(this.ERROR_TYPES.API));
@@ -173,9 +172,6 @@ export class CheckoutPage extends BaseViewController {
 
     if (this.order.purchaseItems.length === 0) this.checkoutStore.deleteOrder();
     this.getEligibleRewardsAPI(this.order)
-
-    console.log("this.order", this.order);
-    //this.navCtrl.pop();
   }
 
   editPurchaseItem(purchaseItem: IPurchaseItem, index: number) {
@@ -183,43 +179,45 @@ export class CheckoutPage extends BaseViewController {
   }
 
   submit() {
-    this.presentLoading(AppViewData.getLoading().processing);
-    let toData = { 
-      companyOid: this.auth.companyOid, 
-      locationOid: this.checkoutStore.getLocationOid, 
-      userOid: this.auth.userOid,
-      isOrderAhead: true,
-      isProcessing: false,
-      isExpired: false,
-      eta: this.eta,
-      userComments: this.comments,
-      purchaseDate: DateUtils.toLocalIsoString(new Date().toString()),
-      purchaseItems: this.order.purchaseItems,
-      transactionDetails: this.order.transactionDetails,
-      customerName: this.auth.firstName,
-      room: this.auth.companyOid + this.checkoutStore.getLocationOid     // for websockets
-    };
+    if (this.getMinutesUntilClose(new Date()) > this.eta) {
+      this.presentLoading(AppViewData.getLoading().processing);
+      let toData = { 
+        companyOid: this.auth.companyOid, 
+        locationOid: this.checkoutStore.getLocationOid, 
+        userOid: this.auth.userOid,
+        isOrderAhead: true,
+        isProcessing: false,
+        isExpired: false,
+        eta: this.eta,
+        userComments: this.comments,
+        purchaseDate: DateUtils.toLocalIsoString(new Date().toString()),
+        purchaseItems: this.order.purchaseItems,
+        transactionDetails: this.order.transactionDetails,
+        customerName: this.auth.firstName,
+        room: this.auth.companyOid + this.checkoutStore.getLocationOid     // for websockets
+      };
 
-    console.log("toData: ", toData);
+      console.log("toData: ", toData);
 
-    this.API.stack(ROUTES.processTransaction, "POST", toData)
-      .subscribe(
-          (response) => {
-            console.log('response: ', response);
+      this.API.stack(ROUTES.processTransaction, "POST", toData)
+        .subscribe(
+            (response) => {
+              console.log('response: ', response);
 
-            this.orderSubmitted = true;
-            this.order = this.checkoutStore.clearOrder();
+              this.orderSubmitted = true;
+              this.order = this.checkoutStore.clearOrder();
 
-            this.socketIO.emit(this.socketIO.socketEvents.userPlacedNewOrder, toData);
-            this.dismissLoading();
+              this.socketIO.emit(this.socketIO.socketEvents.userPlacedNewOrder, toData);
+              this.dismissLoading();
 
-            let modal = this.modalCtrl.create('OrderCompletePage', {}, { enableBackdropDismiss: false, showBackdrop: false });
-            modal.present();
-            modal.onDidDismiss(() => {
-              this.navCtrl.setRoot('HomePage');
-            });
-            
-          },this.errorHandler(this.ERROR_TYPES.API));
+              let modal = this.modalCtrl.create('OrderCompletePage', {}, { enableBackdropDismiss: false, showBackdrop: false });
+              modal.present();
+              modal.onDidDismiss(() => {
+                this.navCtrl.setRoot('HomePage');
+              });
+              
+            }, this.errorHandler(this.ERROR_TYPES.API));
+    }
   }
 }
 

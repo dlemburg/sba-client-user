@@ -86,16 +86,11 @@ export class ProductsDetailsPage extends BaseViewController {
             /* init values and purchase item */
             this.purchaseItem.selectedProduct = { name: this.productDetails.name, oid: this.productDetails.oid};
            
-            // IMG
-            //this.productDetails.img = ImgService.checkImgIsNull(this.productDetails.img);
             if (!this.productDetails.sizesAndPrices.length && this.productDetails.fixedPrice) {
               this.purchaseItem.sizeAndOrPrice = {name: null, oid: null, price: this.productDetails.fixedPrice};
             }
 
-          }, (err) => {
-            const shouldPopView = true;
-            this.errorHandler.call(this, err, shouldPopView)
-          });
+          }, this.errorHandler(this.ERROR_TYPES.API));
   }
 
   addToOrder(): void {
@@ -106,12 +101,11 @@ export class ProductsDetailsPage extends BaseViewController {
     } else {
       this.checkoutStore.addToOrder(this.purchaseItem, this.productDetails);
 
-
-      // change this to listen for on dismiss and change route from here
       let modal = this.modalCtrl.create('AddedToCartPage', {
-        purchaseItem: this.purchaseItem, 
-        productImg: this.productDetails.img, 
-        categoryOid: this.productDetails.categoryOid}, 
+          purchaseItem: this.purchaseItem, 
+          productImg: this.productDetails.img, 
+          categoryOid: this.productDetails.categoryOid
+        }, 
         {enableBackdropDismiss: false, showBackdrop: false});
         modal.present();
 
@@ -131,7 +125,6 @@ export class ProductsDetailsPage extends BaseViewController {
       if (x.hasQuantity && !x.quantity) x.quantity = x.defaultQuantity || 3;
     });
   }
-  // name, oid, price, quantity, hasQuantity
 
   selectDairyQuantity(index, quantity) {
     this.purchaseItem.dairy[index].quantity = quantity;
@@ -144,14 +137,6 @@ export class ProductsDetailsPage extends BaseViewController {
       errs.push('You forgot to select a size!');
       return {isValid: false, errs: errs};
     }
-    // if flavors are available, force a selection
-    /*
-    if (this.productDetails.flavorsToClient.length && !this.purchaseItem.flavors.length) {
-      errs.push('You forgot to select a flavor!');
-      return {isValid: false, errs: errs};
-    }
-    */
-   
     return {isValid: true, errs};
   }
 

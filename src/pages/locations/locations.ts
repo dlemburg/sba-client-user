@@ -5,7 +5,6 @@ import { API, ROUTES } from '../../global/api';
 import { Authentication } from '../../global/authentication';
 import { BaseViewController  } from '../base-view-controller/base-view-controller';
 import { Utils } from '../../utils/utils';
-import { AppUtils } from '../../utils/app-utils';
 import { DateUtils } from '../../utils/date-utils';
 import { AppViewData } from '../../global/app-data.service';
 import { Geolocation } from '@ionic-native/geolocation';
@@ -31,7 +30,7 @@ export class LocationsPage extends BaseViewController {
   distanceFilter: number = 25;
   showMap = true;
   isLoading: boolean = true;
-  currentDay: string = AppUtils.getDays()[new Date().getDay()].toLowerCase(); 
+  currentDay: string = Utils.getDays()[new Date().getDay()].toLowerCase(); 
 
   constructor(
     public navCtrl: NavController, 
@@ -45,6 +44,7 @@ export class LocationsPage extends BaseViewController {
     public toastCtrl: ToastController, 
     public loadingCtrl: LoadingController,
     public checkoutStore: CheckoutStore) {
+
     super(alertCtrl, toastCtrl, loadingCtrl, navCtrl);
   }
 
@@ -66,6 +66,7 @@ export class LocationsPage extends BaseViewController {
     });
   }
 
+  // deletes order and orderInProgress on enter
   ionViewDidEnter() {
     if (this.initHasRun) {
       this.checkoutStore.setOrderInProgress(false);
@@ -96,23 +97,25 @@ export class LocationsPage extends BaseViewController {
             this.locations = this.doLocationBusinessLogic(response.data.locations);
             this.dismissLoading();
           }, (err) => {
+            // handled this differently because api call needs a little extra time for loading
             this.isLoading = false;
             this.errorHandler(this.ERROR_TYPES.API, "Sorry, there was an error retrieving the locations near you. We will work hard to resolve this issue as soon as possible.")(err);
           });
   }
 
   doLocationBusinessLogic(locations) {
+    let currentDay =  Utils.getDays()[new Date().getDay()].toLowerCase(); 
     locations.forEach((x) => {
       x.imgSrc = AppViewData.getDisplayImgSrc(x.img);
       
-      if (x[this.currentDay + "Open"] === "closed") {
+      if (x[currentDay + "Open"] === "closed") {
         x.isOpen = false;
         x.closedMessage = "Sorry, this location is closed today.";
       } else {
-        let openMinutes = DateUtils.convertTimeStringToMinutes(x[this.currentDay + "Open"]);
-        let openHours = DateUtils.convertTimeStringToHours(x[this.currentDay + "Open"]);
-        let closeMinutes = DateUtils.convertTimeStringToMinutes(x[this.currentDay + "Close"]);
-        let closeHours = DateUtils.convertTimeStringToHours(x[this.currentDay + "Close"]);
+        let openMinutes = DateUtils.convertTimeStringToMinutes(x[currentDay + "Open"]);
+        let openHours = DateUtils.convertTimeStringToHours(x[currentDay + "Open"]);
+        let closeMinutes = DateUtils.convertTimeStringToMinutes(x[currentDay + "Close"]);
+        let closeHours = DateUtils.convertTimeStringToHours(x[currentDay + "Close"]);
         let isLocationOpen: {isOpen: boolean, closedMessage: string} = this.isLocationOpen(openHours, openMinutes, closeHours, closeMinutes);
 
         x.isOpen = isLocationOpen.isOpen; 
@@ -167,8 +170,8 @@ export class LocationsPage extends BaseViewController {
   }
   
   viewHours(location) {
-    let days = AppUtils.getDays();
-    let locationHours = [];
+    let days = Utils.getDays();
+    let locationHours: Array<{day: string, hours: string|Array<string>}> = [];
 
     /* package for modal */
     days.forEach((x, index) => {
@@ -191,7 +194,7 @@ export class LocationsPage extends BaseViewController {
   }
 
  createLocationCloseTime(location): Date {
-    const days = AppUtils.getDays();
+    const days = Utils.getDays();
     const today = days[new Date().getDay()].toLowerCase();
     const closeTime = location[today + "Close"];
 

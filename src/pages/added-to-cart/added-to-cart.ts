@@ -37,8 +37,8 @@ export class AddedToCartPage {
     this.productName = this.navParams.data.purchaseItem.selectedProduct.name;
     this.categoryOid = this.navParams.data.categoryOid;
     this.productImgSrc = AppViewData.getDisplayImgSrc(this.navParams.data.productImg);
-    
     const imgName = CONST_APP_IMGS[12];
+    
     this.API.stack(ROUTES.getImgName + `/${this.auth.companyOid}/${imgName}`, "GET")
       .subscribe(
         (response) => {

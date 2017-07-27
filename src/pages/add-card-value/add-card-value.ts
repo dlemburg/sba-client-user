@@ -1,7 +1,7 @@
 import { Component } from '@angular/core';
 import { Validation } from '../../utils/validation-utils';
 import { FormBuilder, FormGroup, Validators, FormControl } from '@angular/forms';
-import { AppUtils } from '../../utils/app-utils';
+import { Utils } from '../../utils/utils';
 import { API, ROUTES } from '../../global/api';
 import { Authentication } from '../../global/authentication';
 import { IonicPage, NavController, NavParams, AlertController, ToastController, LoadingController, ModalController } from 'ionic-angular';
@@ -22,7 +22,7 @@ export class AddCardValuePage extends BaseViewController {
   email: string;
   isSubmitted: boolean = false;
   myForm: FormGroup;
-  dollarValues: any = AppUtils.getDollarValues();
+  dollarValues: any = Utils.getDollarValues();
   auth: any = this.authentication.getCurrentUser();
   appHeaderBarLogo: string = AppViewData.getImg().logoImgSrc;
   companyName: string = this.auth.companyName;
@@ -119,7 +119,9 @@ export class AddCardValuePage extends BaseViewController {
               (response) => {
                 console.log('response: ', response);
                 this.dismissLoading("Success!");
-                this.navCtrl.setRoot("HomePage");
+                setTimeout(() => {
+                  this.navCtrl.setRoot("HomePage");
+                }, 1000);
               }, this.errorHandler(this.ERROR_TYPES.API));
       }
     }).catch(() => {

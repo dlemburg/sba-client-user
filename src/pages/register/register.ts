@@ -5,10 +5,8 @@ import { Authentication } from '../../global/authentication';
 import { API, ROUTES } from '../../global/api';
 import { IonicPage, NavController, NavParams, AlertController, ToastController, LoadingController, ModalController } from 'ionic-angular';
 import { AppViewData } from '../../global/app-data.service';
-import { IPopup } from '../../models/models';
 import { BaseViewController } from '../base-view-controller/base-view-controller';
 import { COMPANY_OID } from '../../global/companyOid';
-import { CONST_APP_IMGS } from '../../global/global';
 
 @IonicPage()
 @Component({
@@ -74,7 +72,7 @@ export class RegisterPage extends BaseViewController {
                 this.authentication.saveToken(token);
                 this.navCtrl.setRoot('HomePage');
               }
-            },this.errorHandler(this.ERROR_TYPES.API));
+            }, this.errorHandler(this.ERROR_TYPES.API));
   }
 }
 

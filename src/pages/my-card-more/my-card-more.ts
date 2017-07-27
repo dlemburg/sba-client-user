@@ -44,7 +44,7 @@ export class MyCardMorePage extends BaseViewController {
 
     this.showPopup({title: "Are you sure?", message: "Are you sure you want to delete your mobile card?", buttons: [
       {text: "Cancel"},
-      {text: "Yes, delete", handler: () => { this.submit(); }}
+      {text: "Yes, delete", handler: () => { this.submit() }}
     ]})
   }
 

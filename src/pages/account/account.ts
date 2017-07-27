@@ -30,19 +30,7 @@ export class AccountPage {
   }
 
   ionViewDidLoad() {
-    /*
-        const img = CONST_APP_IMGS[0];
-
-    this.API.stack(ROUTES.getImgName + `/${this.auth.companyOid}/${img}`, "GET")
-      .subscribe(
-        (response) => {
-          console.log("response.data: ", response.data);
-          this.logoImgSrc = AppViewData.getDisplayImgSrc(response.data.img);
-        }, (err) => {
-         // this.logoImgSrc = AppViewData.getDisplayImgSrc(null);
-        });
-        */
-
+    
     this.items = [
       {name: "My Details", component: 'AccountDetailsPage'},
       {name: "Passwords", component: 'AccountPasswordsPage'},
@@ -51,10 +39,10 @@ export class AccountPage {
     ]
   }
   
-  nav(item) {
-    if (item.name === "Sign Out") {
+  nav(page) {
+    if (page.name === "Sign Out") {
       this.signOut();
-    } else this.navCtrl.push(item.component); 
+    } else this.navCtrl.push(page.component); 
   }
 
   signOut() {

@@ -60,14 +60,10 @@ export class AccountPasswordsPage extends BaseViewController {
       .subscribe(
           (response) => {
             console.log('response: ', response);
-            this.dismissLoading();
-            this.showPopup({
-              title: AppViewData.getPopup().defaultSuccessTitle, 
-              message: "Password changed successfully!", 
-              buttons: [{text: AppViewData.getPopup().defaultConfirmButtonText, handler: onConfirmFn}]
-            });
-
-
+            this.dismissLoading(AppViewData.getLoading().saved);
+            setTimeout(() => {
+              this.navCtrl.setRoot("HomePage");
+            }, 1000);
           }, this.errorHandler(this.ERROR_TYPES.API));
     }
 }

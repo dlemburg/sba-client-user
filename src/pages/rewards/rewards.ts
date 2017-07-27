@@ -3,7 +3,6 @@ import { API, ROUTES } from '../../global/api';
 import { Authentication } from '../../global/authentication';
 import { IonicPage, NavController, NavParams, AlertController, ToastController, LoadingController, ModalController } from 'ionic-angular';
 import { AppViewData } from '../../global/app-data.service';
-import { IPopup } from '../../models/models';
 import { BaseViewController } from '../base-view-controller/base-view-controller';
 import { CONST_APP_IMGS } from '../../global/global';
 
@@ -61,15 +60,8 @@ export class RewardsPage extends BaseViewController {
 
             this.rewards_all = response.data.rewards_all;
             this.rewards_individual = response.data.rewards_individual;
-
-
-            this.rewards_all.forEach((x) => {
-              x.imgSrc = AppViewData.getDisplayImgSrc(x.img);
-            });
-            this.rewards_individual.forEach((x) => {
-              x.imgSrc = AppViewData.getDisplayImgSrc(x.img);
-            });
-
+            this.rewards_all = this.getImgs(this.rewards_all);
+            this.rewards_individual = this.getImgs(this.rewards_individual);
             
           }, this.errorHandler(this.ERROR_TYPES.API));
 
@@ -83,7 +75,12 @@ export class RewardsPage extends BaseViewController {
           }, (err) => {
             this.rewardImgSrc = AppViewData.getDisplayImgSrc(null);
           });
+  }
 
+  getImgs(arr) {
+    return arr.forEach((x) => {
+      x.imgSrc = AppViewData.getDisplayImgSrc(x.img);
+    })
   }
 
   navRewardsDetails(reward): void {

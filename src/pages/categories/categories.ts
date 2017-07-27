@@ -32,7 +32,7 @@ export class CategoriesPage extends BaseViewController {
     public toastCtrl: ToastController, 
     public loadingCtrl: LoadingController, 
     public checkoutStore: CheckoutStore) {
-    super(alertCtrl, toastCtrl, loadingCtrl, navCtrl);
+      super(alertCtrl, toastCtrl, loadingCtrl, navCtrl);
   }
 
   ionViewDidEnter() {
@@ -102,10 +102,7 @@ export class CategoriesPage extends BaseViewController {
         confirm.present();
       });
     } else return true;
-
-    
   }
-
 }
 
 

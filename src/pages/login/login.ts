@@ -92,15 +92,6 @@ export class LoginPage extends BaseViewController {
               this.authentication.saveToken(token);
               this.navCtrl.setRoot("HomePage");
               this.dismissLoading();
-              /*
-              this.authentication.saveToken(token).then(() => {
-                this.navCtrl.setRoot('HomePage');
-                this.dismissLoading();
-              }).catch((err) => {
-                console.log('save token err: ', err);
-              })
-              */
-
             }
           }, this.errorHandler(this.ERROR_TYPES.API));
   }

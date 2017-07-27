@@ -59,7 +59,6 @@ export class BarcodePayPage extends BaseViewController {
             this.companyDetails = response.data.companyDetails;
             this.companyDetails.socialMediaImg = `${ROUTES.downloadImg}?img=${response.data.companyDetails.socialMediaImg}`;
 
-            console.log("this.companyDetails: ", this.companyDetails);   
             this.getUserMobileCardId();
             
           }, this.errorHandler(this.ERROR_TYPES.API, undefined, {shouldDismissLoading: false}));
@@ -115,7 +114,6 @@ export class BarcodePayPage extends BaseViewController {
     .catch(this.errorHandler(this.ERROR_TYPES.PLUGIN.SOCIAL_MEDIA))
 
   }
-
 
   submit() {
     this.navCtrl.setRoot('HomePage');
