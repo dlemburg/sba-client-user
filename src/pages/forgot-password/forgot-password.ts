@@ -18,7 +18,7 @@ export class ForgotPasswordPage extends BaseViewController {
   myForm: FormGroup;
   auth: any = this.authentication.getCurrentUser();
   appHeaderBarLogo: string = AppViewData.getImg().logoImgSrc;
-  companyName: string = this.auth.companyName;
+  companyName: string = this.auth ? this.auth.companyName : null;
 
   constructor(
     public navCtrl: NavController, 

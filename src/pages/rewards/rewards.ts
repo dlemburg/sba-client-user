@@ -5,6 +5,7 @@ import { IonicPage, NavController, NavParams, AlertController, ToastController, 
 import { AppViewData } from '../../global/app-data.service';
 import { BaseViewController } from '../base-view-controller/base-view-controller';
 import { CONST_APP_IMGS } from '../../global/global';
+import { Utils } from '../../utils/utils';
 
 @IonicPage()
 @Component({
@@ -60,8 +61,8 @@ export class RewardsPage extends BaseViewController {
 
             this.rewards_all = response.data.rewards_all;
             this.rewards_individual = response.data.rewards_individual;
-            this.rewards_all = this.getImgs(this.rewards_all);
-            this.rewards_individual = this.getImgs(this.rewards_individual);
+            this.rewards_all = Utils.getImgs(this.rewards_all);
+            this.rewards_individual = Utils.getImgs(this.rewards_individual);
             
           }, this.errorHandler(this.ERROR_TYPES.API));
 
@@ -75,12 +76,6 @@ export class RewardsPage extends BaseViewController {
           }, (err) => {
             this.rewardImgSrc = AppViewData.getDisplayImgSrc(null);
           });
-  }
-
-  getImgs(arr) {
-    return arr.forEach((x) => {
-      x.imgSrc = AppViewData.getDisplayImgSrc(x.img);
-    })
   }
 
   navRewardsDetails(reward): void {

@@ -14,7 +14,7 @@
 
 
 <ion-content>
-  <div>
+  <div class="margin-top">
     <EmptyMessage *ngIf="!locations.length && isLoading" longMessage="Optimizing for locations near you..."></EmptyMessage>
     <EmptyMessage *ngIf="!locations.length && !isLoading" message="locations"></EmptyMessage>
     <ion-list>

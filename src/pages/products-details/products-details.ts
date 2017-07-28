@@ -111,7 +111,7 @@ export class ProductsDetailsPage extends BaseViewController {
 
         modal.onDidDismiss((data) => {
           if (data.checkout) this.navCtrl.push("CheckoutPage");
-          else if (data.continueOrer) {
+          else if (data.continueOrder) {
              this.navCtrl.pop();
           } else {
             //do nothing

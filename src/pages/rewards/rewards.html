@@ -35,8 +35,8 @@
         </ion-grid>
       </ion-card>
 
-      <div class="reward-card-container" text-center>
-        <EmptyMessage *ngIf="!rewards_all.length && !rewards_individual.length" message="Rewards"></EmptyMessage>
+      <div class="margin-top reward-card-container" text-center>
+        <EmptyMessage *ngIf="!rewards_all.length && !rewards_individual.length" message="rewards"></EmptyMessage>
         <ion-card tappable class="reward-card" (click)="navRewardsDetails(x)" *ngFor="let x of rewards_individual; let i = index;" no-padding no-margin>
           <img [src]="x.imgSrc" onError="this.src='img/default.png';"/>
           <div class="reward-card-title">{{x.name}}</div>

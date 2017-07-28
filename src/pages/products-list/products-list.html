@@ -14,22 +14,9 @@
   </ion-navbar>
 </ion-header>
 
-
-<!--
-<ion-header>
-  <AppHeaderBar appHeaderBarLogo="{{appHeaderBarLogo}}" [companyName]="companyName">
-    <ion-buttons *ngIf="isOrderInProgress" end>
-      <button ion-button icon-only (click)="navCheckout()">
-        <ion-icon class="checkout-basket" ios="md-basket" md="md-basket"></ion-icon> Checkout<ion-icon ios="ios-arrow-forward" md="ios-arrow-forward"></ion-icon>
-      </button>
-    </ion-buttons>
-  </AppHeaderBar>
-</ion-header>
--->
-
 <ion-content padding>
     <EmptyMessage *ngIf="!products.length" message="products"></EmptyMessage>
-    <ion-row class="align-center" style="border-bottom: 1px solid lightgray;" >
+    <ion-row *ngIf="products.length" class="align-center" style="border-bottom: 1px solid lightgray;" >
       <ion-col class="align-center" *ngFor="let x of products" col-9>
         <ion-card class="hover ion-card" tappable (click)="navToProductDetails(x)" >
           <img [src]="x.imgSrc" onError="this.src='img/default.png';"/>

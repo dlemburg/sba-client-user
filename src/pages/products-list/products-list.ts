@@ -4,8 +4,8 @@ import { API, ROUTES } from '../../global/api';
 import { Authentication } from '../../global/authentication';
 import { IonicPage, NavController, NavParams, AlertController, ToastController, LoadingController } from 'ionic-angular';
 import { AppViewData } from '../../global/app-data.service';
-import { IPopup } from '../../models/models';
 import { BaseViewController } from '../base-view-controller/base-view-controller';
+import { Utils } from '../../utils/utils';
 
 @IonicPage()
 @Component({
@@ -50,16 +50,9 @@ export class ProductsListPage extends BaseViewController {
           (response) => {
             this.dismissLoading();
             console.log('response: ', response);
-            this.products = response.data.products;
-            this.products = this.getImgs(this.products);
+            this.products = Utils.getImgs(response.data.products);
 
           }, this.errorHandler(this.ERROR_TYPES.API));
-  }
-
-  getImgs(arr) {
-    return arr.forEach((x) => {
-      x.imgSrc = AppViewData.getDisplayImgSrc(x.img);
-    })
   }
 
   navToProductDetails(product) {

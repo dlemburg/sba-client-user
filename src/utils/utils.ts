@@ -1,5 +1,5 @@
 import { Injectable } from '@angular/core';
-
+import { AppViewData } from '../global/app-data.service';
 
 // general utils
 @Injectable()
@@ -86,5 +86,14 @@ export class Utils {
 
     public static round(num: number): number {
         return +(Math.round(num * Math.pow(10,2)) / Math.pow(10,2)).toFixed(2);
+    }
+
+    public static getImgs(arr) {
+        if (arr.length) {
+            arr.forEach((x) => {
+                x.imgSrc = AppViewData.getDisplayImgSrc(x.img);
+            });
+            return arr;
+        } else return [];
     }
 }

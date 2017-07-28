@@ -1,14 +1,18 @@
-<!--
+
 <ion-header>
   <ion-navbar>
-    <ion-title>Register</ion-title>
+    <ion-title *ngIf="!appHeaderBarLogo">Register</ion-title>
+    <ion-title *ngIf="appHeaderBarLogo"> 
+      <img *ngIf="appHeaderBarLogo" alt="Logo" height="44" [src]="appHeaderBarLogo" /> 
+    </ion-title>
   </ion-navbar>
 </ion-header>
--->
 
+<!--
 <ion-header>
   <AppHeaderBar appHeaderBarLogo="{{appHeaderBarLogo}}" [companyName]="companyName"></AppHeaderBar>
 </ion-header>
+-->
 <ion-content padding>
   <div class="company-logo-container">
     <CompanyLogo [logo]="logoImgSrc"></CompanyLogo>

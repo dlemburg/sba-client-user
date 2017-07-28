@@ -94,7 +94,8 @@ export class LocationsPage extends BaseViewController {
       .subscribe(
           (response) => {
             console.log('response: ', response);
-            this.locations = this.doLocationBusinessLogic(response.data.locations);
+            this.locations = response.data.locations.length ? this.doLocationBusinessLogic(response.data.locations) : [];
+            this.isLoading = false;
             this.dismissLoading();
           }, (err) => {
             // handled this differently because api call needs a little extra time for loading

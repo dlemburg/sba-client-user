@@ -84,9 +84,6 @@ export class CheckoutStore {
     public setOrder(order: IOrder): IOrder {
         this.order = Object.assign({}, order);
 
-        console.log('this.order (setOrder): ', this.order);
-
-
         return this.order;
     }
 
@@ -138,7 +135,7 @@ export class CheckoutStore {
     }
 
     public setPurchaseItemsAndTransactionDetails(purchaseItems: Array<IPurchaseItem>, transactionDetails: ITransactionDetails): IOrder {
-        this.order.purchaseItems = purchaseItems;
+        this.order.purchaseItems = [...purchaseItems];
         this.order.transactionDetails = Object.assign({}, transactionDetails);
 
         return this.order;
@@ -233,7 +230,6 @@ export class CheckoutStore {
                 dairyCost += x.price;
             });
         }
-
         return dairyCost;
     }
 

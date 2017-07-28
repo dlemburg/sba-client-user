@@ -56,8 +56,8 @@ import { BaseViewController } from '../pages/base-view-controller/base-view-cont
     MyApp
   ],
   providers: [
-    //{provide: ErrorHandler, useClass: IonicErrorHandler}, 
-    {provide: ErrorHandler, useClass: API}, 
+    {provide: ErrorHandler, useClass: IonicErrorHandler}, 
+    //{provide: ErrorHandler, useClass: API}, 
     StatusBar,
     SplashScreen,
     Transfer,

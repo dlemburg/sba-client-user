@@ -1,10 +1,9 @@
 import { Component } from '@angular/core';
 import { IonicPage, NavController, NavParams, AlertController } from 'ionic-angular';
-import { Validators, FormBuilder, FormGroup } from '@angular/forms';
-import { IPopup, AuthUserInfo } from '../../models/models';
+import { FormBuilder } from '@angular/forms';
+import { IPopup } from '../../models/models';
 import { Authentication } from '../../global/authentication';
-import { API, ROUTES } from '../../global/api';
-import { CONST_APP_IMGS } from '../../global/global';
+import { API } from '../../global/api';
 import { AppViewData } from '../../global/app-data.service';
 
 @IonicPage()

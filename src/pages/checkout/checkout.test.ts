@@ -9,7 +9,7 @@ import { DateUtils } from '../../utils/date-utils';
 
 describe('getMinutesUntilClose()', () => {
   it(' calculate difference between now and closing time arg ', () => {
-    function  getMinutesUntilClose(closeTime: Date): number {
+    function getMinutesUntilClose(closeTime: Date): number {
         let nowMinutes = DateUtils.millisecondsToMinutes(new Date().getTime());
         let closeMinutes = DateUtils.millisecondsToMinutes(closeTime.getTime());
 
@@ -23,3 +23,5 @@ describe('getMinutesUntilClose()', () => {
     expect(test).to.be.above(9);
   });
 });
+
+

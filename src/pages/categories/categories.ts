@@ -5,6 +5,7 @@ import { API, ROUTES } from '../../global/api';
 import { Authentication } from '../../global/authentication';
 import { BaseViewController } from '../base-view-controller/base-view-controller';
 import { AppViewData } from '../../global/app-data.service';
+import { Utils } from '../../utils/utils';
 
 @IonicPage()
 @Component({
@@ -48,11 +49,8 @@ export class CategoriesPage extends BaseViewController {
           (response) => {
             this.dismissLoading();
             console.log('response: ', response);
-            this.categories = response.data.categories;
+            this.categories = Utils.getImgs(response.data.categories);
 
-            this.categories.forEach((x) => {
-              x.imgSrc = AppViewData.getDisplayImgSrc(x.img);
-            });
           }, this.errorHandler(this.ERROR_TYPES.API));
     
   }

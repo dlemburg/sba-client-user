@@ -29,14 +29,14 @@ export class BaseViewController {
     NOT_ONLINE: "NOT_ONLINE"
 
   }
-  public APPEND_DEFAULT: string = "We will work hard to ensure that this is not a problem on our end."
+  //public APPEND_DEFAULT: string = "We will work hard to ensure that this is not a problem on our end."
 
   public ERROR_MESSAGES = {
-    CAMERA: `Sorry, there was an error retrieving your photo.  ${this.APPEND_DEFAULT}`,
-    BARCODE: `sorry, there was an error accessing the scanner. ${this.APPEND_DEFAULT}`,
-    PRINTER: `Sorry, there was an error either finding a printer or printing. ${this.APPEND_DEFAULT}`,
-    SOCIAL_MEDIA: `Sorry, there was an error posting. ${this.APPEND_DEFAULT}`,
-    GEOLOCATION: `Sorry, there was an error calculating your position. ${this.APPEND_DEFAULT}`,
+    CAMERA: `Sorry, there was an error retrieving your photo.  We will work hard to ensure that this is not a problem on our end.`,
+    BARCODE: `sorry, there was an error accessing the scanner. We will work hard to ensure that this is not a problem on our end.`,
+    PRINTER: `Sorry, there was an error either finding a printer or printing. We will work hard to ensure that this is not a problem on our end.`,
+    SOCIAL_MEDIA: `Sorry, there was an error posting. We will work hard to ensure that this is not a problem on our end.`,
+    GEOLOCATION: `Sorry, there was an error calculating your position. We will work hard to ensure that this is not a problem on our end.`,
     NOT_ONLINE: `Uh oh, looks like you're not online. Data is expensive these days!`
   }
   constructor(

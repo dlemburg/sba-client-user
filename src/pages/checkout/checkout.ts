@@ -52,7 +52,6 @@ export class CheckoutPage extends BaseViewController {
   companyName: string = this.auth.companyName;
   showRewards: boolean = false;
   minutesUntilClose: number = 0;
-
   // constants
   UNAVAILABLE: string = "Unavailable";
   INSUFFICIENT_FUNDS_ALERT: string = "Uh oh! Looks like you need to add value to your card. Your balance: ";
@@ -94,7 +93,6 @@ export class CheckoutPage extends BaseViewController {
     this.API.stack(ROUTES.getCompanyDetailsForTransaction, "POST", toData)
       .subscribe(
           (response) => {
-
             this.companyDetails = response.data.companyDetails;
             
             // get order and rewards
@@ -171,7 +169,7 @@ export class CheckoutPage extends BaseViewController {
     this.order = this.checkoutStore.clearDiscountsAndRewards(this.order);
 
     if (this.order.purchaseItems.length === 0) this.checkoutStore.deleteOrder();
-    this.getEligibleRewardsAPI(this.order)
+    this.getEligibleRewardsAPI(this.order);
   }
 
   editPurchaseItem(purchaseItem: IPurchaseItem, index: number) {
@@ -179,7 +177,7 @@ export class CheckoutPage extends BaseViewController {
   }
 
   submit() {
-    if (this.getMinutesUntilClose(new Date()) > this.eta) {
+    if (this.getMinutesUntilClose(new Date(this.checkoutStore.getLocationCloseTime)) > this.eta) {
       this.presentLoading(AppViewData.getLoading().processing);
       let toData = { 
         companyOid: this.auth.companyOid, 
@@ -220,131 +218,3 @@ export class CheckoutPage extends BaseViewController {
     }
   }
 }
-
-
-  // MOVED TO SERVER  
-  /*
-    parseRewardsForTransaction() {
-    
-    let rewards = this.order.transactionDetails.rewards;
-    let subtotal = this.checkoutStore.calculateSubtotal(this.order);
-    let dateTimeRangeMoneyOff = 0;
-    let dateTimeRangePercentOff = 0;
-    let dtrPercentSavings = 0;
-    let hasFreePurchaseItemReward: boolean = false;
-
-    if (rewards.length)  {
-      this.order.transactionDetails.isRewardUsed = true;
-
-      rewards.forEach((reward, index) => {
-
-        if (reward.processingType === this.REWARDS_PROCESSING_TYPE.AUTOMATIC && reward.type === this.REWARDS_TYPE.REWARDS_ALL) {
-          this.order.transactionDetails.isRewardAllUsed = true;
-          if (reward.discountRule === this.REWARDS_DISCOUNT_RULE.PRODUCT) {
-            this.rewardTypeProductAction(reward);
-          } else if (reward.discountRule === this.REWARDS_DISCOUNT_RULE.DATE_TIME_RANGE) {
-              if (reward.discountType === this.REWARDS_DISCOUNT_TYPE.MONEY) {
-                  dateTimeRangeMoneyOff += this.rewardTypeDateTimeRangeAction(reward).money;
-                  reward.discount = {type: this.REWARDS_DISCOUNT_TYPE.MONEY, amount: reward.discountAmount};
-              } else if (reward.discountType === this.REWARDS_DISCOUNT_TYPE.PERCENT) {
-                  dateTimeRangePercentOff += this.rewardTypeDateTimeRangeAction(reward).percent;
-                  reward.discount = {type: this.REWARDS_DISCOUNT_TYPE.PERCENT, amount: reward.discountAmount * 100};
-              }
-          } else if (reward.type === this.REWARDS_TYPE.REWARDS_INDIVIDUAL && reward.isFreePurchaseItem) {  // limited to one per transaction at the moment
-              hasFreePurchaseItemReward = true;
-          }
-        }
-      });
-
-
-      // cache products discounts
-      const allProductsDiscounts = this.calculateAllProductsDiscounts();
-
-      subtotal -= (allProductsDiscounts + dateTimeRangeMoneyOff);
-      if (subtotal < 0) subtotal = 0; // calculate subtotal-  make new calculateSubtotalWithDiscounts fn in checkoutStore
-
-      if (dateTimeRangePercentOff > 0) {         // calculate dtr percentage for whole order
-        dtrPercentSavings = subtotal * dateTimeRangePercentOff;
-        subtotal -= dtrPercentSavings;
-      }
-
-      // calculate rewards savings & total & taxes
-      this.order.transactionDetails.rewardsSavings = (allProductsDiscounts  + dateTimeRangeMoneyOff + dtrPercentSavings);
-      this.order = this.checkoutStore.calculateTaxesSubtotalTotalAndReturnOrder(this.order, subtotal, this.companyDetails.taxRate);
-
-    }
-  }
-
-  // move to server
-  calculateAllProductsDiscounts(): number {
-    let discounts = 0;
-
-    this.order.purchaseItems.forEach((x, index) => {
-      discounts += x.discounts;
-    });
-
-    return discounts;
-  }
-
-  // move to server
-  // rewards action:   PRODUCT 
-  rewardTypeProductAction(reward) {
-    this.order.purchaseItems.forEach((purchaseItem, index) => {
-        if (purchaseItem.selectedProduct.oid === reward.productOid) {
-          let originalPrice = purchaseItem.sizeAndOrPrice.price, 
-              newPrice = 0, 
-              newDiscount = 0;
-
-          switch (reward.discountType) {
-            case this.REWARDS_DISCOUNT_TYPE.MONEY:
-              purchaseItem.discounts += (this.quantityTimesDiscount(purchaseItem.quantity, reward.discountAmount));
-              purchaseItem.discounts = this.returnDiscountOrOriginalPrice(purchaseItem.discounts, originalPrice, purchaseItem.quantity);
-              break;
-            case this.REWARDS_DISCOUNT_TYPE.PERCENT:
-              newPrice = originalPrice * (this.quantityTimesDiscount(purchaseItem.quantity, reward.discountAmount));
-              newDiscount = purchaseItem.discounts + (originalPrice - newPrice);
-              purchaseItem.discounts = this.returnDiscountOrOriginalPrice(newDiscount, originalPrice, purchaseItem.quantity);
-              break;
-            case this.REWARDS_DISCOUNT_TYPE.NEW_PRICE:
-              newDiscount = purchaseItem.discounts  + this.quantityTimesDiscount(purchaseItem.quantity, originalPrice);
-              purchaseItem.discounts = this.returnDiscountOrOriginalPrice(newDiscount, originalPrice, purchaseItem.quantity);
-              break;
-            default: 
-              // do nothing
-              break;
-          }
-        }
-      }); 
-  }
-  
-  // move to server
-  // rewards action: DATE-TIME-RANGE 
-  rewardTypeDateTimeRangeAction(reward): {money: number, percent: number} {
-    let ret = { money: 0, percent: 0 };
-    
-    switch (reward.discountType) {
-      case this.REWARDS_DISCOUNT_TYPE.MONEY:
-        ret = {money: reward.discountAmount, percent: 0};
-        break;
-      case this.REWARDS_DISCOUNT_TYPE.PERCENT:
-        ret = {percent: reward.discountAmount, money: 0};
-        break;
-      default: 
-        break; 
-    }
-
-    return ret;
-  }
-
-  // move to server
-  quantityTimesDiscount(num: number, amount: number) {
-    return num * amount;
-  }
-
-  // move to server
-  returnDiscountOrOriginalPrice(newDiscount: number, originalPrice: number, quantity: number): number {
-    if (newDiscount > (originalPrice * quantity)) return originalPrice;
-    else return newDiscount;
-  }
-*/
-

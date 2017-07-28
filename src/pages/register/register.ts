@@ -16,9 +16,9 @@ import { COMPANY_OID } from '../../global/companyOid';
 export class RegisterPage extends BaseViewController {
   myForm: FormGroup;
   auth: any = this.authentication.getCurrentUser();
-  appHeaderBarLogo: string = AppViewData.getImg().logoImgSrc;
-  companyName: string = this.auth.companyName;
   logoImgSrc: string = AppViewData.getImg().logoImgSrc; 
+  appHeaderBarLogo: string = this.logoImgSrc.indexOf("default") > -1 ? null : this.logoImgSrc;
+  companyName: string = this.auth ? this.auth.companyName : null;
 
   constructor(
     public navCtrl: NavController, 
@@ -52,6 +52,7 @@ export class RegisterPage extends BaseViewController {
 
   submit(myForm, isValid) {
     const toData = myForm;
+    console.log("register toData: ", toData);
     this.presentLoading();
 
     this.API.stack(ROUTES.registerUser + `/${COMPANY_OID}`, "POST", toData)
