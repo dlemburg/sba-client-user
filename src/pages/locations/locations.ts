@@ -8,7 +8,6 @@ import { Utils } from '../../utils/utils';
 import { DateUtils } from '../../utils/date-utils';
 import { AppViewData } from '../../global/app-data.service';
 import { Geolocation } from '@ionic-native/geolocation';
-import { SocialSharing } from '@ionic-native/social-sharing';
 
 @IonicPage()
 @Component({
@@ -30,7 +29,8 @@ export class LocationsPage extends BaseViewController {
   distanceFilter: number = 25;
   showMap = true;
   isLoading: boolean = true;
-  currentDay: string = Utils.getDays()[new Date().getDay()].toLowerCase(); 
+  currentDay: string = Utils.getDays()[new Date().getDay()].toLowerCase();
+  distances: Array<number> = Utils.getNumbers(25, 4);
 
   constructor(
     public navCtrl: NavController, 
@@ -50,7 +50,6 @@ export class LocationsPage extends BaseViewController {
 
   // address, city, state, zipcode, lat, long, hours
   ionViewDidLoad() {
-    this.presentLoading();
     this.auth = this.authentication.getCurrentUser();
 
     this.getCurrentPosition().then((data) => {
@@ -61,7 +60,6 @@ export class LocationsPage extends BaseViewController {
       this.isLoading = false;
       if (err.code === 2)  {
         this.presentToast(false, "We're having trouble accessing your current location to find locations near your. Are you sure you're online and your location is on?");
-        this.dismissLoading();
       } else this.errorHandler(this.ERROR_TYPES.PLUGIN.GEOLOCATION)(err);
     });
   }
@@ -90,6 +88,7 @@ export class LocationsPage extends BaseViewController {
 
 
   getLocationsFilterByGpsAPI(lat, long) {
+    this.presentLoading();
     this.API.stack(ROUTES.getLocationsFilterByGps + `/${this.auth.companyOid}/${lat}/${long}/${this.distanceFilter}`, "GET")
       .subscribe(
           (response) => {
@@ -108,7 +107,6 @@ export class LocationsPage extends BaseViewController {
     let currentDay =  Utils.getDays()[new Date().getDay()].toLowerCase(); 
     locations.forEach((x) => {
       x.imgSrc = AppViewData.getDisplayImgSrc(x.img);
-      
       if (x[currentDay + "Open"] === "closed") {
         x.isOpen = false;
         x.closedMessage = "Sorry, this location is closed today.";
@@ -142,7 +140,7 @@ export class LocationsPage extends BaseViewController {
     if (hours > openHours && hours < closeHours) return { isOpen: true, closedMessage: null };
     else if (hours > openHours && closeMidnight) return { isOpen: true, closedMessage: null };
     else if (hours === openHours) {
-      if (minutes > openMinutes) return { isOpen: true, closedMessage: null };
+      if (minutes > openMinutes || minutes === openMinutes) return { isOpen: true, closedMessage: null };
       else return {isOpen: false, closedMessage: `This location opens in ${openMinutes - minutes} minutes`};
     } 
     else if ((openHours - hours) === 1 && openMinutes === 0) return { isOpen: false, closedMessage: `This location opens in ${60 - minutes} minutes`};    

@@ -33,6 +33,15 @@ export class Utils {
         return arr;
     }
 
+    public static getNumbers(increment: number, iterations: number) {
+        let arr = [];
+        for (let i = 1; i < iterations + 1; i++) {
+            arr.push(i * increment);
+        }
+        console.log("arr: ", arr);
+        return arr;
+    }
+
     public static getMonths(): Array<{num: number, displayNum: string, str: string}> {
         return [
             {num: 0, displayNum: "01", str: "January"},

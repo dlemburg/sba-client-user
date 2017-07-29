@@ -2,7 +2,7 @@ import { Component } from '@angular/core';
 import { IPurchaseItem, IErrChecks, IPopup, ProductDetailsToClient, AuthUserInfo } from '../../models/models';
 import { Utils } from '../../utils/utils';
 import { CheckoutStore } from '../../global/checkout-store.service';
-import { IonicPage, NavController, NavParams, AlertController, ToastController, LoadingController, ModalController } from 'ionic-angular';
+import { IonicPage, NavController, NavParams, AlertController, ToastController, LoadingController, ModalController, ViewController } from 'ionic-angular';
 import { AppViewData } from '../../global/app-data.service';
 import { BaseViewController } from '../base-view-controller/base-view-controller';
 import { API, ROUTES } from '../../global/api';
@@ -49,6 +49,7 @@ export class EditPurchaseItemPage extends BaseViewController {
   };
   order: any = {};
   index: number;
+  isOrderInProgress: boolean = this.checkoutStore.isOrderInProgress;
 
   constructor(
     public navCtrl: NavController, 
@@ -59,6 +60,7 @@ export class EditPurchaseItemPage extends BaseViewController {
     public alertCtrl: AlertController, 
     public toastCtrl: ToastController, 
     public loadingCtrl: LoadingController, 
+    public viewCtrl: ViewController,
     private checkoutStore: CheckoutStore) {
     super(alertCtrl, toastCtrl, loadingCtrl, navCtrl);
   }
@@ -84,22 +86,7 @@ export class EditPurchaseItemPage extends BaseViewController {
           }, this.errorHandler(this.ERROR_TYPES.API));    
   }
 
-  submit(): void {
-    let doChecks = this.doChecksPurchaseItem(this.purchaseItem);
-    
-    if (!doChecks.isValid) {
-       this.showPopup({
-          title: AppViewData.getPopup().defaultSuccessTitle, 
-          message: doChecks.errs.join(" "), 
-          buttons: [{text: AppViewData.getPopup().defaultConfirmButtonText}]
-        });
-    } else {
-      this.checkoutStore.editOrder(this.index, this.purchaseItem); 
-      this.navCtrl.pop();
-    }
-  }
-
-  // [compareWith]="compareFn"
+   // [compareWith]="compareFn"
   compareFn(c1, c2): boolean {
       return c1 && c2 ? c1.oid === c2.oid : c1 === c2;
   }
@@ -122,6 +109,24 @@ export class EditPurchaseItemPage extends BaseViewController {
   }
 
   navCheckout() {
-    this.navCtrl.push('CheckoutPage');
+    //this.navCtrl.push('CheckoutPage');
   }  
+
+  submit(): void {
+    let doChecks = this.doChecksPurchaseItem(this.purchaseItem);
+    
+    if (!doChecks.isValid) {
+       this.showPopup({
+          title: AppViewData.getPopup().defaultSuccessTitle, 
+          message: doChecks.errs.join(" "), 
+          buttons: [{text: AppViewData.getPopup().defaultConfirmButtonText}]
+        });
+    } else {
+      this.viewCtrl.dismiss({
+        index: this.index,
+        purchaseItem: this.purchaseItem
+      });
+     // this.navCtrl.pop();
+    }
+  }
 }

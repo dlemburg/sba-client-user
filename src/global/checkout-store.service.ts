@@ -53,8 +53,6 @@ export class CheckoutStore {
     public setLocationOid(locationOid: number): void {
 
         this._locationOid = locationOid;
-
-        console.log("current locationOid: ", locationOid);
     }
 
     public get getLocationCloseTime(): Date {
@@ -89,7 +87,7 @@ export class CheckoutStore {
 
     public editOrder(index: number, purchaseItem: IPurchaseItem): IOrder {
         this.order.purchaseItems[index] = purchaseItem;
-        this.order.transactionDetails.subtotal = this.calculateSubtotal(this.order);
+        //this.order.transactionDetails.subtotal = this.calculateSubtotal(this.order);
         console.log('this.order: (editOrder) ', this.order);
 
         return this.order;

@@ -115,7 +115,7 @@
     <ion-item>
       <span>Discounts:</span> 
       <div text-right>
-        <span class="discounts" *ngIf="order.transactionDetails.rewardsSavings"> - {{ order.transactionDetails.rewardsSavings | currency:symbolDisplay:true }} </span>
+        <span class="discounts discounts-local" *ngIf="order.transactionDetails.rewardsSavings"> - {{ order.transactionDetails.rewardsSavings | currency:symbolDisplay:true }} </span>
         <span *ngIf="!order.transactionDetails.rewardsSavings"> $0.00 </span>   
       </div>
     </ion-item>

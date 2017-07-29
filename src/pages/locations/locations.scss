@@ -1,9 +1,12 @@
 page-locations {
 
+    ion-content {
+        background-color: map-get($colors , light) !important;
+    }
     .location-container {
         position: relative;
         border-bottom: 1px solid map-get($colors, light) !important;
-       // border-top: 1px solid map-get($colors, light) !important;
+        border-top: 1px solid map-get($colors, light) !important;
 
     }
     .miles-away {
@@ -34,7 +37,7 @@ page-locations {
 
     .map-btn {
        position: absolute;
-       top: 55px;
+       top: 51px;
        right: 20px;
        background-color: white
     }

@@ -27,12 +27,13 @@ export class OrderCompletePage {
     public navParams: NavParams, 
     public API: API, 
     public viewCtrl: ViewController, 
-    public appCtrl: App) {
+    public appCtrl: App,
+    public authentication: Authentication) {
 
   }
 
   ionViewDidLoad() {
-    this.auth = this.auth
+    this.auth = this.authentication.getCurrentUser();
     const imgName = CONST_APP_IMGS[9];
     this.API.stack(ROUTES.getImgName + `/${this.auth.companyOid}/${imgName}`, "GET")
       .subscribe(

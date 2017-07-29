@@ -1,15 +1,14 @@
-<!--
-<ion-header>
-  <ion-navbar>
-    <button ion-button menuToggle>
-      <ion-icon name="menu"></ion-icon>
-    </button>
-    <ion-title>Locations</ion-title>
-  </ion-navbar>
-</ion-header>
--->
+
 <ion-header>
   <AppHeaderBar appHeaderBarLogo="{{appHeaderBarLogo}}" [companyName]="companyName"></AppHeaderBar>
+  <ion-toolbar *ngIf="distanceFilter">
+     <ion-item no-lines>
+      <ion-label>Show locations within miles from you: </ion-label>
+      <ion-select [(ngModel)]="distanceFilter" (ionChange)="getLocationsFilterByGpsAPI(lat, long)">
+        <ion-option *ngFor="let x of distances; let i = index;" [value]="x">{{x}}</ion-option>
+      </ion-select>
+    </ion-item>
+  </ion-toolbar>
 </ion-header>
 
 
@@ -17,8 +16,9 @@
   <div class="margin-top">
     <EmptyMessage *ngIf="!locations.length && isLoading" longMessage="Optimizing for locations near you..."></EmptyMessage>
     <EmptyMessage *ngIf="!locations.length && !isLoading" message="locations"></EmptyMessage>
+    <!--  <ion-item class="location-container item-highlight" tappable (click)="updateActive(i)" *ngFor="let x of locations; let i = index" [ngClass]="{'item-highlight': isActive === i}"> -->
     <ion-list>
-      <ion-item class="location-container" tappable (click)="updateActive(i)" *ngFor="let x of locations; let i = index" [ngClass]="{'item-highlight': isActive === i}">
+      <ion-item class="location-container item-highlight" tappable *ngFor="let x of locations; let i = index">
         <div>
           <ion-item no-lines>
             <ion-thumbnail item-start>

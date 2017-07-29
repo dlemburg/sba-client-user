@@ -6,8 +6,8 @@ import { API, ROUTES } from '../../global/api';
 import { Authentication } from '../../global/authentication';
 import { BaseViewController } from '../base-view-controller/base-view-controller';
 import { DateUtils } from '../../utils/date-utils';
+import { Utils } from '../../utils/utils';
 import { AppViewData } from '../../global/app-data.service';
-import { AppUtils } from '../../utils/app-utils';
 import { SocketIO } from '../../global/socket-io';
 import { CONST_REWARDS_DISCOUNT_RULE, CONST_REWARDS_DISCOUNT_TYPE, CONST_REWARDS_TYPES, CONST_REWARDS_PROCESSING_TYPE } from '../../global/global';
 
@@ -43,7 +43,7 @@ export class CheckoutPage extends BaseViewController {
   unavailable: string = "Unavailable";
   room: number = null;
   socket: SocketIOClient.Socket;
-  etas: Array<number> = AppUtils.getEtas();
+  etas: Array<number> = Utils.getEtas();
   eta: number = 15;
   comments: string = null;
   exclusions: string = 'Note: Some rewards are not redeemable when using Order-Ahead';
@@ -87,7 +87,6 @@ export class CheckoutPage extends BaseViewController {
     this.minutesUntilClose = this.getMinutesUntilClose(this.checkoutStore.getLocationCloseTime);
 
     this.socketIO.connect(this.room);
-    this.presentLoading();
 
     const toData = { companyOid: this.auth.companyOid };
     this.API.stack(ROUTES.getCompanyDetailsForTransaction, "POST", toData)
@@ -98,7 +97,6 @@ export class CheckoutPage extends BaseViewController {
             // get order and rewards
             this.order =  Object.assign({}, this.checkoutStore.getOrder());
             this.getEligibleRewardsAPI(this.order);
-            this.dismissLoading();
             console.log('response: ', response);
           },  this.errorHandler(this.ERROR_TYPES.API, undefined, {shouldDismissLoading: false}));   
       
@@ -140,6 +138,7 @@ export class CheckoutPage extends BaseViewController {
   }
 
   getEligibleRewardsAPI(order: IOrder) {
+    this.presentLoading();
     const dateInfo = DateUtils.getCurrentDateInfo();
     const toData = {
       date: DateUtils.toLocalIsoString(dateInfo.date.toString()), // get all rewards where expiry date < date
@@ -157,7 +156,6 @@ export class CheckoutPage extends BaseViewController {
       .subscribe(
           (response) => {
             console.log('response.data: ' , response.data);
-
             this.order = this.checkoutStore.setPurchaseItemsAndTransactionDetails(response.data.purchaseItems, response.data.transactionDetails);
             this.order = this.checkoutStore.roundAllTransactionDetails(this.order.transactionDetails);
             this.dismissLoading();
@@ -173,7 +171,17 @@ export class CheckoutPage extends BaseViewController {
   }
 
   editPurchaseItem(purchaseItem: IPurchaseItem, index: number) {
-    this.navCtrl.push("EditPurchaseItemPage", {purchaseItem});
+   // this.navCtrl.push("EditPurchaseItemPage", {purchaseItem});
+
+    let editPurchaseItemModal = this.modalCtrl.create("EditPurchaseItemPage", {purchaseItem}, {showBackdrop: false, enableBackdropDismiss: false});
+    
+    editPurchaseItemModal.onDidDismiss((data: {index?: number, purchaseItem?: IPurchaseItem} = {}) => {
+      if (data.index !== null && data.purchaseItem) {
+        this.order = this.checkoutStore.editOrder(data.index, data.purchaseItem);
+        this.getEligibleRewardsAPI(this.order);
+      }
+    });
+    editPurchaseItemModal.present();
   }
 
   submit() {
@@ -212,8 +220,7 @@ export class CheckoutPage extends BaseViewController {
               modal.present();
               modal.onDidDismiss(() => {
                 this.navCtrl.setRoot('HomePage');
-              });
-              
+              });     
             }, this.errorHandler(this.ERROR_TYPES.API));
     }
   }

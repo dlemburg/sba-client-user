@@ -1,4 +1,4 @@
-<!--
+
 <ion-header>
   <ion-navbar>
     <button ion-button menuToggle>
@@ -6,11 +6,12 @@
     </button>
   </ion-navbar>
 </ion-header>
--->
+
+<!--
 <ion-header>
   <AppHeaderBar appHeaderBarLogo="{{appHeaderBarLogo}}" [companyName]="companyName"></AppHeaderBar>
 </ion-header>
-
+-->
 
 <ion-content no-padding>
     <ion-card class="hover ion-card-top" no-padding no-margin>
@@ -48,7 +49,7 @@
         </ion-item>
     </div>
 </ion-content>
-  <ion-footer *ngIf="storeService.isOrderInProgress">
+  <ion-footer *ngIf="isOrderInProgress">
     <ion-toolbar>
           <button (click)="submit()" class="footer-btn" color="primary" ion-button block>Edit</button>
     </ion-toolbar>
