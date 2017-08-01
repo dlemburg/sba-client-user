@@ -24,21 +24,26 @@
             <ion-thumbnail item-start>
               <img [src]="x.imgSrc">
             </ion-thumbnail>
-            <div class="address">{{ x.address }}</div>
-            <div class="address">{{ x.city }}, {{ x.state }} {{ x.zipcode }}</div>
-            <div>
-              <span *ngIf="x.distanceTo > 0.3" class="miles-away"><span class="bold">{{ x.distanceTo }}</span> miles away (approx)</span>
-              <span *ngIf="x.distanceTo < 0.3" class="miles-away"> This location is really close!</span>
+            <div class="location-content-container">
+              <div class="address">{{ x.address }}</div>
+              <div class="address">{{ x.city }}, {{ x.state }} {{ x.zipcode }}</div>
+              <div>
+                <span *ngIf="x.distanceTo > 0.3" class="miles-away"><span class="bold">{{ x.distanceTo }}</span> miles away (approx)</span>
+                <span *ngIf="x.distanceTo < 0.3" class="miles-away"> This location is really close!</span>
+              </div>
+              <div class="">
+                <div margin-top *ngIf="!x.isOpen" text-center class="closed">{{ x.closedMessage }}</div>
+                <div margin-top *ngIf="x.isOpen" text-center class="open">Open</div>
+                <button *ngIf="x.isOpen" (click)="proceedToOrder(x)" ion-button outline block detail-push>Proceed to Order</button>
+              </div>
             </div>
+
           </ion-item>
-           <button class="map-btn" mini (click)="navLocationMap(x)" ion-fab>
+          
+          <!-- positioned absolutely -->
+          <button class="map-btn" mini (click)="navLocationMap(x)" ion-fab>
             <ion-icon class="map-icon" ios="ios-pin" md="md-pin"></ion-icon>
           </button>
-          <div margin-top *ngIf="!x.isOpen" text-center class="closed">{{ x.closedMessage }}</div>
-          <div margin-top *ngIf="x.isOpen" text-center class="open">Open</div>
-          <button *ngIf="x.isOpen" (click)="proceedToOrder(x)" ion-button outline block detail-push>Proceed to Order</button>
-
-          <!-- positioned absolutely -->
           <button class="hours-btn" (click)="viewHours(x)" ion-button>Hours</button>  
         </div>
       </ion-item>

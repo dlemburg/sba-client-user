@@ -6,6 +6,7 @@ import { AppViewData } from '../../global/app-data.service';
 import { BaseViewController } from '../base-view-controller/base-view-controller';
 import { CONST_APP_IMGS } from '../../global/global';
 import { Utils } from '../../utils/utils';
+import { DateUtils } from '../../utils/date-utils';
 
 @IonicPage()
 @Component({
@@ -52,8 +53,12 @@ export class RewardsPage extends BaseViewController {
           }, this.errorHandler(this.ERROR_TYPES.API, undefined, {shouldDismissLoading: false}));
 
     // calls not related. don't need to be async
-
-    this.API.stack(ROUTES.getRewards + `/${this.auth.companyOid}/${this.auth.userOid}`, "GET")
+    let toData = {
+      userOid: this.auth.userOid,
+      companyOid: this.auth.companyOid,
+      date: DateUtils.toLocalIsoString(new Date().toString())
+    };
+    this.API.stack(ROUTES.getRewards, "POST", toData)
       .subscribe(
           (response) => {
             this.dismissLoading();

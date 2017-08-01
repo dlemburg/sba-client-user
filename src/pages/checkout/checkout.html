@@ -18,7 +18,7 @@
     <ion-item class="insufficient-funds-container" text-wrap no-lines text-center>{{ INSUFFICIENT_FUNDS_ALERT }} <span class="bold"> {{ balance | currency:symbolDisplay:true  }}</span></ion-item>
   </ion-toolbar>
   <!-- order -->
-  <ion-item *ngIf="!order.purchaseItems.length">No items ready for purchase.</ion-item>
+  <ion-item *ngIf="!order.purchaseItems.length">No items ready for purchase</ion-item>
   <ion-list *ngIf="order.purchaseItems.length">
     <div *ngFor="let x of order.purchaseItems; let i = index;">
       <ion-item-sliding #item>

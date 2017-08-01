@@ -84,11 +84,11 @@ export class CheckoutPage extends BaseViewController {
   }
 
   ionViewDidLoad() {
+    this.presentLoading();
     this.minutesUntilClose = this.getMinutesUntilClose(this.checkoutStore.getLocationCloseTime);
-
     this.socketIO.connect(this.room);
-
     const toData = { companyOid: this.auth.companyOid };
+
     this.API.stack(ROUTES.getCompanyDetailsForTransaction, "POST", toData)
       .subscribe(
           (response) => {
@@ -96,9 +96,10 @@ export class CheckoutPage extends BaseViewController {
             
             // get order and rewards
             this.order =  Object.assign({}, this.checkoutStore.getOrder());
+            this.dismissLoading();
             this.getEligibleRewardsAPI(this.order);
             console.log('response: ', response);
-          },  this.errorHandler(this.ERROR_TYPES.API, undefined, {shouldDismissLoading: false}));   
+          },  this.errorHandler(this.ERROR_TYPES.API));   
       
       // does not need to be async
       this.API.stack(ROUTES.getBalance, "POST", {userOid: this.auth.userOid})
@@ -166,8 +167,8 @@ export class CheckoutPage extends BaseViewController {
     this.order = this.checkoutStore.deletePurchaseItem(this.order, purchaseItem, index);
     this.order = this.checkoutStore.clearDiscountsAndRewards(this.order);
 
-    if (this.order.purchaseItems.length === 0) this.checkoutStore.deleteOrder();
-    this.getEligibleRewardsAPI(this.order);
+    if (this.order.purchaseItems.length === 0) this.order = this.checkoutStore.deleteOrder();
+    else this.getEligibleRewardsAPI(this.order);
   }
 
   editPurchaseItem(purchaseItem: IPurchaseItem, index: number) {
