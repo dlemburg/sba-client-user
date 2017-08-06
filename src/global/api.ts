@@ -184,6 +184,8 @@ export const ROUTES = {
     logClientError: '/api/node/errorHandler/logClientError', // cs call built too
     getHomePageInfo: '/api/cs/user/getHomePageInfo',
     getClientUserVersionNumber: '/api/cs/appData/getClientUserVersionNumber',
-    getClientUserAppStartupInfo: '/api/cs/user/getClientUserAppStartupInfo'
+    getClientUserAppStartupInfo: '/api/cs/user/getClientUserAppStartupInfo',
+    testNode: '/api/node/appData/test',
+    testDotnet: '/api/cs/appData/test'
 
 }

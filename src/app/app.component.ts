@@ -32,11 +32,31 @@ export class MyApp {
     private appVersion: AppVersion) {
 
     this.platform.ready().then(() => {
+      this.test(); 
+
       this.getAppStartupInfo().then((data: IClientUserAppStartupInfoResponse) => {
         this.initializeApp(data);
       });
     });
   }
+    test() {
+      this.API.stack(ROUTES.testDotnet, "GET")
+        .subscribe(
+          (response) => {
+            console.log("DOTNET: response.data: ", response.data);
+          }, (err) => {
+            console.log("err on DOTNET test: ", err);
+          });
+
+      this.API.stack(ROUTES.testNode, "POST")
+        .subscribe(
+          (response) => {
+            console.log("NODEjs: response ", response);
+          }, (err) => {
+            console.log("err on NODEjs test: ", err);
+          });
+  }
+
 
   getAppStartupInfo() {
     return new Promise((resolve, reject) => {

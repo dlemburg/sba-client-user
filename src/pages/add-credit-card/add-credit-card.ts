@@ -1,7 +1,6 @@
 import { Component } from '@angular/core';
 import { Validation } from '../../utils/validation-utils';
 import { FormBuilder, FormGroup, Validators, FormControl } from '@angular/forms';
-import { AppUtils } from '../../utils/app-utils';
 import { Utils } from '../../utils/utils';
 import { API, ROUTES } from '../../global/api';
 import { Authentication } from '../../global/authentication';
@@ -21,10 +20,10 @@ export class AddCreditCardPage extends BaseViewController {
   isSubmitted: boolean = false;
   cardDetailsForm: FormGroup;
   extraInformationForm: FormGroup;
-  dollarValues: any = AppUtils.getDollarValues();
+  dollarValues: any = Utils.getDollarValues();
   months: any = Utils.getMonths();
   years: any = Utils.getYears();
-  states: any = AppUtils.getStates();
+  states: any = Utils.getStates();
   stripePublishableKey: string;
   auth: any = this.authentication.getCurrentUser();
   appHeaderBarLogo: string = AppViewData.getImg().logoImgSrc;
