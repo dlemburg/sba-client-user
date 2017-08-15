@@ -32,13 +32,14 @@ export class MyApp {
     private appVersion: AppVersion) {
 
     this.platform.ready().then(() => {
-      this.test(); 
+      //this.test(); 
 
       this.getAppStartupInfo().then((data: IClientUserAppStartupInfoResponse) => {
         this.initializeApp(data);
       });
     });
   }
+  /*
     test() {
       this.API.stack(ROUTES.testDotnet, "GET")
         .subscribe(
@@ -56,6 +57,7 @@ export class MyApp {
             console.log("err on NODEjs test: ", err);
           });
   }
+  */
 
 
   getAppStartupInfo() {
