@@ -23,18 +23,26 @@ constructor() { }
 
      // i.e.: "18:00pm" -> "6:00pm""
     public static convertMilitaryTimeStringToNormalTimeString(timeString: string): string {
-        let str = DateUtils.sliceZero(timeString);
-        let normalHours = DateUtils.to12Hour(DateUtils.getHours(str));
-        let minutes = DateUtils.prependZero(DateUtils.getMinutes(str));
-        let amOrPm = str.slice(-2);
+        const str = DateUtils.sliceZero(timeString);
+        const timeStringArr = timeString.split(":");
+        const militaryHours = +timeStringArr[0];
+        
+        const amOrPm = DateUtils.getAmOrPm(militaryHours)
+        const normalHours = DateUtils.to12Hour(militaryHours);
+        const minutes = DateUtils.prependZero(+timeStringArr[1]);
 
         return `${normalHours}:${minutes}${amOrPm}`
     }
 
+    public static getAmOrPm(hours) {
+        if (hours === 0 || hours === 24) return "am";
+        else return hours < 12 ? "am" : "pm";
+    }
+
     // i.e.: "09:00am" ->  Date ['2017-07-10T09:00:00.000Z']
     public static convertTimeStringToJavascriptDate(timeString: string): Date {
-        let hours = DateUtils.convertTimeStringToHours(timeString);
-        let minutes = DateUtils.getMinutes(timeString);
+        const hours = DateUtils.convertTimeStringToHours(timeString);
+        const minutes = DateUtils.getMinutes(timeString);
 
         return new Date(new Date().setHours(hours, minutes, 0, 0));
     }

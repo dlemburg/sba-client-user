@@ -1,5 +1,5 @@
 // client ops constants
-export const ENV = { development: false };
+export const ENV = { development: true };
 export const SERVER_URL_NODE = ENV.development ? 'http://localhost:2800' : 'http://sba-api-node-ts.vigueqqgxy.us-west-2.elasticbeanstalk.com';
 export const SERVER_URL_CSHARP = ENV.development ? 'http://localhost:2345' : 'http://sba-api-dotnet.us-west-2.elasticbeanstalk.com';
 export const CONST_TOKEN_NAME = "sba-user";

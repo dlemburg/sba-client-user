@@ -51,7 +51,7 @@ export class HomePage extends BaseViewController {
         {
             img: null,
             imgSrc: this.defaultImgSrc,
-            name: CONST_APP_HOME_IMGS[0],
+            imgName: CONST_APP_HOME_IMGS[0],
             title: 'My Mobile Card',
             subtitle: 'view card details and pay',
             component: 'MyCardPage',
@@ -60,16 +60,17 @@ export class HomePage extends BaseViewController {
         {
             img: null,
             imgSrc: this.defaultImgSrc,
-            name: CONST_APP_HOME_IMGS[1],
+            imgName: CONST_APP_HOME_IMGS[1],
             title: 'Rewards',
             subtitle: 'discounts and specials you don\'t want to miss out on!',
             component: 'RewardsPage',
-            id: 1
+            id: 1, 
+            hasFooter: true
         },
         {
             img: null,
             imgSrc: this.defaultImgSrc,
-            name: CONST_APP_HOME_IMGS[2],
+            imgName: CONST_APP_HOME_IMGS[2],
             title: 'Order-Ahead',
             subtitle: 'order-ahead and skip the line!',
             component: 'LocationsPage',
@@ -78,7 +79,7 @@ export class HomePage extends BaseViewController {
         {
             img: null,
             imgSrc: this.defaultImgSrc,
-            name: CONST_APP_HOME_IMGS[3],
+            imgName: CONST_APP_HOME_IMGS[3],
             title: 'Menu',
             subtitle: 'See what we have to offer!',
             component: 'CategoriesPage',
@@ -112,11 +113,13 @@ export class HomePage extends BaseViewController {
          console.log("response.data: ", response.data); 
           this.points = response.data.homePageInfo.points;
 
-          this.cards.forEach((x) => {
-            x.img = response.data.homePageInfo[CONST_APP_HOME_IMGS[x.id]];
-            x.subtitle = response.data.homePageInfo[CONST_APP_HOME_SUBTITLES[x.id]] || x.subtitle;
+          // this is unnecessary. the original idea was to make it dynamic, but this doesn't. don't need to fix now
+          this.cards.forEach((x, index) => {
+            x.img = response.data.homePageInfo[x.imgName];
+            x.subtitle = response.data.homePageInfo[CONST_APP_HOME_SUBTITLES[index]] || x.subtitle;
             x.imgSrc = AppViewData.getDisplayImgSrc(x.img);
           });
+          
         }, this.errorHandler(this.ERROR_TYPES.API));
   }
 

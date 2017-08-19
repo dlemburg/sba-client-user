@@ -62,7 +62,6 @@ export class LoginPage extends BaseViewController {
           this.loginBackgroundImgSrc =  `url(${url}) no-repeat`;
         }, (err) => {
           console.log('err: ', err);
-         // this.logoImgSrc = AppViewData.getDisplayImgSrc(null);
         });
   }
 
@@ -87,6 +86,7 @@ export class LoginPage extends BaseViewController {
                 message: response.message || "No email found.", 
                 buttons: [{text: AppViewData.getPopup().defaultConfirmButtonText}]
               });
+              this.dismissLoading();
             } else {
               let {token} = response.data;
               this.authentication.saveToken(token);
