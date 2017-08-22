@@ -12,7 +12,8 @@
       <div *ngIf="balance !== unavailable" text-center>Balance: {{ balance | currency:symbolDisplay:true }}</div>
       <div *ngIf="balance === unavailable" text-center>Balance: {{ balance }}</div>
     </div>
-    <button *ngIf="hasMobileCard" (click)="navBarcodePayPage()" class="pay-now-btn" ion-button>Pay Now!</button>
+    <!--  *ngIf="hasMobileCard" -->
+    <button (click)="navBarcodePayPage()" class="pay-now-btn" ion-button>Pay Now!</button>
     <ion-list inset>
       <div *ngFor="let x of items; let i = index;">
         <div *ngIf="hasReturnedMobileCardData">
