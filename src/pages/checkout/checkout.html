@@ -29,29 +29,40 @@
                 <span *ngIf="x.sizeAndOrPrice.name" class="bold"> {{ x.sizeAndOrPrice.name }} </span>
                 <span class="bold product-name"> {{ x.selectedProduct.name | uppercase }}<span class="bold" *ngIf="x.quantity > 1">s</span></span>
               </div>
-              <div class="extras-container">
+              <div class="extras-container font-12">
                 <!-- flavors -->
-                <div *ngFor="let a of x.flavors; let i = index;">{{ a.name }}
-                  <span *ngIf="i !== x.flavors.length - 1">,</span>
+                <div>
+                  <span *ngFor="let a of x.flavors; let i = index;">{{ a.name }}
+                    <span *ngIf="i !== x.flavors.length - 1">, </span>
+                  </span>
                 </div>
                 <!-- addons -->
-                <div *ngFor="let a of x.addons; let i = index;"> {{ a.name }}
-                    <span *ngIf="i !== x.addons.length - 1">,</span> 
+                <div>
+                  <span *ngFor="let a of x.addons; let i = index;">{{ a.name }}
+                    <span *ngIf="i !== x.addons.length - 1">, </span>
+                  </span>
                 </div>
 
                 <!-- dairy -->
-                <div *ngFor="let a of x.dairy; let i = index;"> {{ a.name }} <span *ngIf="a.quantity">({{a.quantity}})</span>
-                    <span *ngIf="i !== x.dairy.length - 1">,</span> 
+                <div>
+                  <span *ngFor="let a of x.dairy; let i = index;"> {{ a.name }} 
+                    <span *ngIf="a.quantity">({{a.quantity}})</span>
+                    <span *ngIf="i !== x.dairy.length - 1">, </span> 
+                  </span>
                 </div>
 
                 <!-- variety -->
-                <div *ngFor="let a of x.variety; let i = index;"> {{ a.name }}
-                    <span *ngIf="i !== x.variety.length - 1">,</span> 
+                <div>
+                  <span *ngFor="let a of x.variety; let i = index;">{{ a.name }}
+                    <span *ngIf="i !== x.variety.length - 1">, </span>
+                  </span>
                 </div>
 
                 <!-- sweetener -->
-                <div *ngFor="let a of x.sweetener; let i = index;"> {{ a.name }}
-                    <span *ngIf="i !== x.sweetener.length - 1">,</span> 
+                <div>
+                  <span *ngFor="let a of x.sweetener; let i = index;">{{ a.name }}
+                    <span *ngIf="i !== x.sweetener.length - 1">, </span>
+                  </span>
                 </div>
               </div>
               <div>
@@ -70,7 +81,7 @@
   </ion-list>
 
   <!-- rewards -->
-  <ion-item tappable (click)="showRewards = !showRewards" detail-push>
+  <ion-item *ngIf="order.transactionDetails.rewards.length" tappable (click)="showRewards = !showRewards" detail-push>
     <div>See Rewards applied to this transaction</div>
   </ion-item>
   <div *ngIf="showRewards">

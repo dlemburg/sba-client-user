@@ -70,7 +70,8 @@ export class ProductsDetailsPage extends BaseViewController {
 // this page uses checkoutStore
   ionViewDidLoad() {
     this.auth = this.authentication.getCurrentUser();
-    this.productImgSrc = AppViewData.getDisplayImgSrc(this.navParams.data.product.img);
+    this.productImg = this.navParams.data.product.img;
+    this.productImgSrc = AppViewData.getDisplayImgSrc(this.productImg);
     this.productOid = this.navParams.data.product.oid;
     this.purchaseItem.selectedProduct.oid = this.navParams.data.product.oid;
     this.isOrderInProgress = this.checkoutStore.isOrderInProgress;
@@ -78,17 +79,17 @@ export class ProductsDetailsPage extends BaseViewController {
 
     this.API.stack(ROUTES.getProductDetails + `/${this.auth.companyOid}/${this.productOid}`, "GET")
       .subscribe(
-          (response) => {
-            console.log('response: ', response);
-            this.dismissLoading();
-            this.productDetails = response.data.productDetails;
+        (response) => {
+          console.log('response: ', response);
+          this.dismissLoading();
+          this.productDetails = response.data.productDetails;
 
-            /* init values and purchase item */
-            this.purchaseItem.selectedProduct = { name: this.productDetails.name, oid: this.productDetails.oid};
-           
-            if (!this.productDetails.sizesAndPrices.length && this.productDetails.fixedPrice) {
-              this.purchaseItem.sizeAndOrPrice = {name: null, oid: null, price: this.productDetails.fixedPrice};
-            }
+          /* init values and purchase item */
+          this.purchaseItem.selectedProduct = { name: this.productDetails.name, oid: this.productDetails.oid};
+          
+          if (!this.productDetails.sizesAndPrices.length && this.productDetails.fixedPrice) {
+            this.purchaseItem.sizeAndOrPrice = {name: null, oid: null, price: this.productDetails.fixedPrice};
+          }
 
           }, this.errorHandler(this.ERROR_TYPES.API));
   }
@@ -103,8 +104,7 @@ export class ProductsDetailsPage extends BaseViewController {
 
       let modal = this.modalCtrl.create('AddedToCartPage', {
           purchaseItem: this.purchaseItem, 
-          productImg: this.productDetails.img, 
-          categoryOid: this.productDetails.categoryOid
+          productImg: this.productImg, 
         }, 
         {enableBackdropDismiss: false, showBackdrop: false});
         modal.present();

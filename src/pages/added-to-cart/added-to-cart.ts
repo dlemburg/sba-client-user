@@ -35,7 +35,7 @@ export class AddedToCartPage {
   ionViewDidLoad() {
     this.auth = this.authentication.getCurrentUser();
     this.productName = this.navParams.data.purchaseItem.selectedProduct.name;
-    this.categoryOid = this.navParams.data.categoryOid;
+   // this.categoryOid = this.navParams.data.categoryOid;
     this.productImgSrc = AppViewData.getDisplayImgSrc(this.navParams.data.productImg);
     const imgName = CONST_APP_IMGS[12];
     

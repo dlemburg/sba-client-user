@@ -84,22 +84,20 @@ export class CheckoutPage extends BaseViewController {
   }
 
   ionViewDidLoad() {
-    this.presentLoading();
     this.minutesUntilClose = this.getMinutesUntilClose(this.checkoutStore.getLocationCloseTime);
     this.socketIO.connect(this.room);
     const toData = { companyOid: this.auth.companyOid };
 
     this.API.stack(ROUTES.getCompanyDetailsForTransaction, "POST", toData)
       .subscribe(
-          (response) => {
-            this.companyDetails = response.data.companyDetails;
-            
-            // get order and rewards
-            this.order =  Object.assign({}, this.checkoutStore.getOrder());
-            this.dismissLoading();
-            this.getEligibleRewardsAPI(this.order);
-            console.log('response: ', response);
-          },  this.errorHandler(this.ERROR_TYPES.API));   
+        (response) => {
+          this.companyDetails = response.data.companyDetails;
+          
+          // get order and rewards
+          this.order =  Object.assign({}, this.checkoutStore.getOrder());
+          this.getEligibleRewards(this.order);
+          console.log('response: ', response);
+        },  this.errorHandler(this.ERROR_TYPES.API));   
       
       // does not need to be async
       this.API.stack(ROUTES.getBalance, "POST", {userOid: this.auth.userOid})
@@ -116,6 +114,32 @@ export class CheckoutPage extends BaseViewController {
     }
     this.socketIO.disconnect();
   }
+
+    getEligibleRewards(order: IOrder) {
+    
+    this.presentLoading();
+    const dateInfo = DateUtils.getCurrentDateInfo();
+    const toData = {
+      date: DateUtils.toLocalIsoString(dateInfo.date.toString()), // get all rewards where expiry date < date
+      day: dateInfo.day, 
+      hours: dateInfo.hours,
+      mins: dateInfo.mins, 
+      purchaseItems: order.purchaseItems,
+      companyOid: this.auth.companyOid,
+      taxRate: this.companyDetails.taxRate
+    };
+
+    this.API.stack(ROUTES.getEligibleRewardsProcessingTypeAutomaticForTransaction, "POST", toData )
+      .subscribe(
+        (response) => {
+          console.log('response.data: ' , response.data);
+          this.order = this.checkoutStore.setPurchaseItemsAndTransactionDetails(response.data.purchaseItems, response.data.transactionDetails);
+          this.order = this.checkoutStore.roundAllTransactionDetails(this.order.transactionDetails);
+          this.dismissLoading();
+        }, this.errorHandler(this.ERROR_TYPES.API));
+    }
+
+
 
   // calculate difference between now and closing time of currently selected location in checkoutStore
   getMinutesUntilClose(closeTime: Date): number {
@@ -134,41 +158,14 @@ export class CheckoutPage extends BaseViewController {
     return disabledEtas.length ? true : false;
   }
 
-  selectEta(x) {
-    this.eta = x;
-  }
-
-  getEligibleRewardsAPI(order: IOrder) {
-    this.presentLoading();
-    const dateInfo = DateUtils.getCurrentDateInfo();
-    const toData = {
-      date: DateUtils.toLocalIsoString(dateInfo.date.toString()), // get all rewards where expiry date < date
-      day: dateInfo.day, 
-      hours: dateInfo.hours,
-      mins: dateInfo.mins, 
-      purchaseItems: order.purchaseItems,
-      companyOid: this.auth.companyOid,
-      taxRate: this.companyDetails.taxRate
-    };
-
-    console.log("toData: ", toData);
-
-    this.API.stack(ROUTES.getEligibleRewardsProcessingTypeAutomaticForTransaction, "POST", toData )
-      .subscribe(
-          (response) => {
-            console.log('response.data: ' , response.data);
-            this.order = this.checkoutStore.setPurchaseItemsAndTransactionDetails(response.data.purchaseItems, response.data.transactionDetails);
-            this.order = this.checkoutStore.roundAllTransactionDetails(this.order.transactionDetails);
-            this.dismissLoading();
-          }, this.errorHandler(this.ERROR_TYPES.API));
-  }
+  selectEta(x) { this.eta = x;}
 
   deletePurchaseItem(purchaseItem: IPurchaseItem, index: number) {
     this.order = this.checkoutStore.deletePurchaseItem(this.order, purchaseItem, index);
     this.order = this.checkoutStore.clearDiscountsAndRewards(this.order);
 
     if (this.order.purchaseItems.length === 0) this.order = this.checkoutStore.deleteOrder();
-    else this.getEligibleRewardsAPI(this.order);
+    else this.getEligibleRewards(this.order);
   }
 
   editPurchaseItem(purchaseItem: IPurchaseItem, index: number) {
@@ -179,7 +176,7 @@ export class CheckoutPage extends BaseViewController {
     editPurchaseItemModal.onDidDismiss((data: {index?: number, purchaseItem?: IPurchaseItem} = {}) => {
       if (data.index !== null && data.purchaseItem) {
         this.order = this.checkoutStore.editOrder(data.index, data.purchaseItem);
-        this.getEligibleRewardsAPI(this.order);
+        this.getEligibleRewards(this.order);
       }
     });
     editPurchaseItemModal.present();

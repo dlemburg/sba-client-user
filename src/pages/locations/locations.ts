@@ -69,6 +69,7 @@ export class LocationsPage extends BaseViewController {
     if (this.initHasRun) {
       this.checkoutStore.setOrderInProgress(false);
       this.checkoutStore.deleteOrder();
+      this.locations = this.doLocationBusinessLogic(this.locations);
     } else this.initHasRun = true;
   }
 
@@ -105,6 +106,7 @@ export class LocationsPage extends BaseViewController {
 
   doLocationBusinessLogic(locations) {
     let currentDay =  Utils.getDays()[new Date().getDay()].toLowerCase(); 
+
     locations.forEach((x) => {
       x.imgSrc = AppViewData.getDisplayImgSrc(x.img);
       if (x[currentDay + "Open"] === "closed") {
@@ -132,7 +134,6 @@ export class LocationsPage extends BaseViewController {
     let closeMidnight = false;
     let closedMessage = "";
 
-  
     // this algorithm can be improved and refactored. i just kept adding to it. works well for now.
     if (openHours === 24) openHours = 0;  // midnight open to zero
     if (closeHours === 0) closeMidnight = true;

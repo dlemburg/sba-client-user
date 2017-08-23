@@ -11,8 +11,8 @@ page-products-details {
     }
     .product-name {
         position: absolute;
-        top: 50%;
-        font-size: 50px;
+        top: 30%;
+        font-size: 40px;
         width: 100%;
         font-weight: bold;
         color: #fff;
@@ -24,6 +24,7 @@ page-products-details {
     }
 
     .product-description {
+        padding-top: 5px;
         background-color: map-get($colors, light);
     }
 

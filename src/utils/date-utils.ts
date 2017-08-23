@@ -151,20 +151,15 @@ constructor() { }
 
 
     // converts timeString   "09:00" ->  9
-    public static getHours(time:string): number {
-        let index = time.indexOf(":");
-        let isPm = time.indexOf("a") < 0 ? true : false;
-
-        let hours = time.slice(0, index);
+    public static getHours(time: string): number {
+        const hours = time.split(":")[0];
     
         return +hours;
     }
 
     // gets minutes from timeString   i.e.  "09:30"  ->  30
-    public static getMinutes(time:string): number {
-        let start = time.indexOf(":") + 1;
-        //let amOrPm = time.indexOf("m");
-        let minutes = time.slice(start, -2);
+    public static getMinutes(time: string): number {
+        const minutes = time.split(":")[1];
 
         return +minutes;
     }
