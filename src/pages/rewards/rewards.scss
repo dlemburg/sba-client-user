@@ -6,20 +6,34 @@ page-rewards {
         position: relative;
         text-align: center;
         width: 100% !important;
-        border-bottom: 4px solid $primary;
-        border-top: 4px solid $primary;
+        border-bottom: 1px solid $primary;
+        border-top: 1px solid $primary;
+    }
+
+    .top-card-header {
+        position: absolute;
+        top: 10%;
+        font-size: 42px;
+        width: 100%;
+        color: white;
+        letter-spacing: 3px;
+        font-variant: small-caps;
     }
 
     .top-card-footer {
         position: absolute;
-        top: 60%;
-        font-size: 14px;
+        top: 70%;
+        font-size: 16px;
         width: 100%;
-        font-weight: bold;
         color: white;
+        letter-spacing: 2px;
+        font-variant: small-caps;
     }
     .border-right { border-right: 3px solid white;}
 
+    .ion-card-top > img {
+        height: 290px;
+    }
     .logo-page-specific-container {
         position: absolute;
         top: 5%;
@@ -28,7 +42,7 @@ page-rewards {
     }
 
     .points-number {
-        font-size: 1.8em;
+        font-size: 18px;
     }
 
     .reward-card-container {
@@ -53,11 +67,12 @@ page-rewards {
     }
 
     .reward-card-expiry {
-        font-size: 16px;
+        font-size: 11px;
         position: absolute;
-        top: 80%;
+        top: 90%;
         width: 100%;
         color: #fff;
+        letter-spacing: 3px;
     }
 
     .reward-header {

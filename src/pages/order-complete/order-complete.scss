@@ -1,19 +1,22 @@
 page-order-complete {
     .added-to-cart-container {
-        background-color: map-get($colors, primary);
-        color: white;
+        background-color: map-get($colors, light);
+        color: white;  // map-get($colors, primary);
     }
 
     .added-to-cart-title {
-        font-size: 44px;
+        font-size: 50px;
         text-align: center !important;
         margin: auto;
+        font-variant: small-caps;
     }
 
     .subtitle {
         position: relative;
-        top: 30px;
+        top: 35px;
         font-weight: bold;
+        font-variant: small-caps;
+        font-size: 22px;
     }
 
     .white-background-btn {
@@ -70,6 +73,16 @@ page-order-complete {
     .background-added-to-cart {
        // background: $background-img !important;
         background-size: cover !important;
+    }
+
+    .back-to-home-btn {
+        font-size: 24px;
+        padding: 15px !important;
+    }
+
+    .checkmark {
+        font-size: 180px;
+        color: map-get($colors, secondary );
     }
 
 

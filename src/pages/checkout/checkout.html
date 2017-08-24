@@ -171,8 +171,9 @@
     </ion-item>
   </div>
   -->
+<!-- (balance < order.transactionDetails.total) || -->
    <ion-toolbar margin-top>
-    <button [disabled]="(balance < order.transactionDetails.total) || !order.purchaseItems.length" (click)="submit()" class="footer-btn" color="secondary" ion-button block detail-push>Complete Transaction</button>
+    <button [disabled]="!order.purchaseItems.length" (click)="submit()" class="footer-btn" color="secondary" ion-button block detail-push>Complete Transaction</button>
   </ion-toolbar>
 </ion-content>
  <ion-footer>

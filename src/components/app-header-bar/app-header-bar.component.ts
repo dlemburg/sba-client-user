@@ -14,7 +14,6 @@ export class AppHeaderBarComponent implements OnInit {
 
   /*
   precedence: 1.) placeholder, 2.) appHeaderBarLogo (not default), 3.) companyName
-
   */
 
   constructor() { }

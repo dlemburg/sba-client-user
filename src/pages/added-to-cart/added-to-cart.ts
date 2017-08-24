@@ -43,7 +43,6 @@ export class AddedToCartPage {
       .subscribe(
         (response) => {
           console.log("response.data: ", response.data);
-
           if (response.data.img) {
             let url = `${ROUTES.downloadImg}?img=${response.data.img}`;
             this.addedToCartBackgroundImgSrc =  `linear-gradient(

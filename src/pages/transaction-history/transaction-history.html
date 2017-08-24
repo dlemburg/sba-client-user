@@ -20,7 +20,7 @@
       <ion-row no-padding>
         <ion-col  class="" col-4 text-left>{{ x.purchaseDate | date }}</ion-col>
         <ion-col  class="overflow" col-4 text-center>
-          <ion-row *ngFor="let y of x.productsArray; let j = index;">
+          <ion-row *ngFor="let y of x.products; let j = index;">
             <ion-col>{{ y }}</ion-col>
           </ion-row>
         </ion-col>

@@ -1,17 +1,20 @@
-<ion-content [ngStyle]="{'background': backgroundImg }" class="added-to-cart-container background-added-to-cart" padding>
+<ion-content [ngStyle]="{'background': backgroundImgSrc }" class="added-to-cart-container background-added-to-cart" padding>
   <ion-grid>
     <div class="flex-1 center">
       <div class="added-to-cart-title">{{ title }}</div>
       <div margin-top class="subtitle align-center">{{ subtitle }}</div>
     </div>
-    <ion-row class="flex-2">
-      <ion-card class="hover align-center" >
+    <ion-row class="flex-2 align-center">
+      <div class="align-center">
+        <ion-icon color="green" class="checkmark" ios="ios-checkmark-circle" md="md-checkmark-circle"></ion-icon>
+      </div>
+        <!--
         <img alt="Uh Oh! No image available" [src]="orderCompleteMiddleOfPageImgSrc" onError="this.src='img/default.png';"/>
-      </ion-card>
+        -->
     </ion-row>
     <ion-row class="flex-2">
-      <ion-col col-6 class="align-center">
-        <button class="white-btn" ion-button outline (click)="dismiss()">Back to Home</button>
+      <ion-col class="align-center">
+        <button class="white-btn back-to-home-btn width-100" ion-button outline (click)="dismiss()">Back to Home</button>
       </ion-col>
     </ion-row>
   </ion-grid>

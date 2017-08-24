@@ -3,6 +3,10 @@ page-locations {
     ion-content {
         background-color: map-get($colors , light) !important;
     }
+
+    ion-thumbnail > img {
+        border-radius: 5px;
+    }
     .location-container {
         position: relative;
         border-bottom: 1px solid map-get($colors, light) !important;

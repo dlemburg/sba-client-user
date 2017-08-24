@@ -29,6 +29,9 @@
     <div class="card-subtitle-container align-center">
       <div class="card-subtitle">{{ x.subtitle }}</div>
     </div>
-    <div *ngIf="x.hasFooter" class="card-points">Current Points: &nbsp; <span class="card-points-number">{{ points }}</span></div>
+    <div *ngIf="x.hasFooter" class="card-points">
+      Current Points: &nbsp; 
+      <span class="card-points-number">{{ points }}</span>
+    </div>
   </ion-card>
 </ion-content>

@@ -1,8 +1,8 @@
 
 <ion-header>
   <ion-navbar>
-    <button ion-button menuToggle>
-      <ion-icon name="menu">Back to Checkout</ion-icon>
+    <button (click)="dismissWithoutData()" ion-button menuToggle>
+      <ion-icon ios="ios-arrow-back" md="md-arrow-back"></ion-icon>
     </button>
   </ion-navbar>
 </ion-header>
@@ -39,6 +39,45 @@
           <ion-label>Flavors</ion-label>
           <ion-select  [compareWith]="compareFn" [(ngModel)]="purchaseItem.flavors" multiple="true">
             <ion-option *ngFor="let x of productDetails.flavorsToClient; let i = index;" [value]="x">{{ x.name }}</ion-option>
+          </ion-select>
+        </ion-item>
+        <!-- dairy -->
+        <ion-item margin-vertical *ngIf="productDetails.dairyToClient.length">
+          <ion-label>Dairy</ion-label>
+          <ion-select [compareWith]="compareFn" [(ngModel)]="purchaseItem.dairy" multiple="true" (ionChange)="onSelectCheckQuantityDefault($event, 'dairy')">
+            <ion-option *ngFor="let x of productDetails.dairyToClient; let i = index;" [value]="x">{{ x.name }} &nbsp; <span *ngIf="x.price">{{ x.price | currency:symbolDisplay:true }}</span></ion-option>
+          </ion-select>
+        </ion-item>
+
+         <!-- dairy quantity -->
+          <ion-item *ngFor="let y of purchaseItem.dairy; let i = index;">
+            <!-- dairy quantity -->
+              <div *ngFor="let y of purchaseItem.dairy; let i = index;">
+                <ion-item *ngIf="y.hasQuantity">
+                  <ion-row>{{ y.name }} quantity?</ion-row>
+                  <ion-row margin>
+                      <ion-col>
+                        <button [ngClass]="{'selected': z === purchaseItem.dairy[i].quantity }"  
+                                *ngFor="let z of dairyQuantities;" 
+                                ion-button outline 
+                                (click)="selectDairyQuantity(i, z)">{{ z }}</button>
+                      </ion-col>
+                    </ion-row>
+                </ion-item>
+              </div>
+          </ion-item>
+        <!-- variety -->
+        <ion-item margin-vertical *ngIf="productDetails.varietyToClient.length">
+          <ion-label>Variety</ion-label>
+          <ion-select [compareWith]="compareFn" [(ngModel)]="purchaseItem.variety" multiple="true">
+            <ion-option *ngFor="let x of productDetails.varietyToClient; let i = index;" [value]="x">{{x.name}}</ion-option>
+          </ion-select>
+        </ion-item>
+        <!-- sweetener -->
+        <ion-item margin-vertical *ngIf="productDetails.sweetenerToClient.length">
+          <ion-label>Sweetener</ion-label>
+          <ion-select [compareWith]="compareFn" [(ngModel)]="purchaseItem.sweetener" multiple="true">
+            <ion-option *ngFor="let x of productDetails.sweetenerToClient; let i = index;" [value]="x">{{x.name}}</ion-option>
           </ion-select>
         </ion-item>
         <ion-item margin-vertical>

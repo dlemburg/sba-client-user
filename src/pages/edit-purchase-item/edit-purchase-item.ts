@@ -19,6 +19,7 @@ export class EditPurchaseItemPage extends BaseViewController {
   companyName: string = this.auth.companyName;
   productOid: number;
   productImg: string = '';
+  dairyQuantities: Array<number> = Utils.getNumbersList(5);
   productDetails: ProductDetailsToClient = {
     name: '',
     oid: 0,
@@ -91,6 +92,17 @@ export class EditPurchaseItemPage extends BaseViewController {
       return c1 && c2 ? c1.oid === c2.oid : c1 === c2;
   }
 
+  onSelectCheckQuantityDefault(arr, field) {
+    this.purchaseItem[field].forEach((x) => {
+      if (x.hasQuantity && !x.quantity) x.quantity = x.defaultQuantity || 3;
+    });
+  }
+
+  selectDairyQuantity(index, quantity) {
+    this.purchaseItem.dairy[index].quantity = quantity;
+  }
+
+
 
   doChecksPurchaseItem(purchaseItem): IErrChecks {
     let errs = [];
@@ -99,18 +111,15 @@ export class EditPurchaseItemPage extends BaseViewController {
       errs.push('You forgot to select a size!');
       return {isValid: false, errs: errs};
     }
-    // if flavors are available, force a selection
-    if (this.productDetails.flavorsToClient.length && !this.purchaseItem.flavors.length) {
-      errs.push('You forgot to select a flavor!');
-      return {isValid: false, errs: errs};
-    }
-
     return {isValid: true, errs};
   }
 
-  navCheckout() {
-    //this.navCtrl.push('CheckoutPage');
-  }  
+  dissmissWithoutData() {
+    this.viewCtrl.dismiss({
+      index: null,
+      purchaseItem: null
+    })
+  }
 
   submit(): void {
     let doChecks = this.doChecksPurchaseItem(this.purchaseItem);

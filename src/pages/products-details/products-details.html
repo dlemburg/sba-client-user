@@ -61,6 +61,7 @@
             <ion-option *ngFor="let x of productDetails.flavorsToClient; let i = index;" [value]="x">{{x.name}}</ion-option>
           </ion-select>
         </ion-item>
+        
         <!-- dairy -->
         <ion-item margin-vertical *ngIf="productDetails.dairyToClient.length">
           <ion-label>Dairy</ion-label>
@@ -78,7 +79,7 @@
                       <ion-col>
                         <button [ngClass]="{'selected': z === purchaseItem.dairy[i].quantity }"  
                                 *ngFor="let z of dairyQuantities;" 
-                                ion-button outline margin-left 
+                                ion-button outline 
                                 (click)="selectDairyQuantity(i, z)">{{ z }}</button>
                       </ion-col>
                     </ion-row>

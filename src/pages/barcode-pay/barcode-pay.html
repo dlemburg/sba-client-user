@@ -40,6 +40,6 @@
     <ion-icon tappable *ngIf="companyDetails.hasInstagram" (click)="onShare(SOCIAL_MEDIA_TYPES.INSTAGRAM)" class="icon-instagram" ios="logo-instagram" md="logo-instagram" padding-horizontal></ion-icon>
   </ion-toolbar>
   <ion-toolbar>
-    <button [disabled]="!paymentId" class="scan-barcode-btn" (click)="submit()" ion-button block detail-push>Finish  <ion-icon class="arrow-right" ios="ios-arrow-forward" md="ios-arrow-forward"></ion-icon></button>
+    <button [disabled]="!mobileCardId" class="scan-barcode-btn" (click)="submit()" ion-button block detail-push>Finish  <ion-icon class="arrow-right" ios="ios-arrow-forward" md="ios-arrow-forward"></ion-icon></button>
   </ion-toolbar>
 </ion-footer>

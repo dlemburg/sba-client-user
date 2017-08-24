@@ -64,11 +64,11 @@ export class MyCardPage extends BaseViewController {
     const imgName =CONST_APP_IMGS[11];
     this.API.stack(ROUTES.getImgName + `/${this.auth.companyOid}/${imgName}`, "GET")
       .subscribe(
-          (response) => {
-            console.log('response: ', response);
-            const img = response.data.img;
-            this.mobileCardImgSrc = AppViewData.getDisplayImgSrc(img);
-          },this.errorHandler(this.ERROR_TYPES.API, undefined, {shouldDismissLoading: false}));
+        (response) => {
+          console.log('response: ', response);
+          const img = response.data.img;
+          this.mobileCardImgSrc = AppViewData.getDisplayImgSrc(img);
+        },this.errorHandler(this.ERROR_TYPES.API, undefined, {shouldDismissLoading: false}));
   }
 
   nav(page) {

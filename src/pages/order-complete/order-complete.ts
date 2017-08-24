@@ -15,10 +15,10 @@ export class OrderCompletePage {
   purchaseItem: IPurchaseItem;
   categoryOid: number;
   backgroundImg: string = "";
-  orderCompleteBackgroundImgSrc: string = null;
+  backgroundImgSrc: string = null;
   orderCompleteMiddleOfPageImgSrc: string = null;
-  title: string = "Boooo YAHHH!";
-  subtitle: string = "Order Complete!"
+  title: string = "Order Complete";
+  subtitle: string = "Your order is being prepared!"
   productName: string;
   productImg: string;
   auth: AuthUserInfo;
@@ -38,14 +38,16 @@ export class OrderCompletePage {
     this.API.stack(ROUTES.getImgName + `/${this.auth.companyOid}/${imgName}`, "GET")
       .subscribe(
         (response) => {
-          
           console.log("response.data: ", response.data);
           let img = response.data.img;
           let url = `${ROUTES.downloadImg}?img=${img}`;
+          /*
           this.orderCompleteBackgroundImgSrc =  `linear-gradient(
             rgba(56, 126, 245, 0.80), 
             rgba(56, 126, 245, 0.80)
           ), url(${url}) no-repeat`;
+          */
+          this.backgroundImgSrc =  `url(${url}) no-repeat`;
         }, (err) => {
          // this.logoImgSrc = AppViewData.getDisplayImgSrc(null);
         });
