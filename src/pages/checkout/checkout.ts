@@ -85,7 +85,9 @@ export class CheckoutPage extends BaseViewController {
 
   ionViewDidLoad() {
     this.minutesUntilClose = this.getMinutesUntilClose(this.checkoutStore.getLocationCloseTime);
-    this.socketIO.connect(this.room);
+    console.log("client connecting to socket.io room: ", this.room);
+    this.socketIO.connect(this.room.toString());
+    
     const toData = { companyOid: this.auth.companyOid };
 
     this.API.stack(ROUTES.getCompanyDetailsForTransaction, "POST", toData)
@@ -205,21 +207,21 @@ export class CheckoutPage extends BaseViewController {
 
       this.API.stack(ROUTES.processTransaction, "POST", toData)
         .subscribe(
-            (response) => {
-              console.log('response: ', response);
+          (response) => {
+            console.log('response: ', response);
 
-              this.orderSubmitted = true;
-              this.order = this.checkoutStore.clearOrder();
+            this.orderSubmitted = true;
+            this.order = this.checkoutStore.clearOrder();
 
-              this.socketIO.emit(this.socketIO.socketEvents.userPlacedNewOrder, toData);
-              this.dismissLoading();
+            this.socketIO.emit(this.socketIO.socketEvents.userPlacedNewOrder, toData);
+            this.dismissLoading();
 
-              let modal = this.modalCtrl.create('OrderCompletePage', {}, { enableBackdropDismiss: false, showBackdrop: false });
-              modal.present();
-              modal.onDidDismiss(() => {
-                this.navCtrl.setRoot('HomePage');
-              });     
-            }, this.errorHandler(this.ERROR_TYPES.API));
+            let modal = this.modalCtrl.create('OrderCompletePage', {}, { enableBackdropDismiss: false, showBackdrop: false });
+            modal.present();
+            modal.onDidDismiss(() => {
+              this.navCtrl.setRoot('HomePage');
+            });     
+          }, this.errorHandler(this.ERROR_TYPES.API));
     }
   }
 }

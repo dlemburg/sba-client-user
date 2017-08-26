@@ -34,7 +34,8 @@
               <div class="">
                 <div text-wrap margin-top *ngIf="!x.isOpen" text-center class="closed font-12">{{ x.closedMessage }}</div>
                 <div margin-top *ngIf="x.isOpen" text-center class="open">Open</div>
-                <button *ngIf="x.isOpen" (click)="proceedToOrder(x)" ion-button outline block detail-push>Proceed to Order</button>
+                <!--*ngIf="x.isOpen"-->
+                <button *ngIf="x.isOpen" (click)="proceedToOrder(x)" ion-button outline detail-push block>Proceed to Order</button>
               </div>
             </div>
 

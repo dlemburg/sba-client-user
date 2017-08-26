@@ -151,13 +151,13 @@ export class LocationsPage extends BaseViewController {
     } 
     else if (hours < openHours) {
       let isSoon = (openHours - hours) < 2 ? true : false;
-      closedMessage = isSoon ? `This location opens soon.` : `Closed right now.`;
+      closedMessage = isSoon ? `This location opens soon.` : `Closed.`;
 
       return { isOpen: false, closedMessage};
     } 
     else {
       if (hours > closeHours) return { isOpen: false, closedMessage: `Closed for the day`};
-      else return { isOpen: false, closedMessage: `Closed right now`};
+      else return { isOpen: false, closedMessage: `Closed`};
     }
   }
 

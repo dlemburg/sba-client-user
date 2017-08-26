@@ -6,6 +6,8 @@ page-locations {
 
     ion-thumbnail > img {
         border-radius: 5px;
+        box-shadow: 2px 4px 6px;
+
     }
     .location-container {
         position: relative;
@@ -21,6 +23,7 @@ page-locations {
     .address {
         margin-top: 3px;
         font-size: 14px;
+        letter-spacing: 1.5px
     }
     .closed {
         color: map-get($colors , danger);
