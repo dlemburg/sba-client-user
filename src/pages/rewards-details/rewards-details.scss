@@ -1,5 +1,9 @@
 page-rewards-details {
-      .reward-card-container {
+
+     ion-card > img {
+         filter: brightness(90%);
+     }
+    .reward-card-container {
         width: 80% !important;
         margin: auto;
     }

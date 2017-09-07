@@ -8,6 +8,7 @@ import { BaseViewController } from '../base-view-controller/base-view-controller
 import { AppViewData } from '../../global/app-data.service';
 import { SocialSharing } from '@ionic-native/social-sharing';
 import { CONST_SOCIAL_MEDIA_TYPES } from '../../global/global';
+import { Clipboard } from '@ionic-native/clipboard';
 
 @IonicPage()
 @Component({
@@ -41,6 +42,7 @@ export class BarcodePayPage extends BaseViewController {
     public navCtrl: NavController, 
     public navParams: NavParams, 
     public socialSharing: SocialSharing,
+    public clipboard: Clipboard,
     public API: API, 
     public authentication: Authentication, 
     public modalCtrl: ModalController, 
@@ -80,11 +82,14 @@ export class BarcodePayPage extends BaseViewController {
 
   generateBarcodeData(isSocialMediaUsed: boolean|number, socialMediaType: string) {
     isSocialMediaUsed = isSocialMediaUsed ? 1 : 0;
-    this.barcodeData =`${this.auth.userOid}$${this.auth.companyOid}${isSocialMediaUsed}$${socialMediaType}`;
+    this.barcodeData =`${this.auth.userOid}$${this.auth.companyOid}$${isSocialMediaUsed}$${socialMediaType}`;
+
+    console.log("this.barcodeData: ", this.barcodeData);
   }
 
   finishProcessSocialMedia(socialMediaType) {
     this.generateBarcodeData(true, socialMediaType);
+    this.dismissLoading();
   }
 
   onShare(socialMediaType:string) {
@@ -92,24 +97,47 @@ export class BarcodePayPage extends BaseViewController {
     this.shareVia[socialMediaType]();
   }
 
+  getMessageToCopy(outlet) {
+    return new Promise((resolve, reject) => {
+      this.showPopup({
+        title: "Copy to Clipboard",
+        subTitle: `Paste this into your ${outlet} post`,
+        message: outlet === "Facebook" ? this.companyDetails.socialMediaMessageFacebook : this.companyDetails.socialMediaMessageInstagram,
+        buttons: [{text: "Copy to Clipboard", handler: () => {
+          this.clipboard.copy(this.companyDetails.socialMediaMessageFacebook);
+          resolve();
+        }}]
+      })
+    })
+  }
+
   twitter() {
-    this.socialSharing.shareViaTwitter(this.companyDetails.socialMediaMessageTwitter, this.companyDetails.socialMediaImg).then(() => {
+    this.socialSharing.shareViaTwitter(this.companyDetails.socialMediaMessageTwitter, this.companyDetails.socialMediaImg).then((data) => {
+      console.log("data: ", data);
       this.finishProcessSocialMedia(this.SOCIAL_MEDIA_TYPES.TWITTER);
     })
     .catch(this.errorHandler(this.ERROR_TYPES.PLUGIN.SOCIAL_MEDIA))
   }
 
   facebook() {
-    this.socialSharing.shareViaFacebook(this.companyDetails.socialMediaMessageFacebook, this.companyDetails.socialMediaImg).then(() => {
-      this.finishProcessSocialMedia(this.SOCIAL_MEDIA_TYPES.FACEBOOK);
-
+    console.log("this.companyDetails.socialMediaMessageFacebook: ", this.companyDetails.socialMediaMessageFacebook);
+    
+    // get facebook message
+    this.getMessageToCopy("Facebook").then(() => {
+      this.socialSharing.shareViaFacebook(this.companyDetails.socialMediaMessageFacebook).then(() => {
+        this.finishProcessSocialMedia(this.SOCIAL_MEDIA_TYPES.FACEBOOK);
+      })
     })
     .catch(this.errorHandler(this.ERROR_TYPES.PLUGIN.SOCIAL_MEDIA))
   }
 
   instagram() {
-    this.socialSharing.shareViaInstagram(this.companyDetails.socialMediaMessageInstagram, this.companyDetails.socialMediaImg).then(() => {
-      this.finishProcessSocialMedia(this.SOCIAL_MEDIA_TYPES.INSTAGRAM);
+    console.log("this.companyDetails.socialMediaImg: ", this.companyDetails.socialMediaImg);
+    
+    this.getMessageToCopy("Instagram").then(() => {
+      this.socialSharing.shareViaInstagram(this.companyDetails.socialMediaMessageInstagram, this.companyDetails.socialMediaImg).then(() => {
+        this.finishProcessSocialMedia(this.SOCIAL_MEDIA_TYPES.INSTAGRAM);
+      })
     })
     .catch(this.errorHandler(this.ERROR_TYPES.PLUGIN.SOCIAL_MEDIA))
 

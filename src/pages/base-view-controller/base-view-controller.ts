@@ -49,6 +49,7 @@ export class BaseViewController {
   // app-wide error-handler
   public errorHandler(errorType = "No type given", message = AppViewData.getToast().defaultErrorMessage, opts: IErrorHandlerOpts = {}) {
     return (err) => {
+      let url, title, subTitle;
       let toastOpts = {duration: 5000, position: "bottom", cssClass: ''};
       if (opts.shouldDismissLoading === undefined) opts.shouldDismissLoading = true;
       if (opts.shouldPopView === undefined) opts.shouldPopView = false;
@@ -80,10 +81,12 @@ export class BaseViewController {
 
       console.log("err: ", err);
 
-      let url = err.url !== undefined ? err.url === null ? "ERR_CONNECTION_REFUSED" : err.url : "No url given"; 
-      const title = `Error type: ${errorType}`;
-      const subTitle = `Route: ${url}`;
-      this.presentErrorAlert(title, subTitle, err);
+      if (ENV.development) {
+        url = err.url !== undefined ? err.url === null ? "ERR_CONNECTION_REFUSED" : err.url : "No url given"; 
+        title = `Error type: ${errorType}`;
+        subTitle = `Route: ${url}`;
+        this.presentErrorAlert(title, subTitle, err);
+      }
     }
   }
 

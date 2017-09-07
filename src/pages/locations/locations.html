@@ -13,7 +13,7 @@
 
 
 <ion-content>
-  <div class="margin-top">
+  <div>
     <EmptyMessage *ngIf="!locations.length && isLoading" longMessage="Optimizing for locations near you..."></EmptyMessage>
     <EmptyMessage *ngIf="!locations.length && !isLoading" message="locations"></EmptyMessage>
     <!--  <ion-item class="location-container item-highlight" tappable (click)="updateActive(i)" *ngFor="let x of locations; let i = index" [ngClass]="{'item-highlight': isActive === i}"> -->

@@ -50,7 +50,7 @@ export class HomePage extends BaseViewController {
     this.cards = [
         {
             img: null,
-            imgSrc: this.defaultImgSrc,
+            imgSrc: null,
             imgName: CONST_APP_HOME_IMGS[0],
             title: 'My Mobile Card',
             subtitle: 'view card details and pay',
@@ -59,7 +59,7 @@ export class HomePage extends BaseViewController {
         },
         {
             img: null,
-            imgSrc: this.defaultImgSrc,
+            imgSrc: null,
             imgName: CONST_APP_HOME_IMGS[1],
             title: 'Rewards',
             subtitle: 'discounts and specials you don\'t want to miss out on!',
@@ -69,7 +69,7 @@ export class HomePage extends BaseViewController {
         },
         {
             img: null,
-            imgSrc: this.defaultImgSrc,
+            imgSrc: null,
             imgName: CONST_APP_HOME_IMGS[2],
             title: 'Order-Ahead',
             subtitle: 'order-ahead and skip the line!',
@@ -78,7 +78,7 @@ export class HomePage extends BaseViewController {
         },
         {
             img: null,
-            imgSrc: this.defaultImgSrc,
+            imgSrc: null,
             imgName: CONST_APP_HOME_IMGS[3],
             title: 'Menu',
             subtitle: 'See what we have to offer!',

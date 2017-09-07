@@ -12,6 +12,7 @@ import { GoogleMaps } from '@ionic-native/google-maps';
 import { Stripe } from '@ionic-native/stripe';
 import { QRCodeModule } from 'angular2-qrcode';
 import { AppVersion } from '@ionic-native/app-version';
+import { Clipboard } from '@ionic-native/clipboard';
 
 
 // MyApp
@@ -63,6 +64,7 @@ import { BaseViewController } from '../pages/base-view-controller/base-view-cont
     Transfer,
     File,
     Geolocation,
+    Clipboard,
     GoogleMaps,
     SocialSharing,
     Stripe,

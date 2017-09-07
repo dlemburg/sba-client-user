@@ -19,7 +19,7 @@
   </div>
   <button ion-item detail-none (click)="getContactInfo()">Company Contact Info <ion-icon item-right ios="ios-arrow-down" md="ios-arrow-down"></ion-icon></button>
   <div class="width-80 align-center">
-    <ion-item class="align-center bold" *ngIf="showContactInfo">
+    <ion-item text-wrap class="bold" *ngIf="showContactInfo">
       <div>{{contactInfo.address}}</div>
       <div>{{contactInfo.city}} {{contactInfo.state}}, {{contactInfo.zipcode}}</div>
       <div>{{contactInfo.phoneNumber}}</div>

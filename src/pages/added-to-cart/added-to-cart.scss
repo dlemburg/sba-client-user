@@ -1,10 +1,13 @@
 page-added-to-cart {
     .added-to-cart-container {
-        background-color: map-get($colors, primary);
+        background-color: map-get($colors, dark);
         color: white;
+        font-size: 34px;
+        letter-spacing: 1.8px;
+        //filter: grayscale(80%);
     }
 
-    .added-title {
+    .title {
         font-size: 44px !important;
         text-align: center !important;
         margin: auto;

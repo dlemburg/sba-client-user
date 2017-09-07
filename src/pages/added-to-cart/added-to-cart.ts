@@ -20,7 +20,7 @@ export class AddedToCartPage {
   productName: string;
   productImg: string = null;
   productImgSrc: string = null;
-  addedToCartBackgroundImgSrc: string = null;
+  backgroundImgSrc: string = null;
   auth: AuthUserInfo;
   
   constructor(
@@ -45,10 +45,7 @@ export class AddedToCartPage {
           console.log("response.data: ", response.data);
           if (response.data.img) {
             let url = `${ROUTES.downloadImg}?img=${response.data.img}`;
-            this.addedToCartBackgroundImgSrc =  `linear-gradient(
-              rgba(56, 126, 245, 0.80), 
-              rgba(56, 126, 245, 0.80)
-            ), url(${url}) no-repeat`;
+            this.backgroundImgSrc =  `url(${url}) no-repeat`;
           }
         }, (err) => {
          // this.logoImgSrc = AppViewData.getDisplayImgSrc(null);

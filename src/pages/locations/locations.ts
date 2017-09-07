@@ -51,15 +51,22 @@ export class LocationsPage extends BaseViewController {
   // address, city, state, zipcode, lat, long, hours
   ionViewDidLoad() {
     this.auth = this.authentication.getCurrentUser();
+    this.presentLoading();
 
     this.getCurrentPosition().then((data) => {
+      this.dismissLoading();
       if (data.lat && data.long) this.getLocationsFilterByGpsAPI(data.lat, data.long);
     })
     .catch((err) => {
+      this.dismissLoading();
       console.log("location err: ", err);
       this.isLoading = false;
-      if (err.code === 2)  {
-        this.presentToast(false, "We're having trouble accessing your current location to find locations near your. Are you sure you're online and your location is on?");
+      if (err.code === 2 || err.code === 3)  {
+
+        // TODO: GET ALL LOCATIONS HERE
+
+        
+        this.presentToast(false, "We're having trouble accessing your current location to optimize finding locations near you. Are you sure you're online and your location is on?");
       } else this.errorHandler(this.ERROR_TYPES.PLUGIN.GEOLOCATION)(err);
     });
   }
@@ -79,7 +86,7 @@ export class LocationsPage extends BaseViewController {
 
   getCurrentPosition(): Promise<{lat: number, long: number}> {
     return new Promise((resolve, reject) => {
-      this.geolocation.getCurrentPosition().then((data) => {
+      this.geolocation.getCurrentPosition({timeout: 5000}).then((data) => {
         this.lat = +data.coords.latitude.toFixed(7);
         this.long = +data.coords.longitude.toFixed(7);
         resolve({lat: this.lat, long: this.long});

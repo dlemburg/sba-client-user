@@ -34,12 +34,12 @@
 
 <ion-footer>
   <ion-toolbar text-center *ngIf="companyDetails.hasSocialMediaRewards">
-    <div class="follow-us">Post to Social Media for an extra {{ companyDetails.socialMediaPointsBonus }} points!</div>
+    <div class="follow-us">Post our custom message to your Social Media for an extra {{ companyDetails.socialMediaPointsBonus }} points!</div>
     <ion-icon tappable *ngIf="companyDetails.hasFacebook" (click)="onShare(SOCIAL_MEDIA_TYPES.FACEBOOK)" class="icon-facebook" ios="logo-facebook" md="logo-facebook" padding-horizontal></ion-icon>
     <ion-icon tappable *ngIf="companyDetails.hasTwitter" (click)="onShare(SOCIAL_MEDIA_TYPES.TWITTER)" class="icon-twitter" ios="logo-twitter" md="logo-twitter" padding-horizontal></ion-icon>
     <ion-icon tappable *ngIf="companyDetails.hasInstagram" (click)="onShare(SOCIAL_MEDIA_TYPES.INSTAGRAM)" class="icon-instagram" ios="logo-instagram" md="logo-instagram" padding-horizontal></ion-icon>
   </ion-toolbar>
   <ion-toolbar>
-    <button [disabled]="!mobileCardId" class="scan-barcode-btn" (click)="submit()" ion-button block detail-push>Finish  <ion-icon class="arrow-right" ios="ios-arrow-forward" md="ios-arrow-forward"></ion-icon></button>
+    <button [disabled]="!mobileCardId" class="scan-barcode-btn" (click)="submit()" ion-button block detail-push>Finish<ion-icon class="arrow-right" ios="ios-arrow-forward" md="ios-arrow-forward"></ion-icon></button>
   </ion-toolbar>
 </ion-footer>

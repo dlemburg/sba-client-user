@@ -8,21 +8,23 @@ page-home {
 
     ion-card > img {
         height: 250px !important;
+        filter: brightness(95%);
+        //filter: blur(1px);
     }
 
     .card-title {
         position: absolute;
         top: 13%;
-        font-size: 46px;
+        font-size: 38px;
         width: 100%;
         font-weight: bold;
         color: #fff;
-        letter-spacing: 3px;
+        letter-spacing: 2.6px;
         font-variant: small-caps;
     }
 
     .card-subtitle {
-        font-size: 22px;
+        font-size: 18px;
         position: absolute;
         top: 55%;
         width: 100%;
@@ -30,12 +32,13 @@ page-home {
         padding-right: 50px;
         color: #fff;
         font-variant: small-caps;
+       // font-weight: bold;
     }
 
     .card-points {
         font-size: 13px;
         position: absolute;
-        top: 0;
+        top: 10px;
         right: 10px;
         width: 100%;
         color: #fff;

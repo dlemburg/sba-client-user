@@ -86,11 +86,11 @@ export class CheckoutPage extends BaseViewController {
   ionViewDidLoad() {
     this.minutesUntilClose = this.getMinutesUntilClose(this.checkoutStore.getLocationCloseTime);
     console.log("client connecting to socket.io room: ", this.room);
-    this.socketIO.connect(this.room.toString());
-    
-    const toData = { companyOid: this.auth.companyOid };
 
-    this.API.stack(ROUTES.getCompanyDetailsForTransaction, "POST", toData)
+    // socket subscription
+    this.socketIO.connect().subscribe(this.room.toString());
+    
+    this.API.stack(ROUTES.getCompanyDetailsForTransaction, "POST", { companyOid: this.auth.companyOid })
       .subscribe(
         (response) => {
           this.companyDetails = response.data.companyDetails;
@@ -114,7 +114,9 @@ export class CheckoutPage extends BaseViewController {
     if (!this.orderSubmitted) {
       this.checkoutStore.setOrder(this.order);  // gives control back to service
     }
-    this.socketIO.disconnect();
+
+    // socket unsubscription
+    this.socketIO.unsubscribe(this.room.toString()).disconnect();
   }
 
     getEligibleRewards(order: IOrder) {

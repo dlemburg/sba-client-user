@@ -1,6 +1,9 @@
 page-rewards {
      $primary: map-get($colors, primary);
 
+     .ion-card > img {
+        filter: brightness(90%);   
+     }
 
      .ion-card-top {
         position: relative;

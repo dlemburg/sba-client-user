@@ -52,6 +52,7 @@ export class OrderCompletePage {
          // this.logoImgSrc = AppViewData.getDisplayImgSrc(null);
         });
 
+  /*
     const imgName2 = CONST_APP_IMGS[10];
     this.API.stack(ROUTES.getImgName + `/${this.auth.companyOid}/${imgName2}`, "GET")
       .subscribe(
@@ -62,6 +63,7 @@ export class OrderCompletePage {
         }, (err) => {
           this.orderCompleteMiddleOfPageImgSrc = AppViewData.getDisplayImgSrc(null);
         });
+    */
   }
 
   dismiss() {

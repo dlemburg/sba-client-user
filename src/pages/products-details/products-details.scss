@@ -1,6 +1,9 @@
 page-products-details {
     $primary: map-get($colors, primary);
     
+    ion-card > img {
+        filter: brightness(90%);
+    }
     .logo {
         position: absolute;
         top: 15%;
@@ -26,6 +29,7 @@ page-products-details {
     .product-description {
         padding-top: 5px;
         background-color: map-get($colors, light);
+        letter-spacing: 1.4px;
     }
 
 }
