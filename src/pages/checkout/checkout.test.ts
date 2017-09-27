@@ -1,4 +1,4 @@
-import 'core-js/es7/reflect';
+import 'core-js/es7/reflect';  // allows ts? I think
 import 'mocha';
 //import * as Chai from 'chai';
 //let expect = Chai.expect;
