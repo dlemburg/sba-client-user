@@ -1,15 +1,16 @@
 import { Component } from '@angular/core';
 import { IonicPage, NavController, NavParams, AlertController, ToastController, ModalController, LoadingController, Events } from 'ionic-angular';
-import { IOrder, IPurchaseItem, AuthUserInfo, ICompanyDetails } from '../../models/models';
-import { CheckoutStore } from '../../global/checkout-store.service';
-import { API, ROUTES } from '../../global/api';
-import { Authentication } from '../../global/authentication';
-import { BaseViewController } from '../base-view-controller/base-view-controller';
+import { IOrder, IPurchaseItem, ICompanyDetails } from '../../interfaces/interfaces';
+import { CheckoutStore } from './checkout-store.service';
+import { API, ROUTES } from '../../services/api';
+import { Authentication } from '../../services/authentication';
+import { BaseViewController } from '../../components/base-view-controller/base-view-controller';
 import { DateUtils } from '../../utils/date-utils';
 import { Utils } from '../../utils/utils';
-import { AppViewData } from '../../global/app-data.service';
-import { SocketIO } from '../../global/socket-io';
-import { CONST_REWARDS_DISCOUNT_RULE, CONST_REWARDS_DISCOUNT_TYPE, CONST_REWARDS_TYPES, CONST_REWARDS_PROCESSING_TYPE } from '../../global/global';
+import { AppViewData } from '../../services/app-data.service';
+import { AppStorage } from '../../services/app-storage.service';
+import { SocketIO } from '../../services/socket-io';
+import { CONSTANT } from '../../constants/constants';
 
 @IonicPage()
 @Component({
@@ -25,9 +26,9 @@ export class CheckoutPage extends BaseViewController {
       isRewardUsed: false,
       isRewardAllUsed: false,
       isRewardIndividualUsed: false,
-      subtotal: null, 
-      taxes: null, 
-      total: null, 
+      subtotal: 0, 
+      taxes: 0, 
+      total: 0, 
       rewardsSavings: 0,
       isSocialMediaUsed: false,
       lkpSocialMediaTypeOid: null,
@@ -35,8 +36,8 @@ export class CheckoutPage extends BaseViewController {
       isEdited: false,
       editAmount: 0,
       reasonsForEdit: null,
-      oldPrice: null,
-      newPrice: null
+      oldPrice: 0,
+      newPrice: 0
     } 
   };
   balance: number|string = "Unavailable";
@@ -48,18 +49,19 @@ export class CheckoutPage extends BaseViewController {
   comments: string = null;
   exclusions: string = 'Note: Some rewards are not redeemable when using Order-Ahead';
   auth: any = this.authentication.getCurrentUser();
-  appHeaderBarLogo: string = AppViewData.getImg().logoImgSrc;
+  appHeaderBarLogo: string = AppStorage.getImg().logoImgSrc;
   companyName: string = this.auth.companyName;
   showRewards: boolean = false;
   minutesUntilClose: number = 0;
+  showApplyRewardBtn: boolean = true;
   // constants
   UNAVAILABLE: string = "Unavailable";
   INSUFFICIENT_FUNDS_ALERT: string = "Uh oh! Looks like you need to add value to your card. Your balance: ";
   companyDetails: ICompanyDetails = {};
-  REWARDS_TYPE = CONST_REWARDS_TYPES;
-  REWARDS_PROCESSING_TYPE = CONST_REWARDS_PROCESSING_TYPE;
-  REWARDS_DISCOUNT_RULE = CONST_REWARDS_DISCOUNT_RULE;
-  REWARDS_DISCOUNT_TYPE = CONST_REWARDS_DISCOUNT_TYPE;
+  REWARDS_TYPE = CONSTANT.REWARDS_TYPES;
+  REWARDS_PROCESSING_TYPE = CONSTANT.REWARDS_PROCESSING_TYPE;
+  REWARDS_DISCOUNT_RULE = CONSTANT.REWARDS_DISCOUNT_RULE;
+  REWARDS_DISCOUNT_TYPE = CONSTANT.REWARDS_DISCOUNT_TYPE;
 
 
   /*
@@ -119,7 +121,7 @@ export class CheckoutPage extends BaseViewController {
     this.socketIO.unsubscribe(this.room.toString()).disconnect();
   }
 
-    getEligibleRewards(order: IOrder) {
+  getEligibleRewards(order: IOrder) {
     
     this.presentLoading();
     const dateInfo = DateUtils.getCurrentDateInfo();
@@ -162,7 +164,99 @@ export class CheckoutPage extends BaseViewController {
     return disabledEtas.length ? true : false;
   }
 
-  selectEta(x) { this.eta = x;}
+  selectEta(x) { 
+    this.eta = x;
+  }
+
+  getRewadsIndividual() {
+    return new Promise((resolve, reject) => {
+      this.API.stack(ROUTES.getRewardsIndividual, "POST", {userOid: this.auth.userOid, companyOid: this.auth.companyOid})
+      .subscribe((response) => {
+        resolve(response.data.rewardsIndividual);
+      }, (err) => {
+        reject(err);
+      })
+    })
+  }
+
+  applyReward() {
+    
+    this.getRewadsIndividual().then((rewardsIndividual: Array<any>) => {
+      if (rewardsIndividual.length) {
+        const applyRewardModal = this.modalCtrl.create('ApplyRewardPage', {rewardsIndividual});
+        applyRewardModal.present();
+
+        // isFreePurchaseItem, rewardOid, userOid, rewardType
+        applyRewardModal.onDidDismiss((rewardData) => {
+          
+          if (rewardData && rewardData.reward) {
+            this.order.transactionDetails.rewards = [...this.order.transactionDetails.rewards, rewardData.reward];
+            
+            if (rewardData.reward.isFreePurchaseItem) {
+              const freePurchaseItemPrice = this.calculateFreePurchaseItem(this.order, [rewardData.reward]);
+
+              /* RE-CALCULATE TRANSACTION DETAILS  */
+              // dairyCost, addonsCost   should i do totalCost???
+              this.order.transactionDetails.rewardsSavings = Utils.round(this.order.transactionDetails.rewardsSavings + freePurchaseItemPrice);
+              this.order.transactionDetails.taxes = this.order.transactionDetails.subtotal - this.order.transactionDetails.rewardsSavings === 0
+                                                    ? 0
+                                                    : this.calculateTaxes((this.order.transactionDetails.subtotal - this.order.transactionDetails.rewardsSavings), this.companyDetails.taxRate);
+              this.order.transactionDetails.total =  this.order.transactionDetails.subtotal - this.order.transactionDetails.rewardsSavings === 0
+                                                    ? 0
+                                                    : Utils.round(this.order.transactionDetails.total - this.order.transactionDetails.rewardsSavings);
+              this.order.transactionDetails.isRewardIndividualUsed = true;
+              
+              /* ONLY ALLOW 1 REWARD_INDIVIDUAL FOR NOW */
+              this.showApplyRewardBtn = false
+
+              
+            }
+          }
+        })
+      } else {
+        // TODO popup no rewards_individual available
+      }
+    })
+    .catch((err) => {
+      // do nothing
+      this.errorHandler(this.ERROR_TYPES.API)(err);
+      
+    })
+    
+    // get individual rewards
+    // modal showing individual rewards
+    // click on reward -> blur -> show buttons -> click button
+    // return here with reward info
+    // add to rewards arr
+    // apply reward to high item
+  }
+
+  calculateTaxes(subtotal: number, TAX_RATE: number): number {
+    return Utils.round(subtotal * TAX_RATE);
+  }
+
+   /*** ONLY ALLOWS 1 REWARD_INVIDUAL PER ORDER RIGHT NOW  ***/
+   calculateFreePurchaseItem(order: IOrder, individualRewards: Array<any>): number {
+    // set to first
+    let highItem: IPurchaseItem = order.purchaseItems.length && order.purchaseItems[0]; 
+    let totalPrice: number = 0;
+
+    if (individualRewards.length && order.purchaseItems.length) {
+      order.purchaseItems.forEach((x, i) => {
+
+        if (x.sizeAndOrPrice.price > highItem.sizeAndOrPrice.price) {
+            highItem = Object.assign({}, x);
+            //highItem.sizeAndOrPrice.price = x.sizeAndOrPrice.price;
+        }
+      });
+
+      // account for any discounts already on item
+     // if (highItem.discounts > 0) highItem.sizeAndOrPrice.price -= highItem.discounts;
+      
+      totalPrice = (highItem.sizeAndOrPrice.price + highItem.dairyCost + highItem.addonsCost) - highItem.discounts;
+      return totalPrice;
+    } else return 0;
+  }
 
   deletePurchaseItem(purchaseItem: IPurchaseItem, index: number) {
     this.order = this.checkoutStore.deletePurchaseItem(this.order, purchaseItem, index);

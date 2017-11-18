@@ -1,12 +1,12 @@
 import { Component } from '@angular/core';
 import { Utils } from '../../utils/utils';
-import { CheckoutStore } from '../../global/checkout-store.service';
-import { API, ROUTES } from '../../global/api';
-import { Authentication } from '../../global/authentication';
+import { CheckoutStore } from '../checkout/checkout-store.service';
+import { API, ROUTES } from '../../services/api';
+import { Authentication } from '../../services/authentication';
 import { IonicPage, NavController, NavParams, AlertController, ToastController, LoadingController, ModalController } from 'ionic-angular';
-import { AppViewData } from '../../global/app-data.service';
-import { IPopup, ProductDetailsToClient, IPurchaseItem, IErrChecks } from '../../models/models';
-import { BaseViewController } from '../base-view-controller/base-view-controller';
+import { AppStorage } from '../../services/app-storage.service';
+import { ProductDetails, IPurchaseItem, IErrChecks } from '../../interfaces/interfaces';
+import { BaseViewController } from '../../components/base-view-controller/base-view-controller';
 
 @IonicPage()
 @Component({
@@ -16,7 +16,7 @@ import { BaseViewController } from '../base-view-controller/base-view-controller
 export class ProductsDetailsPage extends BaseViewController {
   productImg: string = '';
   productImgSrc: string = null;
-  productDetails: ProductDetailsToClient = {
+  productDetails: ProductDetails = {
     name: '',
     oid: 0,
     categoryOid: 0,
@@ -24,11 +24,11 @@ export class ProductsDetailsPage extends BaseViewController {
     caloriesHigh: 0,
     sizesAndPrices: [],
     fixedPrice: 0,     /* new */
-    addonsToClient: [],
-    flavorsToClient: [],
-    dairyToClient: [],
-    sweetenerToClient: [],
-    varietyToClient: [],
+    addons: [],
+    flavors: [],
+    dairy: [],
+    sweetener: [],
+    variety: [],
     img: null,
     numberOfFreeAddonsUntilCharged: null,
     addonsPriceAboveLimit: null
@@ -50,7 +50,7 @@ export class ProductsDetailsPage extends BaseViewController {
   };
   order: any = {};
   auth: any = this.authentication.getCurrentUser();
-  appHeaderBarLogo: string = AppViewData.getImg().logoImgSrc;
+  appHeaderBarLogo: string = AppStorage.getImg().logoImgSrc;
   companyName: string = this.auth.companyName;
   isOrderInProgress: boolean;
   
@@ -71,7 +71,7 @@ export class ProductsDetailsPage extends BaseViewController {
   ionViewDidLoad() {
     this.auth = this.authentication.getCurrentUser();
     this.productImg = this.navParams.data.product.img;
-    this.productImgSrc = AppViewData.getDisplayImgSrc(this.productImg);
+    this.productImgSrc = AppStorage.getDisplayImgSrc(this.productImg);
     this.productOid = this.navParams.data.product.oid;
     this.purchaseItem.selectedProduct.oid = this.navParams.data.product.oid;
     this.isOrderInProgress = this.checkoutStore.isOrderInProgress;

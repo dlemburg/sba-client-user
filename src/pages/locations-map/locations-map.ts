@@ -1,15 +1,15 @@
 import { Component } from '@angular/core';
 import { Platform, IonicPage, NavController, NavParams } from 'ionic-angular';
-import { Authentication } from '../../global/authentication';
-import { AppViewData } from '../../global/app-data.service';
+import { Authentication } from '../../services/authentication';
+import { AppStorage } from '../../services/app-storage.service';
 import {
- GoogleMaps,
- GoogleMap,
- GoogleMapsEvent,
- LatLng,
- CameraPosition,
- MarkerOptions,
- Marker
+  GoogleMaps,
+  GoogleMap,
+  GoogleMapsEvent,
+  LatLng,
+  CameraPosition,
+  MarkerOptions,
+  Marker
 } from '@ionic-native/google-maps';
 
 @IonicPage()
@@ -21,7 +21,7 @@ export class LocationsMapPage {
   selectedLocation: any;
   locations: Array<any>;
   auth: any = this.authentication.getCurrentUser();
-  appHeaderBarLogo: string = AppViewData.getImg().logoImgSrc;
+  appHeaderBarLogo: string = AppStorage.getImg().logoImgSrc;
   companyName: string = this.auth.companyName;
 
 

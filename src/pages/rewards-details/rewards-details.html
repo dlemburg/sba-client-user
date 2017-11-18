@@ -10,7 +10,7 @@
 -->
 
 <ion-header>
-  <AppHeaderBar appHeaderBarLogo="{{appHeaderBarLogo}}" [companyName]="companyName"></AppHeaderBar>
+  <app-header-bar appHeaderBarLogo="{{appHeaderBarLogo}}" [companyName]="companyName"></app-header-bar>
 </ion-header>
 
 <ion-content padding>
@@ -18,8 +18,11 @@
       <ion-card class=" reward-card" no-padding no-margin text-center>
         <img [src]="reward.imgSrc" onError="this.src='img/default.png';"/>
         <div class="reward-card-title">{{reward.name}}</div>
-        <div class="reward-card-expiry">
+        <div *ngIf="reward.expiryDate" class="reward-card-expiry">
            <span>{{ reward.startDate | date }} </span> --- <span> {{ reward.expiryDate | date }}</span>
+        </div>
+        <div *ngIf="!reward.hasExpiryDate" class="reward-card-expiry">
+          <span>No Expiration</span>
         </div>
       </ion-card>
       <ion-item margin-top text-wrap>{{ reward.description }}</ion-item>
@@ -31,11 +34,11 @@
 
 <ion-footer >
   <ion-toolbar *ngIf="reward.exclusions">
-    <ion-item class="exclusions-container" no-lines>
+    <ion-item class="exclusions-container" no-lines text-wrap>
       <div class="exclusions"><span class="bold">Exclusions: </span> {{ reward.exclusions }}</div>
     </ion-item>
   </ion-toolbar>
-  <ion-toolbar *ngIf="reward.processingType === REWARDS_PROCESSING_TYPE.MANUAL || reward.rewardType === REWARDS_TYPE.REWARDS_INDIVIDUAL">
+  <ion-toolbar *ngIf="reward.rewardType === REWARDS_TYPE.REWARDS_INDIVIDUAL">
       <button class="scan-barcode-btn" (click)="navBarcodeReward()" ion-button block detail-push>Scan Barcode  <ion-icon class="arrow-right" ios="ios-arrow-forward" md="ios-arrow-forward"></ion-icon></button>
   </ion-toolbar>
 </ion-footer>

@@ -32,14 +32,16 @@
   the above flex-wrap should be a start w/o having to split into 2 arrays. this works for now
  -->
 <ion-content padding>
-  <EmptyMessage *ngIf="!categories.length" message="categories"></EmptyMessage>
+  <empty-message *ngIf="!categories.length" message="categories"></empty-message>
   <ion-row *ngIf="categories.length">
     <ion-col *ngFor="let x of categories" col-6 style="border-bottom: 1px solid lightgray;">
+      <menu-card imgSrc="{{x.imgSrc}}" [name]="x.name" (click)="navToProductsList(x)"></menu-card>
+      <!--
       <ion-card tappable class="hover ion-card" (click)="navToProductsList(x)">
         <img [src]="x.imgSrc" onError="this.src='img/default.png';"/>
-        <!--<img src="img/bagels.png" onError="this.src='img/default.png';"/>-->
         <div class="card-title">{{ x.name }}</div>
       </ion-card>
+    -->
     </ion-col>
   </ion-row>
 </ion-content>

@@ -1,0 +1,23 @@
+menu-card {
+    .ion-card {
+        position: relative;
+        text-align: center;
+        border-radius: 10px !important;
+        box-shadow: 2px 6px 14px;
+    }
+
+    .ion-card > img {
+        height: 120px;
+        filter: brightness(90%);
+    }
+
+    .card-title {
+        position: absolute;
+        top: 36%;
+        font-size: 2.5em;
+        width: 100%;
+        font-weight: bold;
+        color: #fff;
+    }
+
+}

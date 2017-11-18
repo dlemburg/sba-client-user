@@ -1,18 +1,22 @@
 import { NgModule } from '@angular/core';
 import { IonicPageModule } from 'ionic-angular';
 import { LocationsPage } from './locations';
-import { EmptyMessageComponentModule } from '../../components/empty-message/empty-message.component.module';
-import { AppHeaderBarComponentModule } from '../../components/app-header-bar/app-header-bar.component.module';
+
+// import { AppHeaderBarComponent} from '../../components/app-header-bar/app-header-bar.component';
+// import { EmptyMessagesComponent } from '../../components/empty-messages/empty-messages.component';
+
+import { ComponentsModule } from "../../components/components.module";
 
  
 @NgModule({
   declarations: [
     LocationsPage,
+    // AppHeaderBarComponent,
+    // EmptyMessagesComponent
   ],
   imports: [
     IonicPageModule.forChild(LocationsPage),
-    EmptyMessageComponentModule,
-    AppHeaderBarComponentModule
+    ComponentsModule
   ],
   exports: [
     LocationsPage

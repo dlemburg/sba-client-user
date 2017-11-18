@@ -9,13 +9,17 @@
 </ion-header>
 -->
 <ion-header>
-  <AppHeaderBar appHeaderBarLogo="{{appHeaderBarLogo}}" [companyName]="companyName"></AppHeaderBar>
+  <app-header-bar appHeaderBarLogo="{{appHeaderBarLogo}}" [companyName]="companyName"></app-header-bar>
 </ion-header>
 
 <ion-content padding>
   <div class=" barcode-content-container">
     <div class=" barcode-container">
-      <div class="barcode">Barcode</div>
+      <div class="barcode">
+        <div>
+          <qr-code [value]="barcodeData" [size]="200"></qr-code>
+      </div>
+      </div>
       <div class="top-r ">mark</div>
       <div class="top-l ">mark</div>
       <div class="bottom-r ">mark</div>

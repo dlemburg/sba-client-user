@@ -3,7 +3,6 @@ import 'mocha';
 //import * as Chai from 'chai';
 //let expect = Chai.expect;
 import { expect } from 'chai';
-import { CheckoutPage } from './checkout';
 import { DateUtils } from '../../utils/date-utils';
 
 

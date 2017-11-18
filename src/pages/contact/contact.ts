@@ -1,12 +1,12 @@
 import { Component } from '@angular/core';
-import { Validation } from '../../global/validation';
-import { FormBuilder, FormGroup, Validators, FormControl } from '@angular/forms';
-import { API, ROUTES } from '../../global/api';
-import { Authentication } from '../../global/authentication';
-import { IContactInfo } from '../../models/models';
+// import { Validation } from '../../services/validation';
+import { FormBuilder, FormGroup, Validators } from '@angular/forms';
+import { API, ROUTES } from '../../services/api';
+import { Authentication } from '../../services/authentication';
+import { IContactInfo } from '../../interfaces/interfaces';
 import { IonicPage, NavController, NavParams, AlertController, ToastController, LoadingController, ModalController } from 'ionic-angular';
-import { AppViewData } from '../../global/app-data.service';
-import { BaseViewController } from '../base-view-controller/base-view-controller';
+import { AppStorage } from '../../services/app-storage.service';
+import { BaseViewController } from '../../components/base-view-controller/base-view-controller';
 import { DateUtils } from '../../utils/date-utils';
 
 @IonicPage()
@@ -17,9 +17,9 @@ import { DateUtils } from '../../utils/date-utils';
 export class ContactPage extends BaseViewController {
   myForm: FormGroup;
   auth: any = this.authentication.getCurrentUser();
-  appHeaderBarLogo: string = AppViewData.getImg().logoImgSrc;
+  appHeaderBarLogo: string = AppStorage.getImg().logoImgSrc;
   companyName: string = this.auth.companyName;
-  contactInfo: IContactInfo = {phoneNumber: "", email: "", address: "", city: "", state: "", zipcode: null};
+  contactInfo = <IContactInfo>{};
   showContactInfo: boolean = false;
   doCallGetCompanyContactInfo: boolean = true;
   isSubmitted: boolean;
@@ -66,20 +66,20 @@ export class ContactPage extends BaseViewController {
 
         this.API.stack(ROUTES.getCompanyContactInfo + `/${this.auth.companyOid}`, "GET")
           .subscribe(
-              (response) => {
-                this.dismissLoading();
-                console.log('response: ', response);
-                this.contactInfo = response.data.contactInfo;         
-              }, this.errorHandler(this.ERROR_TYPES.API));
+            (response) => {
+              this.dismissLoading();
+              console.log('response: ', response);
+              this.contactInfo = response.data.contactInfo;         
+            }, this.errorHandler(this.ERROR_TYPES.API));
      }
   }
 
   submit(myForm, isValid) {
     this.isSubmitted = true;
 
-    const onConfirmFn = () => {
-      this.navCtrl.setRoot('HomePage');
-    }
+    // const onConfirmFn = () => {
+    //   this.navCtrl.setRoot('HomePage');
+    // }
 
     /*** Package for submit ***/
     this.presentLoading("Sending...");

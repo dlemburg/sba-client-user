@@ -1,14 +1,14 @@
 import { Component } from '@angular/core';
-import { Validation } from '../../global/validation';
-import { FormBuilder, FormGroup, Validators, FormControl } from '@angular/forms';
-import { API, ROUTES } from '../../global/api';
-import { Authentication } from '../../global/authentication';
+import { FormBuilder, FormGroup, Validators } from '@angular/forms';
+import { API, ROUTES } from '../../services/api';
+import { Authentication } from '../../services/authentication';
 import { IonicPage, NavController, NavParams, AlertController, ToastController, LoadingController, ModalController } from 'ionic-angular';
-import { AppViewData } from '../../global/app-data.service';
-import { IPopup, AuthUserInfo } from '../../models/models';
-import { BaseViewController } from '../base-view-controller/base-view-controller';
-import { COMPANY_OID } from '../../global/companyOid';
-import { CONST_APP_IMGS } from '../../global/global'
+import { AppViewData } from '../../services/app-data.service';
+import { AppStorage } from '../../services/app-storage.service';
+import { AuthUserInfo } from '../../interfaces/interfaces';
+import { BaseViewController } from '../../components/base-view-controller/base-view-controller';
+import { COMPANY_OID } from '../../services/companyOid';
+import { CONSTANT } from '../../constants/constants'
 
 @IonicPage()
 @Component({
@@ -20,7 +20,7 @@ export class LoginPage extends BaseViewController {
   myForm: FormGroup;
   loginBackgroundImgSrc: string = null;
   auth: AuthUserInfo;
-  logoImgSrc: string = AppViewData.getImg().logoImgSrc; 
+  logoImgSrc: string = AppStorage.getImg().logoImgSrc; 
   
 
   constructor(
@@ -45,7 +45,7 @@ export class LoginPage extends BaseViewController {
   }
   ionViewDidLoad() {
     this.authentication.deleteToken();
-    const imgName = CONST_APP_IMGS[8];
+    const imgName = CONSTANT.APP_IMGS[8];
     this.API.stack(ROUTES.getImgName + `/${COMPANY_OID}/${imgName}`, "GET")
       .subscribe(
         (response) => {
@@ -83,7 +83,7 @@ export class LoginPage extends BaseViewController {
             if (response.code === 2) {
               this.showPopup({
                 title: AppViewData.getPopup().defaultErrorTitle, 
-                message: response.message || "No email found.", 
+                message: response.data.message || "Incorrect email or password entered.", 
                 buttons: [{text: AppViewData.getPopup().defaultConfirmButtonText}]
               });
               this.dismissLoading();

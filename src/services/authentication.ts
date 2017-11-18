@@ -1,7 +1,10 @@
 import { Injectable } from '@angular/core';
-import { CONST_TOKEN_NAME } from './global';
-import { AuthUserInfo } from '../models/models';
+import { CONSTANT } from '../constants/constants';
+import { AuthUserInfo } from '../interfaces/interfaces';
 
+/***
+ * This service contains all auth-related methods, local storage persistent methods, etc.
+ */
 @Injectable()
 export class Authentication {
 
@@ -21,7 +24,8 @@ export class Authentication {
                 email: payload.email,
                 companyOid: payload.companyOid || null,
                 expiry: payload.expiry,
-                companyName: payload.companyName
+                companyName: payload.companyName,
+                name: payload.firstName + payload.lastName
             };
         };
     }
@@ -35,20 +39,20 @@ export class Authentication {
     }
 
     saveToken(token) {
-        window.localStorage[CONST_TOKEN_NAME] = token;
+        window.localStorage[CONSTANT.TOKEN_NAME] = token;
     };
 
     getToken(): string {
-        return window.localStorage[CONST_TOKEN_NAME];
+        return window.localStorage[CONSTANT.TOKEN_NAME];
     };
 
     updateToken(token): void {
-        window.localStorage.removeItem(CONST_TOKEN_NAME);
-        window.localStorage[CONST_TOKEN_NAME] = token;
+        window.localStorage.removeItem(CONSTANT.TOKEN_NAME);
+        window.localStorage[CONSTANT.TOKEN_NAME] = token;
     };
 
     deleteToken(): void {
-        if (this.getToken()) window.localStorage.removeItem(CONST_TOKEN_NAME);
+        if (this.getToken()) window.localStorage.removeItem(CONSTANT.TOKEN_NAME);
     };
 
     logout(): void {

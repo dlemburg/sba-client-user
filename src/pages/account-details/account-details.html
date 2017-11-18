@@ -9,12 +9,12 @@
 </ion-header>
 -->
 <ion-header>
-  <AppHeaderBar placeholder="My Account Details" appHeaderBarLogo="{{appHeaderBarLogo}}" [companyName]="companyName"></AppHeaderBar>
+  <app-header-bar placeholder="My Account Details" appHeaderBarLogo="{{appHeaderBarLogo}}" [companyName]="companyName"></app-header-bar>
 </ion-header>
 
 <ion-content padding>
   <div class=" logo-container logo-page-specific-container">
-    <CompanyLogo  [logo]="logoImgSrc"></CompanyLogo>
+    <company-logo  [logo]="logoImgSrc"></company-logo>
   </div>
   <form [formGroup]="myForm" (ngSubmit)="submit(myForm.value, myForm.valid)">
     <ion-list>

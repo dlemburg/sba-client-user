@@ -10,21 +10,21 @@
 -->
 
 <ion-header>
-  <AppHeaderBar appHeaderBarLogo="{{appHeaderBarLogo}}" [companyName]="companyName"></AppHeaderBar>
+  <app-header-bar appHeaderBarLogo="{{appHeaderBarLogo}}" [companyName]="companyName"></app-header-bar>
 </ion-header>
 <ion-content padding>
   <!-- example of list with multiple columns- 3 fields -->
   <ion-list>
-    <EmptyMessage *ngIf="!transactions.length" message="transactions"></EmptyMessage>
+    <empty-message *ngIf="!transactions.length" message="transactions"></empty-message>
     <ion-item *ngFor="let x of transactions">
-      <ion-row no-padding>
-        <ion-col  class="" col-4 text-left>{{ x.purchaseDate | date }}</ion-col>
-        <ion-col  class="overflow" col-4 text-center>
-          <ion-row>
-            <ion-col>{{ x.products }}</ion-col>
-          </ion-row>
+      <ion-row text-wrap no-padding>
+        <ion-col  class="" col-3 text-left>{{ x.purchaseDate | date }}</ion-col>
+        <ion-col col-6 text-center>
+            <div *ngFor="let y of x.products; let i = index;">
+              <span>{{ y }}</span>
+            </div>
         </ion-col>
-        <ion-col class="" col-4 text-right>{{ x.total | currency:symbolDisplay:true }}</ion-col>
+        <ion-col class="" col-3 text-right>{{ x.total | currency:symbolDisplay:true }}</ion-col>
       </ion-row>
     </ion-item>
   </ion-list>

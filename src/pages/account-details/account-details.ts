@@ -2,11 +2,12 @@ import { Component } from '@angular/core';
 import { IonicPage, NavController, NavParams, ToastController, ModalController, AlertController, LoadingController } from 'ionic-angular';
 import { Validation } from '../../utils/validation-utils';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
-import { API, ROUTES } from '../../global/api';
-import { Authentication } from '../../global/authentication';
-import { BaseViewController } from '../base-view-controller/base-view-controller';
-import { AppViewData } from '../../global/app-data.service';
-import { AuthUserInfo } from '../../models/models';
+import { API, ROUTES } from '../../services/api';
+import { Authentication } from '../../services/authentication';
+import { BaseViewController } from '../../components/base-view-controller/base-view-controller';
+import { AppStorage } from '../../services/app-storage.service';
+import { AppViewData } from '../../services/app-view-data.service';
+import { AuthUserInfo } from '../../interfaces/interfaces';
 
 @IonicPage()
 @Component({
@@ -40,9 +41,9 @@ export class AccountDetailsPage extends BaseViewController {
         zipcode: [null, Validators.compose([Validators.required, Validation.test('isZipCode')])],
         hasPushNotifications: [true, Validators.required]
       });
-      this.logoImgSrc = AppViewData.getImg().logoImgSrc;
+      this.logoImgSrc = AppStorage.getImg().logoImgSrc;
       this.auth = this.authentication.getCurrentUser();
-      this.appHeaderBarLogo = AppViewData.getImg().logoImgSrc;
+      this.appHeaderBarLogo = AppStorage.getImg().logoImgSrc;
       this.companyName = this.auth.companyName;
   }
 

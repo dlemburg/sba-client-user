@@ -1,14 +1,15 @@
 import { Injectable } from '@angular/core';
-import { AppViewData } from '../global/app-data.service';
+import { AppStorage } from '../services/app-storage.service';
 
-// general utils
+/***
+ * General utility methods
+ */
 @Injectable()
 export class Utils {
-    constructor() { 
-    }
+    constructor() {}
 
     public static getDollarValues() {
-        return [5, 10, 15, 20];
+        return [10, 15, 20, 25, 50];
     }
 
     public static getEtas() {
@@ -100,7 +101,7 @@ export class Utils {
     public static getImgs(arr) {
         if (arr.length) {
             arr.forEach((x) => {
-                x.imgSrc = AppViewData.getDisplayImgSrc(x.img);
+                x.imgSrc = AppStorage.getDisplayImgSrc(x.img);
             });
             return arr;
         } else return [];

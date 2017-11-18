@@ -2,11 +2,12 @@ import { Component, ViewChild } from '@angular/core';
 import { Nav, Platform } from 'ionic-angular';
 import { SplashScreen } from "@ionic-native/splash-screen";
 import { StatusBar } from "@ionic-native/status-bar";
-import { Authentication } from '../global/authentication';
-import { AppViewData } from '../global/app-data.service';
-import { API, ROUTES } from '../global/api';
-import { COMPANY_OID } from '../global/companyOid';
-import { AuthUserInfo } from '../models/models';
+import { Authentication } from '../services/authentication';
+import { AppStorage } from '../services/app-storage.service';
+import { API, ROUTES } from '../services/api';
+import { COMPANY_OID, CONSTANT } from '../constants/constants';
+import { IClientUserAppStartupInfoResponse } from "../interfaces/interfaces";
+import { AuthUserInfo } from '../interfaces/interfaces';
 import { AppVersion } from '@ionic-native/app-version';
 
 declare var cordova: any;
@@ -32,63 +33,25 @@ export class MyApp {
     private appVersion: AppVersion) {
 
     this.platform.ready().then(() => {
-      //this.test(); 
-
+      
       this.getAppStartupInfo().then((data: IClientUserAppStartupInfoResponse) => {
         this.initializeApp(data);
       });
+      
     });
   }
-  /*
-    test() {
-      this.API.stack(ROUTES.testDotnet, "GET")
-        .subscribe(
-          (response) => {
-            console.log("DOTNET: response.data: ", response.data);
-          }, (err) => {
-            console.log("err on DOTNET test: ", err);
-          });
-
-      this.API.stack(ROUTES.testNode, "POST")
-        .subscribe(
-          (response) => {
-            console.log("NODEjs: response ", response);
-          }, (err) => {
-            console.log("err on NODEjs test: ", err);
-          });
-  }
-  */
-
 
   getAppStartupInfo() {
     return new Promise((resolve, reject) => {
-      this.API.stack(ROUTES.getClientUserAppStartupInfo + `/${COMPANY_OID}`, "GET")
+      this.API.stack(ROUTES.getClientUserAppStartupInfo, "POST", { companyOid: COMPANY_OID})
         .subscribe(
           (response) => {
             const res: IClientUserAppStartupInfoResponse = response.data.clientUserAppStartupInfo;
-            const defaultImg = res.defaultImg;
-            const logoImg = res.logoImg;
-            const clientUserVersionNumber = res.currentClientUserVersionNumber;
-            const minClientUserVersionNumber = res.minClientUserVersionNumber;
-            const mustUpdateClientUserApp = res.mustUpdateClientUserApp;
+            const { currentClientUserVersionNumber, minClientUserVersionNumber, mustUpdateClientUserApp, logoImg, defaultImg }  = res;
 
-            console.log("response.data: ", response.data);
-
-            resolve({
-              defaultImg, 
-              logoImg, 
-              clientUserVersionNumber, 
-              minClientUserVersionNumber,
-              mustUpdateClientUserApp,
-            });
+            resolve({ defaultImg, logoImg, currentClientUserVersionNumber, minClientUserVersionNumber, mustUpdateClientUserApp});
           }, (err) => {
-            resolve({
-              defaultImg: null,
-              logoImg: null,
-              clientUserVersionNumber: null,
-              minClientUserVersionNumber: null,
-              mustUpdateClientUserApp: null
-            });
+            resolve({ defaultImg: null, logoImg: null, clientUserVersionNumber: null, minClientUserVersionNumber: null, mustUpdateClientUserApp: null});
             console.log("Problem downloading images on app startup");
           });
     });
@@ -96,11 +59,12 @@ export class MyApp {
 
   initializeApp(data: IClientUserAppStartupInfoResponse) {
     const { currentClientUserVersionNumber, minClientUserVersionNumber, mustUpdateClientUserApp, logoImg, defaultImg } = data;
-    AppViewData.setImgs({
-      logoImgSrc: logoImg ? `${ROUTES.downloadImg}?img=${logoImg}` : "img/default.png",
-      defaultImgSrc: defaultImg ? `${ROUTES.downloadImg}?img=${defaultImg}` : "img/default.png"
+    AppStorage.setImgs({
+      logoImgSrc: logoImg ? `${CONSTANT.AWS_S3_URL}/imgs/${logoImg}` : "img/default.png",
+      defaultImgSrc: defaultImg ? `${CONSTANT.AWS_S3_URL}/imgs/${defaultImg}` : "img/default.png"
     });
-    this.doNativeThingsOnAppStartup(currentClientUserVersionNumber, minClientUserVersionNumber, mustUpdateClientUserApp);
+
+    this.initNativePlugins(currentClientUserVersionNumber, minClientUserVersionNumber, mustUpdateClientUserApp);
     
     this.pages = [
       { title: 'Home', component: 'HomePage' },      
@@ -114,10 +78,11 @@ export class MyApp {
       // { title: 'About Order Ahead', component: AboutOrderAheadPage },  
       // { title: 'FAQs', component: FAQPage },
     ];
-    this.authentication.isLoggedIn() ? this.rootPage = 'HomePage' : this.rootPage = 'LoginPage';
+    
+    this.rootPage = this.authentication.isLoggedIn() ? 'HomePage' : 'LoginPage';
   }
 
-  doNativeThingsOnAppStartup(currentClientUserVersionNumber = 0, minClientUserVersionNumber = 0, mustUpdateClientUserVersion = false) {
+  initNativePlugins = (currentClientUserVersionNumber = 0, minClientUserVersionNumber = 0, mustUpdateClientUserVersion = false) => {
     this.invokePlatformListeners();
     this.statusBar.styleDefault();
     this.splashScreen.hide();
@@ -147,29 +112,6 @@ export class MyApp {
   }
 
   openPage(page) {
-    // Reset the content nav to have just this page
-    // we wouldn't want the back button to show in this scenario
     this.nav.setRoot(page.component);
   } 
 }
-
-interface IClientUserAppStartupInfoResponse {
-  logoImg: string;
-  defaultImg: string;
-  currentClientUserVersionNumber: number;
-  minClientUserVersionNumber: number;
-  mustUpdateClientUserApp: boolean;
-}
-
-
-
-
-//  console.log("is Android: ", this.platform.is('android'));
-    /*
-    if (this.platform.is('ios')) {
-      AppViewData.setStorageDirectory(cordova.file.documentsDirectory);
-    }
-    else if(this.platform.is('android')) {
-        AppViewData.setStorageDirectory(cordova.file.dataDirectory);
-    }
-    */

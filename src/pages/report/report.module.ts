@@ -2,20 +2,23 @@ import { NgModule } from '@angular/core';
 import { IonicPageModule } from 'ionic-angular';
 import { ReportPage } from './report';
 
-import { ControlMessagesComponentModule } from '../../components/control-messages/control-messages.component.module';
-import { CompanyLogoComponentModule } from '../../components/company-logo/company-logo.component.module';
-import { AppHeaderBarComponentModule } from '../../components/app-header-bar/app-header-bar.component.module';
+// import { AppHeaderBarComponent} from '../../components/app-header-bar/app-header-bar.component';
+// import { CompanyLogoComponent } from '../../components/company-logo/company-logo.component';
+// import { ControlMessagesComponent } from '../../components/control-messages/control-messages.component';
+import { ComponentsModule } from "../../components/components.module";
+
 
 
 @NgModule({
   declarations: [
     ReportPage,
+    // CompanyLogoComponent,
+    // ControlMessagesComponent,
+    // AppHeaderBarComponent
   ],
   imports: [
     IonicPageModule.forChild(ReportPage),
-    ControlMessagesComponentModule,
-    CompanyLogoComponentModule,
-    AppHeaderBarComponentModule
+    ComponentsModule
   ],
   exports: [
     ReportPage

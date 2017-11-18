@@ -9,14 +9,14 @@
 </ion-header>
 -->
 <ion-header>
-  <AppHeaderBar appHeaderBarLogo="{{appHeaderBarLogo}}" [companyName]="companyName"></AppHeaderBar>
+  <app-header-bar appHeaderBarLogo="{{appHeaderBarLogo}}" [companyName]="companyName"></app-header-bar>
 </ion-header>
 
 <ion-content padding text-center>
   <ion-item text-wrap margin>
     <ion-row>
       <ion-col>
-        Add to Mobile Card ending in: **** **** **** <span class="bold">{{ paymentIdLastFourDigits }}</span>
+        Add to Mobile Card ending in: **** **** **** <span class="bold">{{ mobileCardIdLastFourDigits }}</span>
       </ion-col>
     </ion-row>
   </ion-item>

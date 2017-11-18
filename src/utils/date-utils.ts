@@ -1,8 +1,10 @@
 import { Injectable } from '@angular/core';
-import { ICurrentDateInfo } from '../models/models';
+import { ICurrentDateInfo } from '../interfaces/interfaces';
 
 
-// date-utils
+/***
+ * This class is a small library of date/string-related methods
+ */
 @Injectable()
 export class DateUtils {
 
@@ -23,7 +25,7 @@ constructor() { }
 
      // i.e.: "18:00pm" -> "6:00pm""
     public static convertMilitaryTimeStringToNormalTimeString(timeString: string): string {
-        const str = DateUtils.sliceZero(timeString);
+        //const str = DateUtils.sliceZero(timeString);
         const timeStringArr = timeString.split(":");
         const militaryHours = +timeStringArr[0];
         
@@ -34,9 +36,13 @@ constructor() { }
         return `${normalHours}:${minutes}${amOrPm}`
     }
 
-    public static getAmOrPm(hours) {
-        if (hours === 0 || hours === 24) return "am";
-        else return hours < 12 ? "am" : "pm";
+    public static getAmOrPm(hours): string {
+        let ret = "";
+        
+        if (hours === 0 || hours === 24) ret = "am";
+        else ret = hours < 12 ? "am" : "pm";
+
+        return ret;
     }
 
     // i.e.: "09:00am" ->  Date ['2017-07-10T09:00:00.000Z']
@@ -53,6 +59,7 @@ constructor() { }
         let hours = DateUtils.getHours(time);
         let minutes = DateUtils.getMinutes(time);
         let dateStr = DateUtils.toLocalIsoString(new Date(new Date().setHours(hours, minutes, 0)).toString());
+
         return dateStr;
     }
 
@@ -114,12 +121,17 @@ constructor() { }
         if (time.indexOf("0") === 0) {
             time = time.slice(1, time.length);
         }
+
         return time;
     }
 
     public static prependZero(time: number): string {
-        if (time < 10) return "0" + time;
-        else return time.toString();
+        let ret = "";
+
+        if (time < 10) ret = "0" + time;
+        else ret = time.toString();
+
+        return ret;
     }
 
     // converts military to 12 hour
@@ -133,9 +145,13 @@ constructor() { }
     // converts normal time to military time
     public static to24Hour(hours:string, isPm:boolean): number {
         let time = +hours;
-        if (!isPm && time === 12) return 0;  // midnight
-        else if (isPm && time !== 12) return time + 12;
-        else return time;
+        let ret = 0;
+
+        if (!isPm && time === 12) ret = 0;  // midnight
+        else if (isPm && time !== 12) ret = time + 12;
+        else ret = time;
+
+        return ret;
     }
 
 

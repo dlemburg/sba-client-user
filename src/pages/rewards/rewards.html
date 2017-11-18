@@ -10,7 +10,7 @@
 -->
 
 <ion-header>
-  <AppHeaderBar appHeaderBarLogo="{{appHeaderBarLogo}}" [companyName]="companyName"></AppHeaderBar>
+  <app-header-bar appHeaderBarLogo="{{appHeaderBarLogo}}" [companyName]="companyName"></app-header-bar>
 </ion-header>
 
 <ion-content no-padding>
@@ -32,7 +32,8 @@
       </ion-card>
 
       <div class="margin-top reward-card-container" text-center>
-        <EmptyMessage *ngIf="!rewards_all.length && !rewards_individual.length" message="rewards"></EmptyMessage>
+        <empty-message *ngIf="!rewards_all.length && !rewards_individual.length" message="rewards"></empty-message>
+
         <ion-card tappable class="reward-card" (click)="navRewardsDetails(x)" *ngFor="let x of rewards_individual; let i = index;" no-padding no-margin>
           <img [src]="x.imgSrc" onError="this.src='img/default.png';"/>
           <div class="reward-card-title">{{x.name}}</div>
@@ -44,6 +45,7 @@
           </div>
           <div class="reward-header">{{ rewardTypeIndividualMessage }}</div>
         </ion-card>
+        
         <ion-card tappable class="reward-card" (click)="navRewardsDetails(x)" *ngFor="let x of rewards_all; let i = index;" no-padding no-margin>
           <img [src]="x.imgSrc" onError="this.src='img/default.png';" />
           <div class="reward-card-title">{{x.name}}</div>

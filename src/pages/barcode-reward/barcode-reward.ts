@@ -1,7 +1,6 @@
 import { Component } from '@angular/core';
 import { IonicPage, NavController, NavParams } from 'ionic-angular';
-import { AuthUserInfo } from '../../models/models';
-import { Authentication } from '../../global/authentication';
+import { Authentication } from '../../services/authentication';
 import { AppViewData } from '../../global/app-data.service';
 
 @IonicPage()
@@ -29,7 +28,7 @@ export class BarcodeRewardPage {
 
   }
 
-      // barcode data will only have rewardOid, isFreePurchaseItem, userOid
+      // barcode data format: rewardOid $ isFreePurchaseItem $ userOid
       // i.e.: 139$1$28
 
   ionViewDidLoad() {}

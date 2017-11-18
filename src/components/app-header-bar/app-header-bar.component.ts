@@ -1,7 +1,7 @@
 import { Component, OnInit, Input } from '@angular/core';
 
 @Component({
-  selector: 'AppHeaderBar',
+  selector: 'app-header-bar',
   templateUrl: './app-header-bar.component.html',
   //styleUrls: ['./app-header-bar.component.css']
 })

@@ -15,7 +15,7 @@
 -->
 <ion-content padding>
   <div class="company-logo-container">
-    <CompanyLogo [logo]="logoImgSrc"></CompanyLogo>
+    <company-logo [logo]="logoImgSrc"></company-logo>
   </div>
   <form [formGroup]="myForm" (ngSubmit)="submit(myForm.value, myForm.valid)">
     <ion-list>

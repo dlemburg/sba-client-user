@@ -1,5 +1,5 @@
 <ion-header>
-  <AppHeaderBar appHeaderBarLogo="{{appHeaderBarLogo}}" [companyName]="companyName"></AppHeaderBar>
+  <app-header-bar appHeaderBarLogo="{{appHeaderBarLogo}}" [companyName]="companyName"></app-header-bar>
 </ion-header>
 
 
@@ -138,7 +138,17 @@
         <span class="total" *ngIf="!order.transactionDetails.total"> $0.00 </span>   
       </div>
     </ion-item>
+
+    <!-- TODO component for above
+      <transaction-detail [order.transactionDetails.total]>Total</transaction-detail>
+
+    -->
   </ion-list>
+  <ion-item text-center>
+    <button *ngIf="showApplyRewardBtn" (click)="applyReward()" class="apply-reward-btn" ion-button outline>
+      Apply Reward
+    </button>
+  </ion-item>
   <div class="align-center">
       <h4 text-center margin-top>Select your estimated time of arrival</h4>
       <span>(in minutes)</span>
@@ -163,7 +173,7 @@
   -->
 <!-- (balance < order.transactionDetails.total) || -->
    <ion-toolbar margin-top>
-    <button [disabled]="!order.purchaseItems.length" (click)="submit()" class="footer-btn" color="secondary" ion-button block detail-push>Complete Transaction</button>
+    <button [disabled]="!order.purchaseItems.length" (click)="submit()" class="footer-btn" color="secondary" ion-button block detail-push>Complete Order</button>
   </ion-toolbar>
 </ion-content>
  <ion-footer>

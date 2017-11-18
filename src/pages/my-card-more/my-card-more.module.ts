@@ -2,18 +2,21 @@ import { NgModule } from '@angular/core';
 import { IonicPageModule } from 'ionic-angular';
 import { MyCardMorePage } from './my-card-more';
 
-import { ControlMessagesComponentModule } from '../../components/control-messages/control-messages.component.module';
-import { AppHeaderBarComponentModule } from '../../components/app-header-bar/app-header-bar.component.module';
+// import { AppHeaderBarComponent} from '../../components/app-header-bar/app-header-bar.component';
+// import { ControlMessagesComponent } from '../../components/control-messages/control-messages.component';
+import { ComponentsModule } from "../../components/components.module";
+
 
  
 @NgModule({
   declarations: [
     MyCardMorePage,
+    // ControlMessagesComponent,
+    // AppHeaderBarComponent
   ],
   imports: [
     IonicPageModule.forChild(MyCardMorePage),
-    ControlMessagesComponentModule,
-    AppHeaderBarComponentModule
+    ComponentsModule
   ],
   exports: [
     MyCardMorePage

@@ -1,13 +1,14 @@
 import { Component } from '@angular/core';
-import { Validation } from '../../utils/validation-utils';
-import { FormBuilder, FormGroup, Validators, FormControl } from '@angular/forms';
+// import { Validation } from '../../utils/validation-utils';
+import { FormBuilder, FormGroup } from '@angular/forms';
 import { Utils } from '../../utils/utils';
-import { API, ROUTES } from '../../global/api';
-import { Authentication } from '../../global/authentication';
+import { API, ROUTES } from '../../services/api';
+import { Authentication } from '../../services/authentication';
 import { IonicPage, NavController, NavParams, AlertController, ToastController, LoadingController, ModalController } from 'ionic-angular';
-import { BaseViewController } from '../base-view-controller/base-view-controller';
-import { AppViewData } from '../../global/app-data.service';
-import { Stripe } from '@ionic-native/stripe';
+import { BaseViewController } from '../../components/base-view-controller/base-view-controller';
+import { AppViewData } from '../../services/app-data.service';
+import { AppStorage } from '../../services/app-storage.service';
+// import { Stripe } from '@ionic-native/stripe';
 
 @IonicPage()
 @Component({
@@ -15,7 +16,7 @@ import { Stripe } from '@ionic-native/stripe';
   templateUrl: 'add-card-value.html'
 })
 export class AddCardValuePage extends BaseViewController {
-  paymentIdLastFourDigits: number;
+  mobileCardIdLastFourDigits: number;
   amount: number = 10;
   cardCVV: string;
   password: string;
@@ -24,7 +25,7 @@ export class AddCardValuePage extends BaseViewController {
   myForm: FormGroup;
   dollarValues: any = Utils.getDollarValues();
   auth: any = this.authentication.getCurrentUser();
-  appHeaderBarLogo: string = AppViewData.getImg().logoImgSrc;
+  appHeaderBarLogo: string = AppStorage.getImg().logoImgSrc;
   companyName: string = this.auth.companyName;
 
 
@@ -49,7 +50,7 @@ export class AddCardValuePage extends BaseViewController {
           (response) => {
             console.log('response: ', response);
             this.dismissLoading();
-            this.paymentIdLastFourDigits = response.data.paymentIdLastFourDigits;
+            this.mobileCardIdLastFourDigits = response.data.mobileCardIdLastFourDigits;
           },this.errorHandler(this.ERROR_TYPES.API));
   }
 
@@ -78,11 +79,11 @@ export class AddCardValuePage extends BaseViewController {
   confirmEmailAndPasswordAPI(password, email): Promise<{code: number, message: string}> {
     return new Promise((resolve, reject) => {
       const toData = {password: password, email: email, userOid: this.auth.userOid, companyOid: this.auth.companyOid};
-      this.presentLoading("Confirming identity...");
+      this.presentLoading("Confirming identity and adding funds...");
       this.API.stack(ROUTES.confirmEmailAndPassword, "POST", toData)
         .subscribe(
           (response) => {
-            this.dismissLoading();
+            //this.dismissLoading();
             console.log('response: ', response);
             resolve({code: response.code, message: response.message});
           }, (err) => {
@@ -104,28 +105,36 @@ export class AddCardValuePage extends BaseViewController {
       } else if (data.code === 2) {
           this.showPopup({
             title: AppViewData.getPopup().defaultErrorTitle, 
-            message: data.message || "No email found.", 
+            message: data.message || "Sorry, you're credentials are invalid.", 
             buttons: [{text: AppViewData.getPopup().defaultConfirmButtonText}]
           });
           return;
       // correct -> continue to stripe
       } else {
-
+        
        /*** Package for submit ***/
-        this.presentLoading("Adding funds...");
-        const toData = {amount: this.amount, userOid: this.auth.userOid, email: this.auth.email, companyOid: this.auth.companyOid, companyName: this.auth.companyName};
+       // this.presentLoading("Adding funds...");
+        //         const { amount, userOid, email, companyOid, companyName, name } = body;
+
+        const toData = {
+          amount: this.amount, 
+          userOid: this.auth.userOid, 
+          email: this.auth.email, 
+          companyOid: this.auth.companyOid, 
+          companyName: this.auth.companyName, 
+          name: this.auth.firstName + " " + this.auth.lastName
+        };
+        
         this.API.stack(ROUTES.addMobileCardValue, "POST", toData)
           .subscribe(
               (response) => {
                 console.log('response: ', response);
                 this.dismissLoading("Success!");
-                setTimeout(() => {
-                  this.navCtrl.setRoot("HomePage");
-                }, 1000);
-              }, this.errorHandler(this.ERROR_TYPES.API));
+                setTimeout(() => this.navCtrl.setRoot("HomePage"), 1000);
+              }, this.errorHandler(this.ERROR_TYPES.API, undefined, {shouldDismissLoading: true}));
       }
-    }).catch(() => {
+    })/*.catch(() => {
       // do nothing, already handled
-    });
+    });*/
   }
 }

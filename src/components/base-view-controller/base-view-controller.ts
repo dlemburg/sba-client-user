@@ -1,12 +1,10 @@
 import { Component } from '@angular/core';
-import { API, ROUTES } from '../../global/api';
-import { ENV } from '../../global/global';
-import { Utils } from '../../global/utils/utils';
-import { Authentication } from '../../global/authentication';
-import { IErrorHandlerOpts } from '../../models/models';
-import { NavController, NavParams, AlertController, ToastController, LoadingController, ModalController, AlertOptions } from 'ionic-angular';
-import { AppViewData } from '../../global/app-data.service';
-import { IPopup } from '../../models/models';
+import { ENV } from '../../constants/constants';
+// import { Utils } from '../../services/utils/utils';
+// import { Authentication } from '../../services/authentication';
+import { NavController, AlertController, ToastController, LoadingController, AlertOptions } from 'ionic-angular';
+import { AppViewData } from '../../services/app-data.service';
+import { IErrorHandlerOpts } from '../../interfaces/interfaces';
 
 
 @Component({
@@ -70,7 +68,7 @@ export class BaseViewController {
             case this.ERROR_TYPES.PLUGIN[errorType]:
               message = this.ERROR_MESSAGES[errorType];
             default: 
-              message = message;
+              // do nothing
           }
         }
       }
@@ -98,10 +96,10 @@ export class BaseViewController {
   // app-wide toast
  public presentToast(shouldPopView: Boolean, message = AppViewData.getToast().defaultErrorMessage, position = AppViewData.getToast().defaultToastPosition, duration = AppViewData.getToast().defaultToastDuration, cssClass = '') {
     let toast = this.toastCtrl.create({
-      message: message,
-      duration: duration,
-      position: position,
-      cssClass: cssClass
+      message,
+      duration,
+      position,
+      cssClass
     });
 
     toast.onDidDismiss(() => {
@@ -122,10 +120,8 @@ export class BaseViewController {
   }
 
   // app-wide loading
-  public presentLoading(message = AppViewData.getLoading().default) {
-    this.loading = this.loadingCtrl.create({
-      content: message,
-    });
+  public presentLoading(content = AppViewData.getLoading().default) {
+    this.loading = this.loadingCtrl.create({ content});
     this.loading.present();
 
     this.loading.onDidDismiss(() => {

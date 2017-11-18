@@ -1,10 +1,10 @@
 import { Component } from '@angular/core';
-import { CheckoutStore } from '../../global/checkout-store.service';
-import { API, ROUTES } from '../../global/api';
-import { Authentication } from '../../global/authentication';
+import { CheckoutStore } from '../checkout/checkout-store.service';
+import { API, ROUTES } from '../../services/api';
+import { Authentication } from '../../services/authentication';
 import { IonicPage, NavController, NavParams, AlertController, ToastController, LoadingController } from 'ionic-angular';
-import { AppViewData } from '../../global/app-data.service';
-import { BaseViewController } from '../base-view-controller/base-view-controller';
+import { AppStorage } from '../../services/app-storage.service';
+import { BaseViewController } from '../../components/base-view-controller/base-view-controller';
 import { Utils } from '../../utils/utils';
 
 @IonicPage()
@@ -19,7 +19,7 @@ export class ProductsListPage extends BaseViewController {
     img: ''
   };
   auth: any = this.authentication.getCurrentUser();
-  appHeaderBarLogo: string = AppViewData.getImg().logoImgSrc;
+  appHeaderBarLogo: string = AppStorage.getImg().logoImgSrc;
   companyName: string = this.auth.companyName;
   categoryOid: number = 0;
   categoryName: string = "";
@@ -55,7 +55,7 @@ export class ProductsListPage extends BaseViewController {
           }, this.errorHandler(this.ERROR_TYPES.API));
   }
 
-  navToProductDetails(product) {
+  navProductDetails(product) {
     this.navCtrl.push('ProductsDetailsPage', {product})
   }
 

@@ -1,9 +1,5 @@
 import { Component, OnInit, Input } from '@angular/core';
 
-import {FormControl} from '@angular/forms';
-
-import { Validation } from '../../global/validation';
-
 @Component({
   selector: 'custom-validator',
   templateUrl: './custom-validator.component.html'
@@ -19,7 +15,8 @@ export class CustomValidatorComponent implements OnInit {
   }
 
   get message() {
-
+    return "";
+    /*
     if (!this.data) return '';
 
     let utils = Validation.utils();
@@ -29,6 +26,6 @@ export class CustomValidatorComponent implements OnInit {
     if (!isValid) {
       return  Validation.getValidatorErrorMessage({validatorProp: this.type});
     } else return '';
-
+    */
   }
 }

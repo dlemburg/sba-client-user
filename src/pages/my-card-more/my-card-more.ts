@@ -1,10 +1,9 @@
 import { Component } from '@angular/core';
-import { API, ROUTES } from '../../global/api';
-import { Authentication } from '../../global/authentication';
+import { API, ROUTES } from '../../services/api';
+import { Authentication } from '../../services/authentication';
 import { IonicPage, NavController, NavParams, AlertController, ToastController, ModalController, LoadingController } from 'ionic-angular';
-import { AppViewData } from '../../global/app-data.service';
-import { IPopup, AuthUserInfo } from '../../models/models';
-import { BaseViewController } from '../base-view-controller/base-view-controller';
+import { AppStorage } from '../../services/app-storage.service';
+import { BaseViewController } from '../../components/base-view-controller/base-view-controller';
 
 @IonicPage()
 @Component({
@@ -13,7 +12,7 @@ import { BaseViewController } from '../base-view-controller/base-view-controller
 })
 export class MyCardMorePage extends BaseViewController {
   auth: any = this.authentication.getCurrentUser();
-  appHeaderBarLogo: string = AppViewData.getImg().logoImgSrc;
+  appHeaderBarLogo: string = AppStorage.getImg().logoImgSrc;
   companyName: string = this.auth.companyName;
 
   constructor(
@@ -32,7 +31,7 @@ export class MyCardMorePage extends BaseViewController {
 
   delete() {
 
-    /*********************** LATER ****************************
+    /*********************** TODO ****************************
       // API generate redeem code???
       // popup with code or stripe refund if under $10 ???
     *********************************************************/
@@ -57,6 +56,7 @@ export class MyCardMorePage extends BaseViewController {
         (response) => {
           console.log('response: ', response);
           this.dismissLoading("Deleted!");
+          setTimeout(() => this.navCtrl.setRoot("HomePage"), 1000);
         },this.errorHandler(this.ERROR_TYPES.API));
   }
 }

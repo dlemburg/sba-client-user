@@ -1,13 +1,13 @@
-import { Component, Directive } from '@angular/core';
-import { API, ROUTES } from '../../global/api';
-import { Authentication } from '../../global/authentication';
-import { Utils } from '../../utils/utils';
-import { AuthUserInfo, ICompanyDetails } from '../../models/models';
+import { Component } from '@angular/core';
+import { API, ROUTES } from '../../services/api';
+import { Authentication } from '../../services/authentication';
+// import { Utils } from '../../utils/utils';
+import { ICompanyDetails } from '../../interfaces/interfaces';
 import { IonicPage, NavController, NavParams, AlertController, ToastController, LoadingController, ModalController } from 'ionic-angular';
-import { BaseViewController } from '../base-view-controller/base-view-controller';
-import { AppViewData } from '../../global/app-data.service';
+import { BaseViewController } from '../../components/base-view-controller/base-view-controller';
+import { AppStorage } from '../../services/app-storage.service';
 import { SocialSharing } from '@ionic-native/social-sharing';
-import { CONST_SOCIAL_MEDIA_TYPES } from '../../global/global';
+import { CONSTANT } from '../../constants/constants';
 import { Clipboard } from '@ionic-native/clipboard';
 
 @IonicPage()
@@ -21,7 +21,7 @@ export class BarcodePayPage extends BaseViewController {
   socialMediaType: string = "";
   isSocialMediaUsed: boolean = false;
   auth: any = this.authentication.getCurrentUser();
-  appHeaderBarLogo: string = AppViewData.getImg().logoImgSrc;
+  appHeaderBarLogo: string = AppStorage.getImg().logoImgSrc;
   companyName: string = this.auth.companyName;
   mobileCardId: string = null;
   barcodeData: string = `${this.auth.userOid}$${this.auth.companyOid}$0$0`;
@@ -36,7 +36,7 @@ export class BarcodePayPage extends BaseViewController {
        this.instagram();
     }
   };
-  SOCIAL_MEDIA_TYPES = CONST_SOCIAL_MEDIA_TYPES;
+  SOCIAL_MEDIA_TYPES = CONSTANT.SOCIAL_MEDIA_TYPES;
 
   constructor(
     public navCtrl: NavController, 

@@ -1,8 +1,8 @@
 import { Component } from '@angular/core';
 import { IonicPage, NavController, NavParams } from 'ionic-angular';
-import { CONST_REWARDS_TYPES, CONST_REWARDS_PROCESSING_TYPE } from '../../global/global';
-import { Authentication } from '../../global/authentication';
-import { AppViewData } from '../../global/app-data.service';
+import { CONSTANT } from '../../constants/constants';
+import { Authentication } from '../../services/authentication';
+import { AppStorage } from '../../services/app-storage.service';
 
 @IonicPage()
 @Component({
@@ -11,13 +11,13 @@ import { AppViewData } from '../../global/app-data.service';
 })
 export class RewardsDetailsPage {
   auth: any = this.authentication.getCurrentUser();
-  appHeaderBarLogo: string = AppViewData.getImg().logoImgSrc;
+  appHeaderBarLogo: string = AppStorage.getImg().logoImgSrc;
   companyName: string = this.auth.companyName;
 
   reward: any;
   rewardOid: any;
-  REWARDS_TYPE = CONST_REWARDS_TYPES
-  REWARDS_PROCESSING_TYPE = CONST_REWARDS_PROCESSING_TYPE;
+  REWARDS_TYPE = CONSTANT.REWARDS_TYPES
+  REWARDS_PROCESSING_TYPE = CONSTANT.REWARDS_PROCESSING_TYPE;
   
   constructor(public navCtrl: NavController, public navParams: NavParams, public authentication: Authentication) {
     this.reward = {

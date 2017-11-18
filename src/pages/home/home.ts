@@ -1,13 +1,13 @@
 import { Component } from '@angular/core';
 import { IonicPage, Platform, NavController, NavParams, AlertController, ModalController, ToastController, LoadingController } from 'ionic-angular';
-import { IOwnerAlert } from '../../models/models';
-import { API, ROUTES } from '../../global/api';
-import { Authentication } from '../../global/authentication';
-import { AppViewData } from '../../global/app-data.service';
-import { BaseViewController } from '../base-view-controller/base-view-controller';
-import { Transfer, FileUploadOptions, TransferObject } from '@ionic-native/transfer';
+import { IOwnerAlert } from '../../interfaces/interfaces';
+import { API, ROUTES } from '../../services/api';
+import { Authentication } from '../../services/authentication';
+import { AppStorage } from '../../services/app-storage.service';
+import { BaseViewController } from '../../components/base-view-controller/base-view-controller';
+import { Transfer } from '@ionic-native/transfer';
 import { File } from '@ionic-native/file';
-import { CONST_APP_IMGS, CONST_APP_HOME_IMGS, CONST_APP_HOME_SUBTITLES} from '../../global/global';
+import { CONSTANT } from '../../constants/constants';
 
 declare var cordova: any;
 @IonicPage()
@@ -18,17 +18,12 @@ declare var cordova: any;
 export class HomePage extends BaseViewController {
   cards: any;
   initHasRun: boolean = false;
-  ownerAlert: IOwnerAlert = {
-    type: '',   // reward or product
-    description: '',  // on page
-    img: '',
-    headline: ''  // on home page
-  };
+  ownerAlert = <IOwnerAlert> {};
   points: number|string = "Unavailable";
   unavailable: "Unavailable";
-  defaultImgSrc: string = AppViewData.getImg().defaultImgSrc;
+  defaultImgSrc: string = AppStorage.getImg().defaultImgSrc;
   auth: any = this.authentication.getCurrentUser();
-  appHeaderBarLogo: string = AppViewData.getImg().logoImgSrc;
+  appHeaderBarLogo: string = AppStorage.getImg().logoImgSrc;
   companyName: string = this.auth.companyName;
   blur: boolean = false;
 
@@ -51,7 +46,7 @@ export class HomePage extends BaseViewController {
         {
             img: null,
             imgSrc: null,
-            imgName: CONST_APP_HOME_IMGS[0],
+            imgName: CONSTANT.APP_HOME_IMGS[0],
             title: 'My Mobile Card',
             subtitle: 'view card details and pay',
             component: 'MyCardPage',
@@ -60,7 +55,7 @@ export class HomePage extends BaseViewController {
         {
             img: null,
             imgSrc: null,
-            imgName: CONST_APP_HOME_IMGS[1],
+            imgName: CONSTANT.APP_HOME_IMGS[1],
             title: 'Rewards',
             subtitle: 'discounts and specials you don\'t want to miss out on!',
             component: 'RewardsPage',
@@ -70,7 +65,7 @@ export class HomePage extends BaseViewController {
         {
             img: null,
             imgSrc: null,
-            imgName: CONST_APP_HOME_IMGS[2],
+            imgName: CONSTANT.APP_HOME_IMGS[2],
             title: 'Order-Ahead',
             subtitle: 'order-ahead and skip the line!',
             component: 'LocationsPage',
@@ -79,7 +74,7 @@ export class HomePage extends BaseViewController {
         {
             img: null,
             imgSrc: null,
-            imgName: CONST_APP_HOME_IMGS[3],
+            imgName: CONSTANT.APP_HOME_IMGS[3],
             title: 'Menu',
             subtitle: 'See what we have to offer!',
             component: 'CategoriesPage',
@@ -116,8 +111,8 @@ export class HomePage extends BaseViewController {
           // this is unnecessary. the original idea was to make it dynamic, but this doesn't. don't need to fix now
           this.cards.forEach((x, index) => {
             x.img = response.data.homePageInfo[x.imgName];
-            x.subtitle = response.data.homePageInfo[CONST_APP_HOME_SUBTITLES[index]] || x.subtitle;
-            x.imgSrc = AppViewData.getDisplayImgSrc(x.img);
+            x.subtitle = response.data.homePageInfo[CONSTANT.APP_HOME_SUBTITLES[index]] || x.subtitle;
+            x.imgSrc = AppStorage.getDisplayImgSrc(x.img);
           });
           
         }, this.errorHandler(this.ERROR_TYPES.API));

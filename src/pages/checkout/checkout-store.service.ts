@@ -1,8 +1,7 @@
 import { Injectable } from '@angular/core';
-import { Component } from '@angular/core';
-import { CheckoutPage } from '../pages/checkout/checkout';
-import { IPurchaseItem, IOrder, ITransactionDetails } from '../models/models';
-import { Utils } from '../utils/utils';
+// import { CheckoutPage } from '../pages/checkout/checkout';
+import { IPurchaseItem, IOrder, ITransactionDetails } from '../../interfaces/interfaces';
+import { Utils } from '../../utils/utils';
 
 
 @Injectable()

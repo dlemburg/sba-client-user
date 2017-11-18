@@ -1,6 +1,6 @@
 
 <ion-header>
-  <AppHeaderBar appHeaderBarLogo="{{appHeaderBarLogo}}" [companyName]="companyName"></AppHeaderBar>
+  <app-header-bar appHeaderBarLogo="{{appHeaderBarLogo}}" [companyName]="companyName"></app-header-bar>
   <ion-toolbar *ngIf="distanceFilter">
      <ion-item no-lines>
       <ion-label>Show locations within miles from you: </ion-label>
@@ -14,8 +14,8 @@
 
 <ion-content>
   <div>
-    <EmptyMessage *ngIf="!locations.length && isLoading" longMessage="Optimizing for locations near you..."></EmptyMessage>
-    <EmptyMessage *ngIf="!locations.length && !isLoading" message="locations"></EmptyMessage>
+    <empty-message *ngIf="!locations.length && isLoading" longMessage="Optimizing for locations near you..."></empty-message>
+    <empty-message *ngIf="!locations.length && !isLoading" message="locations"></empty-message>
     <!--  <ion-item class="location-container item-highlight" tappable (click)="updateActive(i)" *ngFor="let x of locations; let i = index" [ngClass]="{'item-highlight': isActive === i}"> -->
     <ion-list>
       <ion-item class="location-container item-highlight" tappable *ngFor="let x of locations; let i = index">
@@ -30,6 +30,7 @@
               <div>
                 <span *ngIf="x.distanceTo > 0.3" class="miles-away"><span class="bold">{{ x.distanceTo }}</span> miles away (approx)</span>
                 <span *ngIf="x.distanceTo < 0.3" class="miles-away"> This location is really close!</span>
+                <span *ngIf="!x.distanceTo && distanceTo !== 0" class="miles-away"> Had trouble calculating distance for this location.</span>
               </div>
               <div class="">
                 <div text-wrap margin-top *ngIf="!x.isOpen" text-center class="closed font-12">{{ x.closedMessage }}</div>

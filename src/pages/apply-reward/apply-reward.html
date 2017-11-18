@@ -1,0 +1,41 @@
+<ion-header>
+  <ion-navbar>
+    <ion-title>Apply Reward</ion-title>
+    <ion-buttons>
+      <button (click)="dismiss()" ion-button icon-only>
+        <ion-icon ios="ios-arrow-back" md="md-arrow-back"></ion-icon>
+      </button>
+    </ion-buttons>
+  </ion-navbar>
+</ion-header>
+
+
+<ion-content padding>
+  <div class="margin-top reward-card-container" text-center>
+    <ion-card  tappable class="reward-card" *ngFor="let x of rewardsIndividual; let i = index;" no-padding no-margin>
+      <img [src]="x.imgSrc" onError="this.src='img/default.png';"/>
+      <div class="reward-card-title">{{x.name}}</div>
+      <div *ngIf="x.hasExpiryDate" class="reward-card-expiry">
+        <span>Expires: </span> <span> {{ x.expiryDate | date }}</span>
+      </div>
+      <!--
+      <div *ngIf="!x.hasExpiryDate" class="reward-card-expiry">
+        <span>This reward can be used at any time!</span>
+      </div>
+    -->
+     <!-- <div class="reward-header">{{ rewardTypeIndividualMessage }}</div> -->
+     <div class="button-overlay">
+       <ion-row text-center>
+         <ion-col>
+           <button (click)="dismissWithData(x)" class="apply-btn" ion-button outline>Apply</button>
+         </ion-col>
+         <!--
+         <ion-col col-6>
+          <button ion-button></button>
+        </ion-col>
+        -->
+       </ion-row>
+     </div>
+    </ion-card>
+  </div>
+</ion-content>

@@ -1,12 +1,13 @@
 import { Component } from '@angular/core';
 import { Validation } from '../../utils/validation-utils';
-import { FormBuilder, FormGroup, Validators, FormControl } from '@angular/forms';
-import { Authentication } from '../../global/authentication';
-import { API, ROUTES } from '../../global/api';
+import { FormBuilder, FormGroup, Validators } from '@angular/forms';
+import { Authentication } from '../../services/authentication';
+import { API, ROUTES } from '../../services/api';
 import { IonicPage, NavController, NavParams, AlertController, ToastController, LoadingController, ModalController } from 'ionic-angular';
-import { AppViewData } from '../../global/app-data.service';
-import { BaseViewController } from '../base-view-controller/base-view-controller';
-import { COMPANY_OID } from '../../global/companyOid';
+import { AppViewData } from '../../services/app-data.service';
+import { AppStorage } from '../../services/app-storage.service';
+import { BaseViewController } from '../../components/base-view-controller/base-view-controller';
+import { COMPANY_OID } from '../../constants/constants';
 
 @IonicPage()
 @Component({
@@ -16,7 +17,7 @@ import { COMPANY_OID } from '../../global/companyOid';
 export class RegisterPage extends BaseViewController {
   myForm: FormGroup;
   auth: any = this.authentication.getCurrentUser();
-  logoImgSrc: string = AppViewData.getImg().logoImgSrc; 
+  logoImgSrc: string = AppStorage.getImg().logoImgSrc; 
   appHeaderBarLogo: string = this.logoImgSrc.indexOf("default") > -1 ? null : this.logoImgSrc;
   companyName: string = this.auth ? this.auth.companyName : null;
 
@@ -52,6 +53,7 @@ export class RegisterPage extends BaseViewController {
 
   submit(myForm, isValid) {
     const toData = myForm;
+    toData.companyOid = COMPANY_OID;
     console.log("register toData: ", toData);
     this.presentLoading();
 
@@ -59,8 +61,8 @@ export class RegisterPage extends BaseViewController {
         .subscribe(
             (response) => {
               console.log('response ', response);
-
-              if (response.code === 4) {
+              // Node: 2, .Net: 4
+              if (response.code === 2 || response.code === 4) {
                 this.dismissLoading();
                 this.showPopup({
                   title: AppViewData.getPopup().defaultErrorTitle, 

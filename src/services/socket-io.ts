@@ -1,10 +1,13 @@
 import { Injectable } from '@angular/core';
 import { Events } from 'ionic-angular'
-import { SERVER_URL_NODE } from './global';
+import { CONSTANT } from '../constants/constants';
 import * as io from "socket.io-client";
 import { Authentication } from './authentication';
-import { AuthUserInfo, SocketEvents }  from '../models/models';
+import { AuthUserInfo, SocketEvents }  from '../interfaces/interfaces';
 
+/***
+ * This service is a wrapper class around the socket.io library
+ */
 @Injectable()
 export class SocketIO {
   private socket: SocketIOClient.Socket = null;
@@ -14,14 +17,6 @@ export class SocketIO {
 
   constructor(public authentication: Authentication, public events: Events) {
     this.auth = this.authentication.getCurrentUser();
-    this.socketEvents = {
-        subscribe: "subscribe",
-        unsubscribe: "unsubscribe",
-        userPlacedNewOrder: "user-placed-new-order",
-        incomingNewOrder: "incoming-new-order",
-        alertUserProcessingOrder: "alert-user-processing-order",
-        locationIsProcessingOrder: "location-is-processing-order"
-    }
     this.socketOpts =  { reconnection: true, reconnectionAttempts: 10};
   }
 
@@ -29,13 +24,13 @@ export class SocketIO {
         console.log("this.socket: ", this.socket);
         if (!this.socket) {
             console.log("connecting...");
-            this.socket = io.connect(SERVER_URL_NODE, this.socketOpts);
+            this.socket = io.connect(CONSTANT.SERVER_URL_NODE, this.socketOpts);
         }
         return this;
     }
 
     public subscribe(room: string): SocketIO {
-        if (room) this.emit(this.socketEvents.subscribe, { room });
+        if (room) this.emit(CONSTANT.SOCKET_EVENTS.subscribe, { room });
 
         console.log("subscribing...");
 
@@ -49,7 +44,7 @@ export class SocketIO {
     }
 
     public unsubscribe(room): SocketIO {
-        if (room) this.emit(this.socketEvents.unsubscribe, { room })
+        if (room) this.emit(CONSTANT.SOCKET_EVENTS.unsubscribe, { room })
         return this;
     }
 

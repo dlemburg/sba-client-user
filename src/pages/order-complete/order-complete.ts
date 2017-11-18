@@ -1,10 +1,9 @@
 import { Component } from '@angular/core';
 import { IonicPage, NavController, NavParams, ViewController, App } from 'ionic-angular';
-import { IPurchaseItem, AuthUserInfo } from '../../models/models';
-import { CONST_APP_IMGS } from '../../global/global';
-import { API, ROUTES } from '../../global/api';
-import { Authentication } from '../../global/authentication';
-import { AppViewData } from '../../global/app-data.service';
+import { IPurchaseItem, AuthUserInfo } from '../../interfaces/interfaces';
+import { CONSTANT } from '../../constants/constants';
+import { API, ROUTES } from '../../services/api';
+import { Authentication } from '../../services/authentication';
 
 @IonicPage()
 @Component({
@@ -34,7 +33,7 @@ export class OrderCompletePage {
 
   ionViewDidLoad() {
     this.auth = this.authentication.getCurrentUser();
-    const imgName = CONST_APP_IMGS[9];
+    const imgName = CONSTANT.APP_IMGS[9];
     this.API.stack(ROUTES.getImgName + `/${this.auth.companyOid}/${imgName}`, "GET")
       .subscribe(
         (response) => {

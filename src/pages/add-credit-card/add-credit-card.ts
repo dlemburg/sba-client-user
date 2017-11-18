@@ -1,13 +1,14 @@
 import { Component } from '@angular/core';
-import { Validation } from '../../utils/validation-utils';
-import { FormBuilder, FormGroup, Validators, FormControl } from '@angular/forms';
+// import { Validation } from '../../utils/validation-utils';
+import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { Utils } from '../../utils/utils';
-import { API, ROUTES } from '../../global/api';
-import { Authentication } from '../../global/authentication';
+import { API, ROUTES } from '../../services/api';
+import { CONSTANT } from '../../constants/constants';
+import { Authentication } from '../../services/authentication';
 import { IonicPage, NavController, NavParams, ModalController, AlertController, ToastController, LoadingController } from 'ionic-angular';
-import { AppViewData } from '../../global/app-data.service';
-import { IPopup } from '../../models/models';
-import { BaseViewController } from '../base-view-controller/base-view-controller';
+import { AppViewData } from '../../services/app-data.service';
+import { AppStorage } from '../../services/app-storage.service';
+import { BaseViewController } from '../../components/base-view-controller/base-view-controller';
 import { Stripe } from '@ionic-native/stripe';
 
 @IonicPage()
@@ -26,7 +27,7 @@ export class AddCreditCardPage extends BaseViewController {
   states: any = Utils.getStates();
   stripePublishableKey: string;
   auth: any = this.authentication.getCurrentUser();
-  appHeaderBarLogo: string = AppViewData.getImg().logoImgSrc;
+  appHeaderBarLogo: string = AppStorage.getImg().logoImgSrc;
   companyName: string = this.auth.companyName;
 
 
@@ -48,15 +49,24 @@ export class AddCreditCardPage extends BaseViewController {
       cardNumber: [null, Validators.compose([Validators.required, Validators.minLength(14)])],
       expMonth: [null, Validators.compose([Validators.required])],
       expYear: [null, Validators.compose([Validators.required])],
-      cardCVC: [null, Validators.compose([Validators.required, Validation.test('isCreditCardCVC')]) ]
+      cardCVC: [null, Validators.compose([Validators.required]) ]
     });
 
+    this.extraInformationForm = this.formBuilder.group({
+      address: [null, Validators.compose([Validators.required])],
+      city: [null, Validators.compose([Validators.required])],
+      state: [null, Validators.compose([Validators.required])],
+      zipcode: [null, Validators.compose([Validators.required])],
+    });
+
+    /*
     this.extraInformationForm = this.formBuilder.group({
       address: [null, Validators.compose([Validators.required, Validation.test('isStreetAddress')])],
       city: [null, Validators.compose([Validators.required, Validation.test('isCity')])],
       state: [null, Validators.compose([Validators.required, Validation.test('isState')])],
       zipcode: [null, Validators.compose([Validators.required, Validation.test('isZipcode')])],
     });
+    */
     
   }
 
@@ -81,7 +91,7 @@ ionViewDidLoad() {
     this.cardDetailsForm.patchValue({amount});
   }
 
-  createStripeToken(cardDetailsForm) {
+  createStripeToken(cardDetailsForm): Promise<{token: string}> {
     return new Promise((resolve, reject) => {
       this.stripe.setPublishableKey(this.stripePublishableKey);
 
@@ -103,12 +113,15 @@ ionViewDidLoad() {
     });
   }
 
-  stripeCardValidators(cardDetailsForm) {
-    const p1 = this.stripe.validateCardNumber(cardDetailsForm.cardNumber);
-    const p2 = this.stripe.validateCVC(cardDetailsForm.cardCVC);
-    const p3 = this.stripe.validateExpiryDate(cardDetailsForm.expMonth, cardDetailsForm.expYear);
-
-    return Promise.all([p1, p2, p3]);
+  stripeCardValidators(cardDetailsForm): Promise<any> {
+    if (CONSTANT.IS_STRIPE_LIVE) {
+      const p1 = this.stripe.validateCardNumber(cardDetailsForm.cardNumber);
+      const p2 = this.stripe.validateCVC(cardDetailsForm.cardCVC);
+      const p3 = this.stripe.validateExpiryDate(cardDetailsForm.expMonth, cardDetailsForm.expYear);
+      
+      return Promise.all([p1, p2, p3]);
+      
+    } else return Promise.resolve(true);
   }
 
 
@@ -116,22 +129,30 @@ ionViewDidLoad() {
     const cardDetailsForm = this.cardDetailsForm.value;
     const extraInformationForm = this.extraInformationForm.value;
 
-    debugger;
+    //debugger;
 
     this.stripeCardValidators(cardDetailsForm).then(() => {
       return this.createStripeToken(cardDetailsForm);
     })
-    .then(() => {
+    .then((data) => {
+      
       /*** Package for submit ***/
-        this.presentLoading(AppViewData.getLoading().saving);
-        const toData = {toData: extraInformationForm, userOid: this.auth.userOid, email: this.auth.email, amount: cardDetailsForm.amount};
-        
-        this.API.stack(ROUTES.addCreditCard, "POST", toData)
-          .subscribe(
-              (response) => {
-                console.log('response: ', response);
-                this.dismissLoading(AppViewData.getLoading().saved);
-              }, this.errorHandler(this.ERROR_TYPES.API));
+      this.presentLoading(AppViewData.getLoading().saving);
+      const toData = {
+        userStripeToken: data.token, 
+        toData: extraInformationForm, 
+        userOid: this.auth.userOid, 
+        companyOid: this.auth.companyOid,
+        email: this.auth.email, 
+        amount: cardDetailsForm.amount
+      };
+      
+      this.API.stack(ROUTES.addCreditCard, "POST", toData)
+        .subscribe(
+          (response) => {
+            console.log('response: ', response);
+            this.dismissLoading(AppViewData.getLoading().saved);
+          }, this.errorHandler(this.ERROR_TYPES.API));
     })
     .catch((err) => {
       console.log("err: ", err);
@@ -141,7 +162,7 @@ ionViewDidLoad() {
           This error has come from our official credit card processing intermediary, so if you feel this is an error, 
           please fill out an issue report (do not include any confidential details), and we will try to resolve it ASAP.`,
         "bottom",
-        6000);
+        10000);
     })
       
   }

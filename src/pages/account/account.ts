@@ -1,10 +1,10 @@
 import { Component } from '@angular/core';
 import { IonicPage, NavController, NavParams, AlertController } from 'ionic-angular';
 import { FormBuilder } from '@angular/forms';
-import { IPopup } from '../../models/models';
-import { Authentication } from '../../global/authentication';
-import { API } from '../../global/api';
-import { AppViewData } from '../../global/app-data.service';
+import { IPopup } from '../../interfaces/interfaces';
+import { Authentication } from '../../services/authentication';
+import { API } from '../../services/api';
+import { AppStorage } from '../../services/app-storage.service';
 
 @IonicPage()
 @Component({
@@ -12,11 +12,10 @@ import { AppViewData } from '../../global/app-data.service';
   templateUrl: 'account.html'
 })
 export class AccountPage {
-  public items: Array<any>;
-  public logoImgSrc: string = AppViewData.getImg().logoImgSrc; 
-  
+  items: Array<any>;
+  logoImgSrc: string = AppStorage.getImg().logoImgSrc; 
   auth: any = this.authentication.getCurrentUser();
-  appHeaderBarLogo: string = AppViewData.getImg().logoImgSrc;
+  appHeaderBarLogo: string = AppStorage.getImg().logoImgSrc;
   companyName: string = this.auth.companyName;
 
   constructor(

@@ -1,12 +1,13 @@
 import { Component } from '@angular/core';
-import { IPurchaseItem, IErrChecks, IPopup, ProductDetailsToClient, AuthUserInfo } from '../../models/models';
+import { IPurchaseItem, IErrChecks, ProductDetails } from '../../interfaces/interfaces';
 import { Utils } from '../../utils/utils';
-import { CheckoutStore } from '../../global/checkout-store.service';
+import { CheckoutStore } from '../checkout/checkout-store.service';
 import { IonicPage, NavController, NavParams, AlertController, ToastController, LoadingController, ModalController, ViewController } from 'ionic-angular';
-import { AppViewData } from '../../global/app-data.service';
-import { BaseViewController } from '../base-view-controller/base-view-controller';
-import { API, ROUTES } from '../../global/api';
-import { Authentication } from '../../global/authentication';
+import { AppViewData } from '../../services/app-data.service';
+import { AppStorage } from '../../services/app-storage.service';
+import { BaseViewController } from '../../components/base-view-controller/base-view-controller';
+import { API, ROUTES } from '../../services/api';
+import { Authentication } from '../../services/authentication';
 
 @IonicPage()
 @Component({
@@ -15,12 +16,12 @@ import { Authentication } from '../../global/authentication';
 })
 export class EditPurchaseItemPage extends BaseViewController {
   auth: any = this.authentication.getCurrentUser();
-  appHeaderBarLogo: string = AppViewData.getImg().logoImgSrc;
+  appHeaderBarLogo: string = AppStorage.getImg().logoImgSrc;
   companyName: string = this.auth.companyName;
   productOid: number;
   productImg: string = '';
   dairyQuantities: Array<number> = Utils.getNumbersList(5);
-  productDetails: ProductDetailsToClient = {
+  productDetails: ProductDetails = {
     name: '',
     oid: 0,
     categoryOid: 0,
@@ -28,11 +29,11 @@ export class EditPurchaseItemPage extends BaseViewController {
     caloriesHigh: 0,
     sizesAndPrices: [],
     fixedPrice: 0,     /* new */
-    addonsToClient: [],
-    flavorsToClient: [],
-    varietyToClient: [],
-    dairyToClient: [],
-    sweetenerToClient: [],
+    addons: [],
+    flavors: [],
+    variety: [],
+    dairy: [],
+    sweetener: [],
     img: '',
     imgSrc: '',
     numberOfFreeAddonsUntilCharged: 0,
@@ -78,7 +79,7 @@ export class EditPurchaseItemPage extends BaseViewController {
             this.productDetails = response.data.productDetails;
             
             /* init values */
-            this.productDetails.imgSrc = AppViewData.getDisplayImgSrc(this.productDetails.img);
+            this.productDetails.imgSrc = AppStorage.getDisplayImgSrc(this.productDetails.img);
             if (!this.productDetails.sizesAndPrices.length) {
               this.purchaseItem.sizeAndOrPrice = {price: this.productDetails.fixedPrice};
             }

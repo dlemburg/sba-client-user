@@ -1,19 +1,23 @@
 import { NgModule } from '@angular/core';
 import { IonicPageModule } from 'ionic-angular';
 import { HomePage } from './home';
-import { AppHeaderBarComponentModule } from '../../components/app-header-bar/app-header-bar.component.module';
+
+// import { AppHeaderBarComponent} from '../../components/app-header-bar/app-header-bar.component';
+
+import { ComponentsModule } from "../../components/components.module";
 
  
 @NgModule({
   declarations: [
     HomePage,
+    //AppHeaderBarComponent
   ],
   imports: [
     IonicPageModule.forChild(HomePage),
-    AppHeaderBarComponentModule
+    ComponentsModule
   ],
   exports: [
-    HomePage
+    HomePage,
   ]
 })
 export class HomePageModule {}

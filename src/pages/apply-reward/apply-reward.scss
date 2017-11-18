@@ -1,0 +1,110 @@
+page-apply-reward {
+    $primary: map-get($colors, primary);
+    
+        .ion-card > img {
+            filter: brightness(90%);   
+        }
+
+        .ion-card-top {
+        position: relative;
+        text-align: center;
+        width: 100% !important;
+        border-bottom: 1px solid $primary;
+        border-top: 1px solid $primary;
+    }
+
+    .top-card-header {
+        position: absolute;
+        top: 10%;
+        font-size: 42px;
+        width: 100%;
+        color: white;
+        letter-spacing: 3px;
+        font-variant: small-caps;
+    }
+
+    .top-card-footer {
+        position: absolute;
+        top: 70%;
+        font-size: 16px;
+        width: 100%;
+        color: white;
+        letter-spacing: 2px;
+        font-variant: small-caps;
+    }
+    .border-right { border-right: 3px solid white;}
+
+    .ion-card-top > img {
+        height: 290px;
+    }
+    .logo-page-specific-container {
+        position: absolute;
+        top: 5%;
+        margin-left: 25% !important;
+        width: 50%;
+    }
+
+    .points-number {
+        font-size: 18px;
+    }
+
+    .reward-card-container {
+        width: 80% !important;
+        margin: auto;
+    }
+
+    .reward-card {
+        border-radius: 0px !important;
+        position: relative;
+        width: 100%;
+        margin-top: 40px;
+    }
+
+    .reward-card-title {
+        position: absolute;
+        top: 20%;
+        font-size: 36px;
+        width: 100%;
+        font-weight: bold;
+        color: #fff;
+    }
+
+    .reward-card-expiry {
+        font-size: 11px;
+        position: absolute;
+        top: 90%;
+        width: 100%;
+        color: #fff;
+        letter-spacing: 3px;
+    }
+
+    .reward-header {
+        position: absolute;
+        top: 0;
+        font-size: 16px;
+        padding: 8px;
+        width: 100%;
+        text-align: center;
+        margin: auto;
+        color: white;
+        background-color: map-get($colors, primary)
+    }
+
+    .apply-btn {
+        //color: white;
+        //border: 1px solid white;
+        width: 80%;
+        background-color: white;                
+    }
+
+    .reward-card-active {
+        //opacity: .4;
+    }
+
+    .button-overlay {
+        position: absolute;
+        bottom: -5px;
+        width: 100% !important;
+    }
+
+}

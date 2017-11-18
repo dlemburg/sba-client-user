@@ -1,10 +1,10 @@
 import { Component } from '@angular/core';
 import { IonicPage, NavController, NavParams, AlertController, ToastController, ModalController, LoadingController } from 'ionic-angular';
-import { CheckoutStore } from '../../global/checkout-store.service';
-import { API, ROUTES } from '../../global/api';
-import { Authentication } from '../../global/authentication';
-import { BaseViewController } from '../base-view-controller/base-view-controller';
-import { AppViewData } from '../../global/app-data.service';
+import { CheckoutStore } from '../checkout/checkout-store.service';
+import { API, ROUTES } from '../../services/api';
+import { Authentication } from '../../services/authentication';
+import { BaseViewController } from '../../components/base-view-controller/base-view-controller';
+import { AppStorage } from '../../services/app-storage.service';
 import { Utils } from '../../utils/utils';
 
 @IonicPage()
@@ -19,7 +19,7 @@ export class CategoriesPage extends BaseViewController {
     isOrderInProgress: null
   };
   auth: any = this.authentication.getCurrentUser();
-  appHeaderBarLogo: string = AppViewData.getImg().logoImgSrc;
+  appHeaderBarLogo: string = AppStorage.getImg().logoImgSrc;
   companyName: string = this.auth.companyName;
   canLeave: boolean = false;
   

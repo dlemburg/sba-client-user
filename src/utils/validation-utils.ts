@@ -1,5 +1,5 @@
 import { FormControl, FormGroup } from '@angular/forms';
-import { IValidatorInfo } from '../models/models';
+import { IValidatorInfo } from '../interfaces/interfaces';
 
 export class Validation {
 
@@ -10,6 +10,7 @@ export class Validation {
         let options = args.validatorOptions ? args.validatorOptions : '';
 
         let props = {
+
             // general
             required: 'Required field',
             minlength: `Required length is ${len}`,
@@ -186,8 +187,8 @@ export class Validation {
 
             let a = group.controls[control1];
             let b = group.controls[control2];
-            let date1 = new Date(a.value).getMilliseconds();  // start date
-            let date2 = new Date(b.value).getMilliseconds();  // end date
+            //let date1 = new Date(a.value).getMilliseconds();  // start date
+            //let date2 = new Date(b.value).getMilliseconds();  // end date
 
             if (b.value < a.value) return b.setErrors({isInvalidDate: true, options: "End Date"});  //  return {isLowerMustBeHigher: true};
             else return null;
@@ -207,9 +208,6 @@ export class Validation {
 
             let strA: string = a.value.slice(0, indexA);
             let strB: string = b.value.slice(0, indexB);
-
-
-            console.log(`a: ${a}, b: ${b}, indexA: ${indexA}, indexB: ${indexB}, strA: ${strA}, strB: ${strB}`);
 
             if (+strB < +strA) return b.setErrors({isInvalidTime: true, options: "End time"});
             else return null;

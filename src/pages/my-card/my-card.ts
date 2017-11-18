@@ -1,10 +1,10 @@
 import { Component } from '@angular/core';
 import { IonicPage, NavController, NavParams,  AlertController, ModalController, ToastController, LoadingController } from 'ionic-angular';
-import { AppViewData } from '../../global/app-data.service';
-import { API, ROUTES } from '../../global/api';
-import { Authentication } from '../../global/authentication';
-import { BaseViewController } from '../base-view-controller/base-view-controller';
-import { CONST_APP_IMGS } from '../../global/global';
+import { AppStorage } from '../../services/app-storage.service';
+import { API, ROUTES } from '../../services/api';
+import { Authentication } from '../../services/authentication';
+import { BaseViewController } from '../../components/base-view-controller/base-view-controller';
+import { CONSTANT } from '../../constants/constants';
 
 @IonicPage()
 @Component({
@@ -16,7 +16,7 @@ export class MyCardPage extends BaseViewController {
   mobileCardImgSrc: string = "";
   items: Array<{component: string, name: string, showOnInit: boolean, itemDoesNeedMobileCardToShow: boolean, visible: boolean}> = [];
   auth: any = this.authentication.getCurrentUser();
-  appHeaderBarLogo: string = AppViewData.getImg().logoImgSrc;
+  appHeaderBarLogo: string = AppStorage.getImg().logoImgSrc;
   companyName: string = this.auth.companyName;
   unavailable: string = "Unavailable";
   hasMobileCard: boolean = false;
@@ -61,13 +61,13 @@ export class MyCardPage extends BaseViewController {
           }, this.errorHandler(this.ERROR_TYPES.API));
 
     // get myCardImg, doesn't need to be async
-    const imgName =CONST_APP_IMGS[11];
+    const imgName =CONSTANT.APP_IMGS[11];
     this.API.stack(ROUTES.getImgName + `/${this.auth.companyOid}/${imgName}`, "GET")
       .subscribe(
         (response) => {
           console.log('response: ', response);
           const img = response.data.img;
-          this.mobileCardImgSrc = AppViewData.getDisplayImgSrc(img);
+          this.mobileCardImgSrc = AppStorage.getDisplayImgSrc(img);
         },this.errorHandler(this.ERROR_TYPES.API, undefined, {shouldDismissLoading: false}));
   }
 

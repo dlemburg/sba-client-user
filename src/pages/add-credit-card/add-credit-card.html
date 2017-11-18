@@ -9,7 +9,7 @@
 </ion-header>
 -->
 <ion-header>
-  <AppHeaderBar appHeaderBarLogo="{{appHeaderBarLogo}}" [companyName]="companyName"></AppHeaderBar>
+  <app-header-bar appHeaderBarLogo="{{appHeaderBarLogo}}" [companyName]="companyName"></app-header-bar>
 </ion-header>
 
 
@@ -29,26 +29,28 @@
             <ion-label floating>Card Number</ion-label>
             <ion-input type="tel" formControlName="cardNumber"></ion-input>
           </ion-item>
-          <control-messages [isSubmitted]="isSubmitted" [controlInstance]="cardDetailsForm.controls.cardNumber"></control-messages>
+         <!-- <control-messages [isSubmitted]="isSubmitted" [controlInstance]="cardDetailsForm.controls.cardNumber"></control-messages> -->
 
           <ion-row classa="align-center">
-            <ion-col col-4>
+            <ion-col col-6>
               <ion-item>
-                <ion-label text-wrap>Expiry Month</ion-label>
+                <ion-label text-wrap>Exp. Month</ion-label>
                 <ion-select formControlName="expMonth">
                   <ion-option *ngFor="let x of months; let i = index;" [value]="x.displayNum">{{ x.displayNum }}</ion-option>
                 </ion-select>
               </ion-item>
             </ion-col>
-            <ion-col col-4>
+            <ion-col col-6>
               <ion-item>
-                <ion-label text-wrap>Expiry Year</ion-label>
+                <ion-label text-wrap>Exp. Year</ion-label>
                 <ion-select formControlName="expYear">
                   <ion-option *ngFor="let x of years; let i = index;" [value]="x">{{ x }}</ion-option>
                 </ion-select>
               </ion-item>
             </ion-col>
-            <ion-col col-4>
+          </ion-row>
+          <ion-row>
+            <ion-col col-6>
               <ion-item>
                 <ion-label floating>CVC <!-- <span class="what-is-this">What is this?</span>--></ion-label>
                 <ion-input type="tel" formControlName="cardCVC"></ion-input>
@@ -89,6 +91,7 @@
       </form>
     </ion-list>
     <div text-center margin-top>
-      <button color="primary" type="button" [disabled]="!extraInformationForm.valid || !cardDetailsForm.valid" ion-button block margin-top>Submit</button>
+      <button (click)="submit()"  color="primary" type="button"  ion-button block margin-top>Submit</button>
+      <!-- [disabled]="!extraInformationForm.valid || !cardDetailsForm.valid" -->
     </div>
 </ion-content>

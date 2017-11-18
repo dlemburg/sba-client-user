@@ -59,7 +59,7 @@ export interface ICompanyDetailsForProcessOrder {
 }
 
 
-export interface ProductDetailsToClient {
+export interface ProductDetails {
     name: string;
     oid: number;
     categoryOid: number;
@@ -67,11 +67,11 @@ export interface ProductDetailsToClient {
     caloriesHigh: number,
     sizesAndPrices: Array<any>,
     fixedPrice: number,
-    addonsToClient: Array<any>,
-    flavorsToClient: Array<any>,
-    dairyToClient: Array<any>;
-    sweetenerToClient: Array<any>;
-    varietyToClient: Array<any>;
+    addons: Array<any>,
+    flavors: Array<any>,
+    dairy: Array<any>;
+    sweetener: Array<any>;
+    variety: Array<any>;
     img: string,
     imgSrc?: string;
     numberOfFreeAddonsUntilCharged: number;
@@ -103,6 +103,7 @@ export interface AuthUserInfo {
     expiry: string;
     companyOid?: number;
     companyName: string;
+    name?: string;
 }
 
 export interface IReward {
@@ -211,3 +212,12 @@ export interface ILogError {
     url: string;
     httpVerb: string;
 }
+
+export interface IClientUserAppStartupInfoResponse {
+    logoImg: string;
+    defaultImg: string;
+    currentClientUserVersionNumber: number;
+    minClientUserVersionNumber: number;
+    mustUpdateClientUserApp: boolean;
+  }
+  

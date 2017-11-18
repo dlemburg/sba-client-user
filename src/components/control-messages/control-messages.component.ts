@@ -1,5 +1,5 @@
 import { Component, Input, OnInit} from '@angular/core';
-import { FormGroup, FormControl } from '@angular/forms';
+import { FormControl } from '@angular/forms';
 import { Validation } from '../../utils/validation-utils';
 
 @Component({
@@ -21,10 +21,8 @@ export class ControlMessagesComponent implements OnInit {
 
  
 
-  ngOnInit() {
-
-     //console.log('inside onInit. this.control: ', this.controlInstance);   
-  }
+  ngOnInit() {  }
+  
 
   get message() {
     if (this.controlInstance && this.controlInstance.errors) {

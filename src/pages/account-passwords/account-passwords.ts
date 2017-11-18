@@ -1,12 +1,12 @@
 import { Component } from '@angular/core';
 import { Validation } from '../../utils/validation-utils';
-import { FormBuilder, FormGroup, Validators, FormControl } from '@angular/forms';
-import { API, ROUTES } from '../../global/api';
-import { Authentication } from '../../global/authentication';
+import { FormBuilder, FormGroup, Validators } from '@angular/forms';
+import { API, ROUTES } from '../../services/api';
+import { Authentication } from '../../services/authentication';
 import { IonicPage, NavController, NavParams, AlertController, ToastController, LoadingController, ModalController } from 'ionic-angular';
-import { AppViewData } from '../../global/app-data.service';
-import { IPopup } from '../../models/models';
-import { BaseViewController } from '../base-view-controller/base-view-controller';
+import { AppViewData } from '../../services/app-data.service';
+import { AppStorage } from '../../services/app-storage.service';
+import { BaseViewController } from '../../components/base-view-controller/base-view-controller';
 
 @IonicPage()
 @Component({
@@ -16,9 +16,9 @@ import { BaseViewController } from '../base-view-controller/base-view-controller
 export class AccountPasswordsPage extends BaseViewController {
   myForm: FormGroup;
   isSubmitted: boolean = false;
-  logoImgSrc: string = AppViewData.getImg().logoImgSrc; 
+  logoImgSrc: string = AppStorage.getImg().logoImgSrc; 
   auth: any = this.authentication.getCurrentUser();
-  appHeaderBarLogo: string = AppViewData.getImg().logoImgSrc;
+  appHeaderBarLogo: string = AppStorage.getImg().logoImgSrc;
   companyName: string = this.auth.companyName;
 
 
@@ -47,13 +47,14 @@ export class AccountPasswordsPage extends BaseViewController {
   submit(myForm, isValid) {
     this.isSubmitted = true;
 
-    const onConfirmFn = () => {
-      this.navCtrl.setRoot('HomePage');
-    }
+
+    // const onConfirmFn = () => {
+    //   this.navCtrl.setRoot('HomePage');
+    // }
 
      /*** Package for submit ***/
     this.presentLoading(AppViewData.getLoading().saving)
-    const toData = {toData: myForm, userOid: this.auth.userOid};
+    const toData = {toData: myForm, userOid: this.auth.userOid, email: this.auth.email};
 
     console.log("toData: ", toData);
     this.API.stack(ROUTES.editPassword, "POST", toData)
@@ -61,9 +62,8 @@ export class AccountPasswordsPage extends BaseViewController {
           (response) => {
             console.log('response: ', response);
             this.dismissLoading(AppViewData.getLoading().saved);
-            setTimeout(() => {
-              this.navCtrl.setRoot("HomePage");
-            }, 1000);
+            setTimeout(() => this.navCtrl.setRoot("HomePage"), 1000);
+
           }, this.errorHandler(this.ERROR_TYPES.API));
     }
 }

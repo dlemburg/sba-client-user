@@ -16,13 +16,16 @@ page-checkout {
         background-color: map-get($colors, primary);
     }
 
-    .extras-container {
-        
-    }
-
     .discounts-local {
         position: relative !important;
         right: 5px !important;
+    }
+
+    .apply-reward-btn {
+        color: rgb(158, 154, 154) !important;
+        border: 1px solid rgb(158, 154, 154) !important;
+        width: 80%;
+        height: 30px !important;
     }
 }
 

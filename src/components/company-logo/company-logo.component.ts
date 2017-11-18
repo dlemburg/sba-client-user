@@ -1,7 +1,7 @@
 import { Component, OnInit, Input } from '@angular/core';
 
 @Component({
-  selector: 'CompanyLogo',
+  selector: 'company-logo',
   templateUrl: './company-logo.component.html',
   //styleUrls: ['./company-logo.component.scss']
 })

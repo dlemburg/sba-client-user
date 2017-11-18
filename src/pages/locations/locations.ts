@@ -1,12 +1,12 @@
 import { Component } from '@angular/core';
 import { Platform, IonicPage, NavController, NavParams, AlertController, ModalController, ToastController, LoadingController } from 'ionic-angular';
-import { CheckoutStore } from '../../global/checkout-store.service';
-import { API, ROUTES } from '../../global/api';
-import { Authentication } from '../../global/authentication';
-import { BaseViewController  } from '../base-view-controller/base-view-controller';
+import { CheckoutStore } from '../checkout/checkout-store.service';
+import { API, ROUTES } from '../../services/api';
+import { Authentication } from '../../services/authentication';
+import { BaseViewController  } from '../../components/base-view-controller/base-view-controller';
 import { Utils } from '../../utils/utils';
 import { DateUtils } from '../../utils/date-utils';
-import { AppViewData } from '../../global/app-data.service';
+import { AppStorage } from '../../services/app-storage.service';
 import { Geolocation } from '@ionic-native/geolocation';
 
 @IonicPage()
@@ -21,7 +21,7 @@ export class LocationsPage extends BaseViewController {
   isActive: number = 0;
   isProceedingToOrder: boolean = false;
   auth: any = this.authentication.getCurrentUser();
-  appHeaderBarLogo: string = AppViewData.getImg().logoImgSrc;
+  appHeaderBarLogo: string = AppStorage.getImg().logoImgSrc;
   companyName: string = this.auth.companyName;
   initHasRun: boolean = false;
   lat: number;
@@ -51,14 +51,11 @@ export class LocationsPage extends BaseViewController {
   // address, city, state, zipcode, lat, long, hours
   ionViewDidLoad() {
     this.auth = this.authentication.getCurrentUser();
-    this.presentLoading();
 
     this.getCurrentPosition().then((data) => {
-      this.dismissLoading();
       if (data.lat && data.long) this.getLocationsFilterByGpsAPI(data.lat, data.long);
     })
     .catch((err) => {
-      this.dismissLoading();
       console.log("location err: ", err);
       this.isLoading = false;
       if (err.code === 2 || err.code === 3)  {
@@ -67,7 +64,7 @@ export class LocationsPage extends BaseViewController {
 
         
         this.presentToast(false, "We're having trouble accessing your current location to optimize finding locations near you. Are you sure you're online and your location is on?");
-      } else this.errorHandler(this.ERROR_TYPES.PLUGIN.GEOLOCATION)(err);
+      } else this.errorHandler(this.ERROR_TYPES.PLUGIN.GEOLOCATION, undefined, {shouldDismissLoading: false})(err);
     });
   }
 
@@ -115,7 +112,7 @@ export class LocationsPage extends BaseViewController {
     let currentDay =  Utils.getDays()[new Date().getDay()].toLowerCase(); 
 
     locations.forEach((x) => {
-      x.imgSrc = AppViewData.getDisplayImgSrc(x.img);
+      x.imgSrc = AppStorage.getDisplayImgSrc(x.img);
       if (x[currentDay + "Open"] === "closed") {
         x.isOpen = false;
         x.closedMessage = "Sorry, this location is closed today.";

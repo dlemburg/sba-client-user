@@ -1,12 +1,10 @@
 import { Component } from '@angular/core';
-import { API, ROUTES } from '../../global/api';
-import { FormBuilder, FormGroup, Validators, FormControl } from '@angular/forms';
-import { Authentication } from '../../global/authentication';
-import { HomePage } from "../home/home";
-import { IonicPage, NavController, NavParams, AlertController, ToastController, LoadingController, ModalController } from 'ionic-angular';
-import { AppViewData } from '../../global/app-data.service';
-import { IPopup } from '../../models/models';
-import { BaseViewController } from '../base-view-controller/base-view-controller';
+import { API, ROUTES } from '../../services/api';
+import { FormBuilder, FormGroup, Validators } from '@angular/forms';
+import { Authentication } from '../../services/authentication';
+import { IonicPage, NavController, NavParams, AlertController, ToastController, LoadingController } from 'ionic-angular';
+import { AppStorage } from '../../services/app-storage.service';
+import { BaseViewController } from '../../components/base-view-controller/base-view-controller';
 import { DateUtils } from '../../utils/date-utils';
 
 @IonicPage()
@@ -18,9 +16,9 @@ export class ReportPage extends BaseViewController {
   myForm: FormGroup;
   isSubmitted: boolean = false;
   auth: any = this.authentication.getCurrentUser();
-  appHeaderBarLogo: string = AppViewData.getImg().logoImgSrc;
+  appHeaderBarLogo: string = AppStorage.getImg().logoImgSrc;
   companyName: string = this.auth.companyName;
-  logoImgSrc: string = AppViewData.getImg().logoImgSrc; 
+  logoImgSrc: string = AppStorage.getImg().logoImgSrc; 
 
   constructor(
     public navCtrl: NavController, 

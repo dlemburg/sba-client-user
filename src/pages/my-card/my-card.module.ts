@@ -2,8 +2,7 @@ import { NgModule } from '@angular/core';
 import { IonicPageModule } from 'ionic-angular';
 import { MyCardPage } from './my-card';
 
-import { ControlMessagesComponentModule } from '../../components/control-messages/control-messages.component.module';
-import { AppHeaderBarComponentModule } from '../../components/app-header-bar/app-header-bar.component.module';
+import { ComponentsModule } from "../../components/components.module";
 
 
 @NgModule({
@@ -12,8 +11,7 @@ import { AppHeaderBarComponentModule } from '../../components/app-header-bar/app
   ],
   imports: [
     IonicPageModule.forChild(MyCardPage),
-    ControlMessagesComponentModule,
-    AppHeaderBarComponentModule
+    ComponentsModule
   ],
   exports: [
     MyCardPage
